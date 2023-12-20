@@ -356,4 +356,53 @@ class Sigmie_Admin
 
 		echo '<p>' . wp_kses_post(sprintf(__('No Sigmie account yet? <a href="%s">Follow this link</a> to create one for free in a couple of minutes!', 'sigmie'), 'https://app.sigmie.com/sign-up')) . '</p>';
 	}
+
+	function product_tab($product_data_tabs)
+	{
+		$product_data_tabs['sigmie'] = [
+			'label'  => __('Sigmie Search', 'sigmie'),
+			'target' => 'sigmie',
+			'class'    => [],
+		];
+
+		return $product_data_tabs;
+	}
+
+	function product_tab_content()
+	{
+	?>
+		<div id="sigmie" class="panel woocommerce_options_panel hidden">
+
+			<div class="options_group">
+				<?php
+
+				woocommerce_wp_text_input([
+					'id'    => 'sigmie_boost',
+					'label' => __('Boost', 'sigmie'),
+					'desc_tip'    => true,
+					'description' => __('Enter a value to boost this product in the search results. Higher values will make this product appear higher in the search results.', 'sigmie')
+				]);
+
+				?>
+			</div>
+		</div>
+
+	<?php
+	}
+
+	function product_tab_fields($post_id, $post)
+	{
+		$product = wc_get_product($post);
+
+		if (isset($_POST['sigmie_boost'])) {
+			$boost = !empty($_POST['sigmie_boost']) ? sanitize_text_field($_POST['sigmie_boost']) : '';
+			$product->update_meta_data('sigmie_boost', $boost);
+		} else {
+			if ($product->meta_exists('sigmie_boost')) {
+				$product->delete_meta_data('sigmie_boost');
+			}
+		}
+
+		$product->save();
+	}
 }

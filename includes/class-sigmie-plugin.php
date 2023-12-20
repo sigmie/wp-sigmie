@@ -161,6 +161,10 @@ class Sigmie_Plugin
 		$this->loader->add_action('admin_menu', $plugin_admin, 'add_settings_menu_page');
 		$this->loader->add_action('admin_init', $plugin_admin, 'add_settings');
 		$this->loader->add_action('admin_notices', $plugin_admin, 'display_settings_errors');
+
+		$this->loader->add_filter('woocommerce_product_data_tabs', $plugin_admin, 'product_tab', 10, 3);
+		$this->loader->add_action('woocommerce_product_data_panels', $plugin_admin, 'product_tab_content', 10, 3);
+		$this->loader->add_action('woocommerce_process_product_meta', $plugin_admin, 'product_tab_fields', 10, 2);
 	}
 
 	/**
