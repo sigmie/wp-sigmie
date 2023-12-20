@@ -118,6 +118,9 @@ class Sigmie_Plugin
 		 */
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin.php';
 
+
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-search.php';
+
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
@@ -165,6 +168,12 @@ class Sigmie_Plugin
 		$this->loader->add_filter('woocommerce_product_data_tabs', $plugin_admin, 'product_tab', 10, 3);
 		$this->loader->add_action('woocommerce_product_data_panels', $plugin_admin, 'product_tab_content', 10, 3);
 		$this->loader->add_action('woocommerce_process_product_meta', $plugin_admin, 'product_tab_fields', 10, 2);
+
+		$this->loader->add_action('woocommerce_update_product', $plugin_admin, 'product_updated', 10, 2);
+
+		if (get_option('sigmie_api_is_reachable') === 'yes') {
+			new Sigmie_Admin_Page_Search();
+		}
 	}
 
 	/**
