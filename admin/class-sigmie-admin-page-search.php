@@ -117,7 +117,7 @@ class Sigmie_Admin_Page_Search
 	 */
 	public function display_page()
 	{
-		require_once dirname(__FILE__) . '/partials/settings.php';
+		require_once dirname(__FILE__) . '/partials/search-settings.php';
 	}
 
 	/**

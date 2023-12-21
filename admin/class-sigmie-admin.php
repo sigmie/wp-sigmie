@@ -141,7 +141,21 @@ class Sigmie_Admin
 		 * class.
 		 */
 
-		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/sigmie-admin.js', array('jquery'), $this->version, false);
+		wp_enqueue_script(
+			$this->plugin_name,
+			plugin_dir_url(__FILE__) . 'js/sigmie-admin.js',
+			array('jquery'),
+			$this->version,
+			false
+		);
+
+		wp_enqueue_script(
+			'sigmie-admin-reindex-button',
+			plugin_dir_url(__FILE__) . 'js/reindex-button.js',
+			array('jquery'),
+			$this->version,
+			false
+		);
 	}
 
 	/**
@@ -437,5 +451,58 @@ class Sigmie_Admin
 		ray($product_id, $product)->gray();
 
 		return;
+	}
+
+
+	public function re_index()
+	{
+		$page     = filter_input(INPUT_POST, 'p', FILTER_SANITIZE_SPECIAL_CHARS);
+		$perPage = 100;
+
+		$args = array(
+			'post_type'      => 'product',
+			'posts_per_page' => $perPage
+		);
+
+		$loop = new WP_Query($args);
+
+		$total_pages = ceil($loop->found_posts / $perPage);
+
+		$docs = [];
+
+		while ($loop->have_posts()) : $loop->the_post();
+
+			/** @var  WC_Product_Variable $product */
+			global $product;
+
+			$docs[] = [
+				'_id' => $product->get_id(),
+				'action' => 'upsert',
+				'body' => $product->get_data()
+			];
+
+		endwhile;
+
+		wp_reset_postdata();
+
+		$applicationId = (string) get_option('sigmie_application_id', '');
+		$adminKey = (string) get_option('sigmie_admin_api_key', '');
+
+		$prefix = (string) get_option('sigmie_index_prefix', '');
+		$name = $prefix . 'products';
+
+		$client = new Client($applicationId, $adminKey);
+
+		$res = $client->batchWrite($name, $docs);
+
+		ray($docs);
+		ray($res->json());
+
+		$response = array(
+			'totalPagesCount' => $total_pages,
+			'finished'        => $page >= $total_pages,
+		);
+
+		wp_send_json($response);
 	}
 }

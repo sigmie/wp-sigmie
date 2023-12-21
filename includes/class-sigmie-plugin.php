@@ -173,6 +173,8 @@ class Sigmie_Plugin
 
 		if (get_option('sigmie_api_is_reachable') === 'yes') {
 			new Sigmie_Admin_Page_Search();
+
+			add_action( 'wp_ajax_sigmie_re_index', array( $plugin_admin, 're_index' ),10,2 );
 		}
 	}
 
