@@ -79,8 +79,8 @@ require plugin_dir_path(__FILE__) . 'includes/class-sigmie-plugin.php';
 use Sigmie\WordPressSigmie\Client as Sigmie;
 
 if (!class_exists(Sigmie::class)) {
-	if (is_file(__DIR__ . '/vendor/autoload_packages.php')) {
-		require_once __DIR__ . '/vendor/autoload_packages.php';
+	if (is_file(__DIR__ . '/vendor/autoload.php')) {
+		require_once __DIR__ . '/vendor/autoload.php';
 	}
 }
 

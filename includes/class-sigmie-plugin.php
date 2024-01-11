@@ -161,9 +161,9 @@ class Sigmie_Plugin
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 
-		$this->loader->add_action('admin_menu', $plugin_admin, 'add_settings_menu_page');
-		$this->loader->add_action('admin_init', $plugin_admin, 'add_settings');
-		$this->loader->add_action('admin_notices', $plugin_admin, 'display_settings_errors');
+		$this->loader->add_action('admin_menu', $plugin_admin, 'add_settings_menu_page', 10);
+		$this->loader->add_action('admin_init', $plugin_admin, 'add_settings', 15);
+		$this->loader->add_action('admin_notices', $plugin_admin, 'display_settings_errors', 15);
 
 		$this->loader->add_filter('woocommerce_product_data_tabs', $plugin_admin, 'product_tab', 10, 3);
 		$this->loader->add_action('woocommerce_product_data_panels', $plugin_admin, 'product_tab_content', 10, 3);
@@ -171,10 +171,12 @@ class Sigmie_Plugin
 
 		$this->loader->add_action('woocommerce_update_product', $plugin_admin, 'product_updated', 10, 2);
 
+		$this->loader->add_filter('get_search_form', $plugin_admin, 'get_search_form', 10, 2);
+
 		if (get_option('sigmie_api_is_reachable') === 'yes') {
 			new Sigmie_Admin_Page_Search();
 
-			add_action( 'wp_ajax_sigmie_re_index', array( $plugin_admin, 're_index' ),10,2 );
+			add_action('wp_ajax_sigmie_re_index', array($plugin_admin, 're_index'), 10, 2);
 		}
 	}
 

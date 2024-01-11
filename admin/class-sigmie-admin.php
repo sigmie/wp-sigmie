@@ -426,7 +426,6 @@ class Sigmie_Admin
 				?>
 			</div>
 		</div>
-
 <?php
 	}
 
@@ -504,5 +503,12 @@ class Sigmie_Admin
 		);
 
 		wp_send_json($response);
+	}
+
+	public function get_search_form(...$args)
+	{
+		ray('getting search', $args);
+
+		return '<div>Sigmie search</div>';
 	}
 }
