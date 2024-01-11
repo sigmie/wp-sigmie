@@ -507,8 +507,6 @@ class Sigmie_Admin
 
 	public function get_search_form(...$args)
 	{
-		ray('getting search', $args);
-
-		return '<div>Sigmie search</div>';
+		return '<div id="sigmie-search"></div>';
 	}
 }
