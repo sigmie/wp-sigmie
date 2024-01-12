@@ -119,5 +119,8 @@ class Sigmie_Public
 		//  file_get_contents(plugin_dir_url(__FILE__));
 		// wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/sigmie-public.js', array('jquery'), $this->version, false);
 		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . $vals['file'], [], $this->version, false);
+
+		wp_enqueue_script('vite-client', 'http://127.0.0.1:5173/@vite/client', array(), null, true);
+		wp_enqueue_script('vite-main', 'http://127.0.0.1:5173/main.js', array('vite-client'), null, true);
 	}
 }
