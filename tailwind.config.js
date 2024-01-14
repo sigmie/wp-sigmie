@@ -2,7 +2,7 @@
 export default {
   // prefix: 'sigmie-',
   content: [
-    'resources/App.vue'
+    'resources/**/*.vue'
   ],
   theme: {
     extend: {},

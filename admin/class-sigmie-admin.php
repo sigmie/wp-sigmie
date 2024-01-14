@@ -477,7 +477,10 @@ class Sigmie_Admin
 			$docs[] = [
 				'_id' => $product->get_id(),
 				'action' => 'upsert',
-				'body' => $product->get_data()
+				'body' => [
+					'thumbnail_html' => $product->get_image(),
+					...$product->get_data()
+				]
 			];
 
 		endwhile;
@@ -494,9 +497,6 @@ class Sigmie_Admin
 
 		$res = $client->batchWrite($name, $docs);
 
-		ray($docs);
-		ray($res->json());
-
 		$response = array(
 			'totalPagesCount' => $total_pages,
 			'finished'        => $page >= $total_pages,
@@ -507,6 +507,13 @@ class Sigmie_Admin
 
 	public function get_search_form(...$args)
 	{
-		return '<div id="sigmie-search"></div>';
+		$applicationId = (string) get_option('sigmie_application_id', '');
+		$adminKey = (string) get_option('sigmie_search_api_key', '');
+
+		$prefix = (string) get_option('sigmie_index_prefix', '');
+		$name = $prefix . 'products';
+		return '<div class="container flex flex-wrap items-center justify-between mx-auto" id="sigmie">
+			<search application="' . $applicationId . '"></search>
+		</div>';
 	}
 }

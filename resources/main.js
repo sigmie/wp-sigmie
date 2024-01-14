@@ -1,7 +1,12 @@
 import { createApp } from 'vue'
-import App from './App.vue'
+import Search from "@/Search.vue";
 import './main.css'
 
 document.addEventListener("DOMContentLoaded", function () {
-    createApp(App).mount('#sigmie-search')
+
+    const app = createApp({})
+
+    app.component('search', Search);
+
+    app.mount('#sigmie')
 });
