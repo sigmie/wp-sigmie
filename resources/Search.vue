@@ -12,15 +12,13 @@ import {
     ComboboxOption,
 } from "@headlessui/vue";
 
-import {
-    ArrowUpIcon,
-    ArrowDownIcon,
-    MagnifyingGlassIcon,
-} from "@heroicons/vue/20/solid";
 import { SigmieSearch } from "@sigmie/vue";
+import Hit from "@/Hit.vue"
 
 let props = defineProps({
     application: String,
+    apiKey: String,
+    index: String
 })
 let query = ref("");
 let input = ref(null);
@@ -28,8 +26,8 @@ let hiddenButton = ref(null);
 let isOpen = ref(true);
 let isWindows = ref(navigator.userAgent.indexOf("Win") !== -1)
 
-function visit(value) {
-    console.log(value);
+function visit(hit) {
+    window.location.href = `product/${hit.slug}`;
 }
 
 function handleKeyDown(e) {
@@ -77,6 +75,8 @@ onUnmounted(() => {
 
 <template>
     <div class="container flex flex-wrap items-center justify-between mx-auto">
+        <h1 class="font-bold">12354</h1>
+
         <TransitionRoot appear :show="isOpen" as="template">
             <Dialog as="div" @close="closeModal" class="relative z-50">
                 <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
@@ -88,7 +88,7 @@ onUnmounted(() => {
                         <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95" enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100" leave-to="opacity-0 scale-95">
                             <DialogPanel class="w-full transform overflow-hidden transition-all border-b border-zinc-200">
                                 <div class="">
-                                    <SigmieSearch apiKey="cCAsFWccQyyGyCT2hfPILbU0jzAhUEd7AgTw0fkK" :query="query" :perPage="5" :filters="''" search="wp_products" applicationId="svvhug7c38lsrznsn" v-slot="{
+                                    <SigmieSearch :apiKey="props.apiKey" :query="query" :perPage="5" :filters="''" :search="props.index" :applicationId="props.application" v-slot="{
                                         hits,
                                         total,
                                         loading,
@@ -122,8 +122,8 @@ onUnmounted(() => {
                                                     </div>
                                                 </div>
                                                 <TransitionRoot leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0" @after-leave="query = ''">
-                                                    <div class="h-full pb-20">
-                                                        <ComboboxOptions class="relative w-full overflow-auto text-zinc-100 py-1 text-base focus:ring-0 focus:outline-none sm:text-sm">
+                                                    <div class="h-full pb-20 px-12">
+                                                        <ComboboxOptions class="relative w-full flex flex-col space-y-5 overflow-auto text-zinc-100 py-1 text-base focus:ring-0 focus:outline-none sm:text-sm">
                                                             <ComboboxOption v-for="(
                                                                     hit, index
                                                                 ) in Object.values(
@@ -132,26 +132,7 @@ onUnmounted(() => {
     selected,
     active,
 }" :value="hit">
-                                                                <li class="relative cursor-default select-none py-3 px-4 flex flex-col items-center" :class="{
-                                                                    'text-zinc-700':
-                                                                        active,
-                                                                    'text-zinc-400':
-                                                                        !active,
-                                                                    '':
-                                                                        index !==
-                                                                        hits.length -
-                                                                        1,
-                                                                }">
-                                                                    <div class="flex flex-row space-x-4 py-2 items-center w-full" :class="{
-                                                                        'font-medium':
-                                                                            selected,
-                                                                        'font-bold':
-                                                                            !selected,
-                                                                    }">
-                                                                        <search-box-hit :hit="hit
-                                                                            "></search-box-hit>
-                                                                    </div>
-                                                                </li>
+                                                                <Hit :hit="hit" :active="active" :selected="selected"></Hit>
                                                             </ComboboxOption>
                                                         </ComboboxOptions>
                                                     </div>

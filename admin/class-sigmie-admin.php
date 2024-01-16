@@ -10,10 +10,6 @@
  * @subpackage Sigmie/admin
  */
 
-use GuzzleHttp\Psr7\Uri;
-use Sigmie\Application\Client;
-use Sigmie\Http\JSONRequest;
-
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -85,6 +81,10 @@ class Sigmie_Admin
 	 */
 	private $option_group = 'sigmie_settings';
 
+	private $sigmie;
+
+	private $index;
+
 	/**
 	 * Initialize the class and set its properties.
 	 *
@@ -92,8 +92,10 @@ class Sigmie_Admin
 	 * @param      string    $plugin_name       The name of this plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct($plugin_name, $version)
+	public function __construct($plugin_name, $version, $sigmie, $index)
 	{
+		$this->index = $index;
+		$this->sigmie = $sigmie;
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 	}
@@ -331,13 +333,9 @@ class Sigmie_Admin
 			return $value;
 		}
 
-		$applicationId = (string) get_option('sigmie_application_id', '');
-		$adminKey = (string) get_option('sigmie_admin_api_key', '');
+		$res = $this->sigmie->deleteIndex($this->index);
 
-		$prefix = (string) get_option('sigmie_index_prefix', '');
-		$name = $prefix . 'products';
-		$client = new Client($applicationId, $adminKey);
-		$res = $client->createIndex($name);
+		$res = $this->sigmie->createIndex($this->index);
 
 		update_option('sigmie_api_is_reachable', $res->failed() ? 'no' : 'yes');
 
@@ -445,13 +443,48 @@ class Sigmie_Admin
 		$product->save();
 	}
 
-	function product_updated($product_id, $product)
+	function post_trashed($post_id)
 	{
-		ray($product_id, $product)->gray();
+		if (get_post_type($post_id) === 'product') {
 
-		return;
+			$this->sigmie->deleteDocument($this->index, $post_id);
+		}
 	}
 
+	function post_untrashed($post_id)
+	{
+		if (get_post_type($post_id) === 'product') {
+
+			$product = wc_get_product($post_id);
+
+			$body = [
+				'thumbnail_html' => $product->get_image(),
+				...$product->get_data()
+			];
+
+			$this->sigmie->upsertDocument($this->index, $body, $post_id);
+		}
+	}
+
+	function product_updated($product_id, $product)
+	{
+		$body = [
+			'thumbnail_html' => $product->get_image(),
+			...$product->get_data()
+		];
+
+		$this->sigmie->upsertDocument($this->index, $body, $product_id);
+	}
+
+	function product_created($product_id, $product)
+	{
+		$body = [
+			'thumbnail_html' => $product->get_image(),
+			...$product->get_data()
+		];
+
+		$this->sigmie->upsertDocument($this->index, $body, $product_id);
+	}
 
 	public function re_index()
 	{
@@ -487,15 +520,7 @@ class Sigmie_Admin
 
 		wp_reset_postdata();
 
-		$applicationId = (string) get_option('sigmie_application_id', '');
-		$adminKey = (string) get_option('sigmie_admin_api_key', '');
-
-		$prefix = (string) get_option('sigmie_index_prefix', '');
-		$name = $prefix . 'products';
-
-		$client = new Client($applicationId, $adminKey);
-
-		$res = $client->batchWrite($name, $docs);
+		$this->sigmie->batchWrite($this->index, $docs);
 
 		$response = array(
 			'totalPagesCount' => $total_pages,
@@ -505,15 +530,14 @@ class Sigmie_Admin
 		wp_send_json($response);
 	}
 
+
 	public function get_search_form(...$args)
 	{
 		$applicationId = (string) get_option('sigmie_application_id', '');
-		$adminKey = (string) get_option('sigmie_search_api_key', '');
+		$searchKey = (string) get_option('sigmie_search_api_key', '');
 
-		$prefix = (string) get_option('sigmie_index_prefix', '');
-		$name = $prefix . 'products';
 		return '<div class="container flex flex-wrap items-center justify-between mx-auto" id="sigmie">
-			<search application="' . $applicationId . '"></search>
+			<search application="' . $applicationId . '" api-key="' . $searchKey . '" index="' . $this->index . '"></search>
 		</div>';
 	}
 }

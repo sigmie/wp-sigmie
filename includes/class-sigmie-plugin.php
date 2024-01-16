@@ -13,6 +13,8 @@
  * @subpackage Sigmie/includes
  */
 
+use Sigmie\Application\Client;
+
 /**
  * The core plugin class.
  *
@@ -156,7 +158,12 @@ class Sigmie_Plugin
 	 */
 	private function define_admin_hooks()
 	{
-		$plugin_admin = new Sigmie_Admin($this->get_plugin_name(), $this->get_version());
+		$plugin_admin = new Sigmie_Admin(
+			$this->get_plugin_name(),
+			$this->get_version(),
+			$this->sigmie_admin(),
+			$this->sigmie_index()
+		);
 
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
@@ -169,11 +176,17 @@ class Sigmie_Plugin
 		$this->loader->add_action('woocommerce_product_data_panels', $plugin_admin, 'product_tab_content', 10, 3);
 		$this->loader->add_action('woocommerce_process_product_meta', $plugin_admin, 'product_tab_fields', 10, 2);
 
+		$this->loader->add_action('woocommerce_new_product', $plugin_admin, 'product_created', 10, 2);
 		$this->loader->add_action('woocommerce_update_product', $plugin_admin, 'product_updated', 10, 2);
+		$this->loader->add_action('wp_trash_post', $plugin_admin, 'post_trashed', 10, 2);
+		$this->loader->add_action('untrashed_post', $plugin_admin, 'post_untrashed', 10, 2);
 
 		$this->loader->add_filter('get_search_form', $plugin_admin, 'get_search_form', 10, 2);
 
+		add_shortcode('sigmie_search', [$plugin_admin, 'get_search_form']);
+
 		if (get_option('sigmie_api_is_reachable') === 'yes') {
+
 			new Sigmie_Admin_Page_Search();
 
 			add_action('wp_ajax_sigmie_re_index', array($plugin_admin, 're_index'), 10, 2);
@@ -194,6 +207,25 @@ class Sigmie_Plugin
 
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
+	}
+
+	/**
+	 * @return Client 
+	 */
+	public function sigmie_admin()
+	{
+		$applicationId = (string) get_option('sigmie_application_id', '');
+
+		$adminKey = (string) get_option('sigmie_admin_api_key', '');
+
+		return new Sigmie\Application\Client($applicationId, $adminKey);
+	}
+
+	public function sigmie_index()
+	{
+		$prefix = (string) get_option('sigmie_index_prefix', '');
+
+		return $prefix . 'products';
 	}
 
 	/**
