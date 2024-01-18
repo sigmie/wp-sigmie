@@ -238,7 +238,7 @@ class Sigmie_Admin
 	{
 		$value = (string) get_option('sigmie_application_id', '');
 ?>
-		<input name="sigmie_application_id" class="regular-text" value="<?php echo esc_html($value); ?>"></input>
+		<input type="text" name="sigmie_application_id" class="regular-text" value="<?php echo esc_html($value); ?>"></input>
 		<p class="description" id="home-description">
 			<?php esc_html_e('Your Sigmie Application ID.', 'sigmie'); ?>
 			<a href="https://app.sigmie.com/api-keys" target="_blank"><?php esc_html_e('Manage your Sigmie API Keys', 'sigmie'); ?></a>
@@ -251,7 +251,7 @@ class Sigmie_Admin
 	{
 		$value = (string) get_option('sigmie_search_api_key', '');
 	?>
-		<input name="sigmie_search_api_key" class="regular-text" value="<?php echo esc_html($value); ?>"></input>
+		<input type="text" name="sigmie_search_api_key" class="regular-text" value="<?php echo esc_html($value); ?>"></input>
 		<p class="description" id="home-description">
 			<?php esc_html_e('Your Sigmie Search-only API key (public).', 'sigmie'); ?>
 			<a href="https://app.sigmie.com/api-keys" target="_blank"><?php esc_html_e('Manage your Sigmie API Keys', 'sigmie'); ?></a>
@@ -277,7 +277,7 @@ class Sigmie_Admin
 	{
 		$value = (string) get_option('sigmie_index_prefix', '');
 	?>
-		<input name="sigmie_index_prefix" class="regular-text" value="<?php echo esc_html($value); ?>"></input>
+		<input type="text" name="sigmie_index_prefix" class="regular-text" value="<?php echo esc_html($value); ?>"></input>
 		<p class="description" id="home-description">
 			<?php esc_html_e('This prefix will be prepended to your index names.', 'sigmie'); ?>
 		</p>
@@ -486,7 +486,7 @@ class Sigmie_Admin
 		$this->sigmie->upsertDocument($this->index, $body, $product_id);
 	}
 
-	public function re_index()
+	function re_index()
 	{
 		$page     = filter_input(INPUT_POST, 'p', FILTER_SANITIZE_SPECIAL_CHARS);
 		$perPage = 100;
@@ -530,8 +530,7 @@ class Sigmie_Admin
 		wp_send_json($response);
 	}
 
-
-	public function get_search_form(...$args)
+	function render_sigmie_search_bar()
 	{
 		$applicationId = (string) get_option('sigmie_application_id', '');
 		$searchKey = (string) get_option('sigmie_search_api_key', '');
@@ -540,4 +539,19 @@ class Sigmie_Admin
 			<search application="' . $applicationId . '" api-key="' . $searchKey . '" index="' . $this->index . '"></search>
 		</div>';
 	}
+
+	function register_sigmie_widget()
+	{
+		register_widget('Sigmie_Search_Widget');
+	}
+
+	// public function get_search_form(...$args)
+	// {
+	// 	$applicationId = (string) get_option('sigmie_application_id', '');
+	// 	$searchKey = (string) get_option('sigmie_search_api_key', '');
+
+	// 	return '<div class="container flex flex-wrap items-center justify-between mx-auto" id="sigmie">
+	// 		<search application="' . $applicationId . '" api-key="' . $searchKey . '" index="' . $this->index . '"></search>
+	// 	</div>';
+	// }
 }

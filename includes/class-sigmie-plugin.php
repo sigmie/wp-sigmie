@@ -120,6 +120,8 @@ class Sigmie_Plugin
 		 */
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin.php';
 
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-search-widget.php';
+
 
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-search.php';
 
@@ -181,9 +183,9 @@ class Sigmie_Plugin
 		$this->loader->add_action('wp_trash_post', $plugin_admin, 'post_trashed', 10, 2);
 		$this->loader->add_action('untrashed_post', $plugin_admin, 'post_untrashed', 10, 2);
 
-		$this->loader->add_filter('get_search_form', $plugin_admin, 'get_search_form', 10, 2);
+		add_shortcode('sigmie_search_bar', [$plugin_admin, 'render_sigmie_search_bar']);
 
-		add_shortcode('sigmie_search', [$plugin_admin, 'get_search_form']);
+		$this->loader->add_action('widgets_init', $plugin_admin, 'register_sigmie_widget');
 
 		if (get_option('sigmie_api_is_reachable') === 'yes') {
 

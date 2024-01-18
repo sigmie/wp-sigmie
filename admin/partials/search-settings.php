@@ -9,7 +9,7 @@
 <div class="wrap">
     <h1><?php echo esc_html(get_admin_page_title()); ?>
         <button type="button" class="sigmie-reindex-button button button-primary">
-            <?php esc_html_e('Re-index All Content', 'sigmie'); ?>
+            <?php esc_html_e('Re-index all Products', 'sigmie'); ?>
         </button>
     </h1>
     <?php if (!has_action('wpswa_pro_override_settings_output')) : ?>

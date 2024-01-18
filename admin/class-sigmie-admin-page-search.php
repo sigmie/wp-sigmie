@@ -10,10 +10,6 @@
  * @subpackage Sigmie/admin
  */
 
-use GuzzleHttp\Psr7\Uri;
-use Sigmie\Application\Client;
-use Sigmie\Http\JSONRequest;
-
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -99,6 +95,32 @@ class Sigmie_Admin_Page_Search
 		);
 	}
 
+	public function search_field_text_callback()
+	{
+		$value = (string) get_option('search_field_text', '');
+?>
+		<input type="text" name="search_field_text" class="regular-text" value="<?php echo esc_html($value); ?>"></input>
+		<p class="description" id="home-description">
+			<?php esc_html_e('Text for search field placeholder.', 'sigmie'); ?>
+		</p>
+<?php
+	}
+
+	public function sanitize_search_field_text($value)
+	{
+		$value = sanitize_text_field($value);
+
+		if (empty($value)) {
+			add_settings_error(
+				$this->option_group,
+				'empty',
+				esc_html__('Search field text should not be empty', 'sigmie')
+			);
+		}
+
+		return $value;
+	}
+
 	/**
 	 * Add settings.
 	 *
@@ -107,6 +129,28 @@ class Sigmie_Admin_Page_Search
 	 */
 	public function add_settings()
 	{
+		// Create the settings section
+		add_settings_section(
+			$this->section,
+			null,
+			array($this, 'print_section_settings'),
+			$this->slug
+		);
+
+		// Add the settings fields
+		add_settings_field(
+			'search_field_text',
+			esc_html__('Search field text', 'sigmie'),
+			array($this, 'search_field_text_callback'),
+			$this->slug,
+			$this->section
+		);
+
+		register_setting(
+			$this->option_group,
+			'search_field_text',
+			array($this, 'sanitize_search_field_text')
+		);
 	}
 
 	/**
@@ -141,19 +185,5 @@ class Sigmie_Admin_Page_Search
 	 */
 	public function print_section_settings()
 	{
-		echo '<p>' . esc_html__('By enabling this plugin to override the native WordPress search, your search results will be powered by Algolia\'s typo-tolerant & relevant search algorithms.', 'wp-search-with-algolia') . '</p>';
-
-		echo '<p>' . sprintf(
-			'<b>%1$s</b> - %2$s',
-			esc_html__('Re-index All Content', 'wp-search-with-algolia'),
-			esc_html__('Resubmit all of your content to the Algolia search API. Search results will be updated once the re-index has completed.', 'wp-search-with-algolia')
-		) . '</p>';
-
-		echo sprintf(
-			'<b>%1$s</b> - %2$s <b>%3$s</b>',
-			esc_html__('Push Settings', 'wp-search-with-algolia'),
-			esc_html__('Resync your Algolia search settings to the plugin defaults.', 'wp-search-with-algolia'),
-			esc_html__('WARNING this will reset configuration changes made in your Algolia dashboard.', 'wp-search-with-algolia')
-		);
 	}
 }
