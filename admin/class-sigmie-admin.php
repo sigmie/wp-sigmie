@@ -507,14 +507,7 @@ class Sigmie_Admin
 			/** @var  WC_Product_Variable $product */
 			global $product;
 
-			$docs[] = [
-				'_id' => $product->get_id(),
-				'action' => 'upsert',
-				'body' => [
-					'thumbnail_html' => $product->get_image(),
-					...$product->get_data()
-				]
-			];
+			$docs[] = $this->map_product($product);
 
 		endwhile;
 
@@ -528,6 +521,43 @@ class Sigmie_Admin
 		);
 
 		wp_send_json($response);
+	}
+
+	/**
+	 * @param WC_Product_Variable $product 
+	 * 
+	 * @return array 
+	 */
+	function map_product($product)
+	{
+		$data = $product->get_data();
+
+		$price = wc_price($data['price']);
+
+		$image_html = $product->get_image();
+		preg_match('/src="([^"]*)"/i', $image_html, $image_array);
+		$image_url = $image_array[1];
+
+		return [
+			'_id' => $product->get_id(),
+			'action' => 'upsert',
+			'body' => [
+				'thumbnail_html' => $product->get_image(),
+				'image' => $image_url,
+				'price' => $price,
+				'slug' => $data['slug'],
+				'name' => $data['name'],
+				'sku' => $data['sku'],
+				'short_description' => $data['short_description'],
+				'description' => $data['description'],
+				'categories' => array_map(function ($categoryId) {
+
+					$category = get_term($categoryId, 'product_cat');
+
+					return $category->name;
+				}, $data['category_ids']),
+			]
+		];
 	}
 
 	function render_sigmie_search_bar()
