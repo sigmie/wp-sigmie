@@ -76,25 +76,20 @@ onUnmounted(() => {
 <template>
     <div class="container flex flex-wrap items-center justify-between mx-auto">
 
-        <button
-            @click="openModal"
-            class="fowcus:ring-0 mt-10 max-w-xl mx-auto flex flex-row justify-between text-zinc-400 w-full border backdrop-filter backdrop-blur bg-zinc-100/30 rounded-lg items-center px-2 py-1"
-        >
+        <button @click="openModal" class="fowcus:ring-0 mt-10 max-w-xl mx-auto flex flex-row justify-between text-zinc-400 w-full border backdrop-filter backdrop-blur bg-zinc-100/30 rounded-lg items-center px-2 py-1">
             <div class="text-zinc-100 text-lg tracking-wide">
                 Start typing to check it out...
             </div>
             <div class="flex flex-row items-center space-x-2">
-                <div
-                    class="px-2 py-1 flex flex-row items-center text-zinc-400 space-x-3 text-xs"
-                >
-<svg width="24px"  height="24px"  viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <g stroke="currentColor"  stroke-width="1.5"  fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
-        <g transform="translate(2.000000, 2.000000)" stroke="currentColor"  stroke-width="1.5" >
-            <circle id="Ellipse_739" cx="9.76659044" cy="9.76659044" r="8.9885584"></circle>
-            <line x1="16.0183067" y1="16.4851259" x2="19.5423342" y2="20.0000001" id="Line_181" opacity="0.400000006"></line>
-        </g>
-    </g>
-</svg>
+                <div class="px-2 py-1 flex flex-row items-center text-zinc-400 space-x-3 text-xs">
+                    <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <g stroke="currentColor" stroke-width="1.5" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+                            <g transform="translate(2.000000, 2.000000)" stroke="currentColor" stroke-width="1.5">
+                                <circle id="Ellipse_739" cx="9.76659044" cy="9.76659044" r="8.9885584"></circle>
+                                <line x1="16.0183067" y1="16.4851259" x2="19.5423342" y2="20.0000001" id="Line_181" opacity="0.400000006"></line>
+                            </g>
+                        </g>
+                    </svg>
                 </div>
             </div>
         </button>

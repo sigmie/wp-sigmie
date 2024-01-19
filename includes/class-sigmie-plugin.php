@@ -124,6 +124,7 @@ class Sigmie_Plugin
 
 
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-search.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-results.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -190,6 +191,7 @@ class Sigmie_Plugin
 		if (get_option('sigmie_api_is_reachable') === 'yes') {
 
 			new Sigmie_Admin_Page_Search();
+			new Sigmie_Admin_Page_Results();
 
 			add_action('wp_ajax_sigmie_re_index', array($plugin_admin, 're_index'), 10, 2);
 		}
