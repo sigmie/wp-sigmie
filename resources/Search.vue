@@ -18,7 +18,19 @@ import Hit from "@/Hit.vue"
 let props = defineProps({
     application: String,
     apiKey: String,
-    index: String
+    index: String,
+    nothingFoundText: String,
+    sortBy: String,
+    numberOfResults: Number,
+    maxDescriptionLength: Number,
+    resultsDisplay: String,
+    showCategory: Boolean,
+    showDescription: Boolean,
+    showPrice: Boolean,
+    showRating: Boolean,
+    showSku: Boolean,
+    showStock: Boolean,
+    showOnSale: Boolean
 })
 let query = ref("");
 let input = ref(null);
@@ -26,8 +38,9 @@ let hiddenButton = ref(null);
 let isOpen = ref(false);
 let isWindows = ref(navigator.userAgent.indexOf("Win") !== -1)
 
-function visit(hit) {
-    window.location.href = `product/${hit.slug}`;
+function visit(url) {
+    closeModal();
+    window.location.href = url;
 }
 
 function handleKeyDown(e) {
@@ -56,6 +69,17 @@ function openModal() {
     });
 }
 
+function slugify(str) {
+    return String(str)
+        .normalize('NFKD') // split accented characters into their base characters and diacritical marks
+        .replace(/[\u0300-\u036f]/g, '') // remove all the accents, which happen to be all in the \u03xx UNICODE block.
+        .trim() // trim leading or trailing whitespace
+        .toLowerCase() // convert to lowercase
+        .replace(/[^a-z0-9 -]/g, '') // remove non-alphanumeric characters
+        .replace(/\s+/g, '-') // replace spaces with hyphens
+        .replace(/-+/g, '-'); // remove consecutive hyphens
+}
+
 function addKeydownListener() {
     document.addEventListener("keydown", handleKeyDown);
 }
@@ -65,6 +89,7 @@ function removeKeydownListener() {
 }
 
 onMounted(() => {
+    console.log(props);
     addKeydownListener();
 });
 
@@ -105,7 +130,7 @@ onUnmounted(() => {
                         <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95" enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100" leave-to="opacity-0 scale-95">
                             <DialogPanel class="w-full transform overflow-hidden transition-all border-b border-zinc-200">
                                 <div class="">
-                                    <SigmieSearch facets="categories" :apiKey="props.apiKey" :query="query" :perPage="5" :filters="''" :search="props.index" :applicationId="props.application" v-slot="{
+                                    <SigmieSearch facets="categories" :debounceMs="250" :apiKey="props.apiKey" deb :query="query" :perPage="20" :filters="''" :search="props.index" :applicationId="props.application" v-slot="{
                                         hits,
                                         facets,
                                         total,
@@ -135,7 +160,7 @@ onUnmounted(() => {
                                                                 '': !open,
                                                                 '':
                                                                     open,
-                                                            }" class="ring-0 h-10 mx-auto p-2 bg-transparent w-full outline-none border-none focus:outline-none px-12 text-md leading-3 text-zinc-400" @change="
+                                                            }" class="ring-0 h-10 mx-auto p-2 bg-transparent w-full outline-none border-none focus:outline-none px-12 text-md leading-3 text-zinc-400" :displayValue="() => query" @change="
     query =
     $event.target
         .value
@@ -144,27 +169,48 @@ onUnmounted(() => {
                                                         </div>
 
                                                         <div>
-                                                            <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                <path d="M6 6L18 18" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                                                <path d="M18 6L6 18" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                            <svg @click="closeModal" class="h-10 w-10 text-zinc-800 cursor-pointer" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                                <path d="M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                                             </svg>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <TransitionRoot leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0" @after-leave="query = ''">
                                                     <div class="flex flex-row pt-10">
-                                                        <div class="flex flex-col w-1/3 border-r border-r-zinc-200">
+                                                        <div class="flex flex-col w-1/3 max-h-[800px] overflow-y-scroll">
 
-                                                            <ul role="list" class="px-2 py-3 font-medium text-gray-900">
-                                                                <li v-for="(count, category) in facets.categories" :key="category">
-                                                                    <a class="block px-2 py-3">{{ category }}</a>
+                                                            <ComboboxOptions role="list" class="px-2 py-3 font-medium text-gray-900 flex flex-col space-y-2">
+                                                                <li class="mb-4">
+                                                                    <h4 class="px-10 text-lg font-semibold leading-7 text-zinc-900 text-left">Top Categories</h4>
                                                                 </li>
-                                                            </ul>
+                                                                <ComboboxOption v-for="(count, category) in facets.categories" :key="category" class="" v-slot="{
+                                                                    selected,
+                                                                    active,
+                                                                }" :value="`/product-category/${slugify(category)}`">
+                                                                    <div class="flex flex-row justify-between items-center px-10 h-10 cursor-pointer" :class="(active || selected) ? 'bg-zinc-100' : ''">
+                                                                        <span>
+                                                                            {{ category }}
+                                                                        </span>
+                                                                        <span class="text-zinc-400">
+                                                                            {{ count }}
+                                                                        </span>
+                                                                    </div>
+                                                                </ComboboxOption>
+                                                            </ComboboxOptions>
 
 
                                                         </div>
-                                                        <div class="h-full pb-20 px-12 w-2/3">
-                                                            <ComboboxOptions class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+                                                        <div class="h-full pb-20 px-12 w-2/3 max-h-[800px] overflow-y-scroll">
+                                                            <div v-if="loading">
+                                                                <svg aria-hidden="true" class="md:w-10 md:h-10 h-6 w-6 text-zinc-600 animate-spin fill-zinc-200" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                                                                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                                                                </svg>
+
+                                                                <span class="sr-only">Loading...</span>
+                                                            </div>
+                                                            <ComboboxOptions v-else class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                                                                 <ComboboxOption v-for="(
                                                                     hit, index
                                                                 ) in Object.values(
@@ -172,7 +218,7 @@ onUnmounted(() => {
                                                                 )" :key="hit._id" as="div" v-slot="{
     selected,
     active,
-}" :value="hit">
+}" :value="`product/${hit.slug}`">
                                                                     <Hit :hit="hit" :active="active" :selected="selected"></Hit>
                                                                 </ComboboxOption>
                                                             </ComboboxOptions>

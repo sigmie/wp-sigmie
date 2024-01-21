@@ -135,6 +135,24 @@ class Sigmie_Admin_Page_Search
 	<?php
 	}
 
+	public function corner_radius_callback()
+	{
+		$value = (string) get_option('sigmie_corner_radius', '');
+	?>
+		<input type="number" name="sigmie_corner_radius" class="regular-text" value="<?php echo esc_html($value); ?>"></input>
+		<p class="description" id="home-description">
+			<?php esc_html_e('Corner radius in pixels.', 'sigmie'); ?>
+		</p>
+	<?php
+	}
+
+	public function sanitize_corner_radius($value)
+	{
+		$value = sanitize_text_field($value);
+
+		return $value;
+	}
+
 	public function search_field_text_callback()
 	{
 		$value = (string) get_option('sigmie_search_field_text', '');
@@ -214,7 +232,6 @@ class Sigmie_Admin_Page_Search
 	 */
 	public function add_settings()
 	{
-		// Create the settings section
 		add_settings_section(
 			$this->section,
 			null,
@@ -222,7 +239,6 @@ class Sigmie_Admin_Page_Search
 			$this->slug
 		);
 
-		// Add the settings fields
 		add_settings_field(
 			'search_field_text',
 			esc_html__('Search field text', 'sigmie'),
@@ -263,6 +279,20 @@ class Sigmie_Admin_Page_Search
 			$this->option_group,
 			'sigmie_search_field_height',
 			array($this, 'sanitize_search_field_height')
+		);
+
+		add_settings_field(
+			'corner_radius',
+			esc_html__('Corner radius', 'sigmie'),
+			array($this, 'corner_radius_callback'),
+			$this->slug,
+			$this->section
+		);
+
+		register_setting(
+			$this->option_group,
+			'sigmie_corner_radius',
+			array($this, 'sanitize_corner_radius')
 		);
 
 		add_settings_field(

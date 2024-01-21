@@ -562,11 +562,41 @@ class Sigmie_Admin
 
 	function render_sigmie_search_bar()
 	{
-		$applicationId = (string) get_option('sigmie_application_id', '');
-		$searchKey = (string) get_option('sigmie_search_api_key', '');
+		$options = get_options([
+			'sigmie_nothing_found_text',
+			'sigmie_sort_by',
+			'sigmie_number_of_results',
+			'sigmie_max_description_length',
+			'sigmie_results_display',
+			'sigmie_show_category',
+			'sigmie_show_description',
+			'sigmie_show_price',
+			'sigmie_show_rating',
+			'sigmie_show_sku',
+			'sigmie_show_stock',
+			'sigmie_show_on_sale',
+			'sigmie_application_id',
+			'sigmie_search_api_key'
+		]);
 
 		return '<div class="container flex flex-wrap items-center justify-between mx-auto" id="sigmie">
-			<search application="' . $applicationId . '" api-key="' . $searchKey . '" index="' . $this->index . '"></search>
+			<search 
+				nothing-found-text="' . $options['sigmie_nothing_found_text'] . '" 
+				sort-by="' . $options['sigmie_sort_by'] . '"
+				number-of-results="' . $options['sigmie_number_of_results'] . '"
+				max-description-length="' . $options['sigmie_max_description_length'] . '"
+				results-display="' . $options['sigmie_results_display'] . '"
+				show-category="' . $options['sigmie_show_category'] . '"
+				show-description="' . $options['sigmie_show_description'] . '"
+				show-price="' . $options['sigmie_show_price'] . '"
+				show-rating="' . $options['sigmie_show_rating'] . '"
+				show-sku="' . $options['sigmie_show_sku'] . '"
+				show-stock="' . $options['sigmie_show_stock'] . '"
+				show-on-sale="' . $options['sigmie_show_on_sale'] . '"
+				application="' . $options['sigmie_application_id'] . '" 
+				api-key="' . $options['sigmie_search_api_key'] . '" 
+				index="' . $this->index . '">
+			</search>
 		</div>';
 	}
 
@@ -574,14 +604,4 @@ class Sigmie_Admin
 	{
 		register_widget('Sigmie_Search_Widget');
 	}
-
-	// public function get_search_form(...$args)
-	// {
-	// 	$applicationId = (string) get_option('sigmie_application_id', '');
-	// 	$searchKey = (string) get_option('sigmie_search_api_key', '');
-
-	// 	return '<div class="container flex flex-wrap items-center justify-between mx-auto" id="sigmie">
-	// 		<search application="' . $applicationId . '" api-key="' . $searchKey . '" index="' . $this->index . '"></search>
-	// 	</div>';
-	// }
 }

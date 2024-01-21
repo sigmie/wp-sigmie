@@ -154,6 +154,34 @@ class Sigmie_Admin_Page_Results
 			array($this, 'sanitize_number_of_results')
 		);
 
+		add_settings_field(
+			'show_categories',
+			esc_html__('Show Categories', 'sigmie'),
+			array($this, 'show_categories_callback'),
+			$this->slug,
+			$this->section
+		);
+
+		register_setting(
+			$this->option_group,
+			'sigmie_show_categories',
+			array($this, 'sanitize_show_categories')
+		);
+
+		add_settings_field(
+			'number_of_categories',
+			esc_html__('Number of Categories', 'sigmie'),
+			array($this, 'number_of_categories_callback'),
+			$this->slug,
+			$this->section
+		);
+
+		register_setting(
+			$this->option_group,
+			'sigmie_number_of_categories',
+			array($this, 'sanitize_number_of_categories')
+		);
+
 
 		add_settings_field(
 			'max_description_length',
@@ -280,6 +308,52 @@ class Sigmie_Admin_Page_Results
 			'sigmie_show_on_sale',
 			array($this, 'sanitize_show_on_sale')
 		);
+	}
+
+	public function sanitize_show_categories($value)
+	{
+		$value = sanitize_text_field($value);
+
+		return $value;
+	}
+
+	public function show_categories_callback()
+	{
+		$value = (string) get_option('sigmie_show_categories', '0');
+	?>
+		<fieldset class="">
+			<span class="">
+				<input type="radio" id="sigmie_show_categories_on" name="sigmie_show_categories" value="1" <?php checked($value, '1'); ?> />
+				<label class="checkbox" for="sigmie_show_categories_on"><?php _e('Yes'); ?></label>
+			</span>
+			<br>
+			<span class="">
+				<input type="radio" id="sigmie_show_categories_off" name="sigmie_show_categories" value="0" <?php checked($value, '0'); ?> />
+				<label class="checkbox" for="sigmie_show_categories_off"><?php _e('No'); ?></label>
+			</span>
+		</fieldset>
+		<p class="description">
+			<?php esc_html_e('Show Categories next to search results.', 'sigmie'); ?>
+		</p>
+	<?php
+	}
+
+	public function sanitize_number_of_categories($value)
+	{
+		$value = sanitize_text_field($value);
+
+		return $value;
+	}
+
+	public function number_of_categories_callback()
+	{
+		$value = (string) get_option('sigmie_number_of_categories', '');
+	?>
+		<input type="number" name="sigmie_number_of_categories" class="regular-text" value="<?php echo esc_html($value); ?>"></input>
+		<p class="description">
+			<?php esc_html_e('Number of displayed categories. ', 'sigmie'); ?>
+		</p>
+<?php
 	}
 
 	public function sanitize_sort_by($value)
