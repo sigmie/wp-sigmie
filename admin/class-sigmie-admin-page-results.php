@@ -198,20 +198,6 @@ class Sigmie_Admin_Page_Results
 		);
 
 		add_settings_field(
-			'results_display',
-			esc_html__('Results display', 'sigmie'),
-			array($this, 'results_display_callback'),
-			$this->slug,
-			$this->section
-		);
-
-		register_setting(
-			$this->option_group,
-			'sigmie_results_display',
-			array($this, 'sanitize_results_display')
-		);
-
-		add_settings_field(
 			'show_category',
 			esc_html__('Show category', 'sigmie'),
 			array($this, 'show_category_callback'),
@@ -282,22 +268,8 @@ class Sigmie_Admin_Page_Results
 		);
 
 		add_settings_field(
-			'show_stock',
-			esc_html__('Show stock', 'sigmie'),
-			array($this, 'show_stock_callback'),
-			$this->slug,
-			$this->section
-		);
-
-		register_setting(
-			$this->option_group,
-			'sigmie_show_stock',
-			array($this, 'sanitize_show_stock')
-		);
-
-		add_settings_field(
 			'show_on_sale',
-			esc_html__('Show On Sale', 'sigmie'),
+			esc_html__('Show sale price', 'sigmie'),
 			array($this, 'show_on_sale_callback'),
 			$this->slug,
 			$this->section
@@ -369,27 +341,27 @@ class Sigmie_Admin_Page_Results
 ?>
 		<fieldset class="">
 			<span class="">
-				<input type="radio" id="sigmie_sort_by_relevance" name="sigmie_sort_by" value="relevance" <?php checked($value, 'relevance'); ?> />
+				<input type="radio" id="sigmie_sort_by_relevance" name="sigmie_sort_by" value="_score" <?php checked($value, '_score'); ?> />
 				<label class="checkbox" for="sigmie_sort_by_relevance"><?php _e('Most relevant on top'); ?></label>
 			</span>
 			<br>
 			<span class="">
-				<input type="radio" id="sigmie_sort_by_price_asc" name="sigmie_sort_by" value="price_asc" <?php checked($value, 'price_asc'); ?> />
+				<input type="radio" id="sigmie_sort_by_price_asc" name="sigmie_sort_by" value="price:asc" <?php checked($value, 'price:asc'); ?> />
 				<label class="checkbox" for="sigmie_sort_by_price_asc"><?php _e('Price (low to hight)'); ?></label>
 			</span>
 			<br>
 			<span class="">
-				<input type="radio" id="sigmie_sort_by_price_desc" name="sigmie_sort_by" value="price_desc" <?php checked($value, 'price_desc'); ?> />
+				<input type="radio" id="sigmie_sort_by_price_desc" name="sigmie_sort_by" value="price:desc" <?php checked($value, 'price:desc'); ?> />
 				<label class="checkbox" for="sigmie_sort_by_price_desc"><?php _e('Price (high to low)'); ?></label>
 			</span>
 			<br>
 			<span class="">
-				<input type="radio" id="sigmie_sort_by_name_asc" name="sigmie_sort_by" value="name_asc" <?php checked($value, 'name_asc'); ?> />
+				<input type="radio" id="sigmie_sort_by_name_asc" name="sigmie_sort_by" value="name:asc" <?php checked($value, 'name:asc'); ?> />
 				<label class="checkbox" for="sigmie_sort_by_name_asc"><?php _e('Name (A - Z)'); ?></label>
 			</span>
 			<br>
 			<span class="">
-				<input type="radio" id="sigmie_sort_by_name_desc" name="sigmie_sort_by" value="name_desc" <?php checked($value, 'name_desc'); ?> />
+				<input type="radio" id="sigmie_sort_by_name_desc" name="sigmie_sort_by" value="name:desc" <?php checked($value, 'name:desc'); ?> />
 				<label class="checkbox" for="sigmie_sort_by_name_desc"><?php _e('Name (Z - A)'); ?></label>
 			</span>
 			<br>
@@ -439,34 +411,6 @@ class Sigmie_Admin_Page_Results
 		</fieldset>
 		<p class="description">
 			<?php esc_html_e('Show product On Sale for each search result.', 'sigmie'); ?>
-		</p>
-	<?php
-	}
-
-	public function sanitize_show_stock($value)
-	{
-		$value = sanitize_text_field($value);
-
-		return $value;
-	}
-
-	public function show_stock_callback()
-	{
-		$value = (string) get_option('sigmie_show_stock', '0');
-	?>
-		<fieldset class="">
-			<span class="">
-				<input type="radio" id="sigmie_show_stock_on" name="sigmie_show_stock" value="1" <?php checked($value, '1'); ?> />
-				<label class="checkbox" for="sigmie_show_stock_on"><?php _e('Yes'); ?></label>
-			</span>
-			<br>
-			<span class="">
-				<input type="radio" id="sigmie_show_stock_off" name="sigmie_show_stock" value="0" <?php checked($value, '0'); ?> />
-				<label class="checkbox" for="sigmie_show_stock_off"><?php _e('No'); ?></label>
-			</span>
-		</fieldset>
-		<p class="description">
-			<?php esc_html_e('Show product stock for each search result.', 'sigmie'); ?>
 		</p>
 	<?php
 	}
@@ -607,34 +551,6 @@ class Sigmie_Admin_Page_Results
 		</fieldset>
 		<p class="description">
 			<?php esc_html_e('Show product category for each search result.', 'sigmie'); ?>
-		</p>
-	<?php
-	}
-
-	public function sanitize_results_display($value)
-	{
-		$value = sanitize_text_field($value);
-
-		return $value;
-	}
-
-	public function results_display_callback()
-	{
-		$value = (string) get_option('sigmie_results_display', 'list');
-	?>
-		<fieldset class="">
-			<span class="">
-				<input type="radio" id="sigmie_results_display_list" name="sigmie_results_display" value="list" <?php checked($value, 'list'); ?> />
-				<label class="checkbox" for="sigmie_results_display_list"><?php _e('List'); ?></label>
-			</span>
-			<br>
-			<span class="">
-				<input type="radio" id="sigmie_results_display_grid" name="sigmie_results_display" value="grid" <?php checked($value, 'grid'); ?> />
-				<label class="checkbox" for="sigmie_results_display_grid"><?php _e('Grid'); ?></label>
-			</span>
-		</fieldset>
-		<p class="description">
-			<?php esc_html_e('Choose how the search results will be displayed: as a list or as a grid.', 'sigmie'); ?>
 		</p>
 	<?php
 	}

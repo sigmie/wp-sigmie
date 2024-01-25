@@ -146,6 +146,29 @@ class Sigmie_Admin_Page_Search
 	<?php
 	}
 
+	public function sanitize_language($value)
+	{
+		$value = sanitize_text_field($value);
+
+		return $value;
+	}
+
+	public function language_callback()
+	{
+		$value = (string) get_option('sigmie_language', '');
+	?>
+		<select name="sigmie_language" class="regular-text">
+			<option value="None" <?php selected($value, 'None'); ?>>None</option>
+			<option value="English" <?php selected($value, 'English'); ?>>English</option>
+			<option value="Greek" <?php selected($value, 'Greek'); ?>>Greek</option>
+			<option value="German" <?php selected($value, 'German'); ?>>German</option>
+		</select>
+		<p class="description" id="home-description">
+			<?php esc_html_e('You need to re-index all products after changing this setting.', 'sigmie'); ?>
+		</p>
+	<?php
+	}
+
 	public function sanitize_corner_radius($value)
 	{
 		$value = sanitize_text_field($value);
@@ -240,6 +263,20 @@ class Sigmie_Admin_Page_Search
 		);
 
 		add_settings_field(
+			'language',
+			esc_html__('Language', 'sigmie'),
+			array($this, 'language_callback'),
+			$this->slug,
+			$this->section
+		);
+
+		register_setting(
+			$this->option_group,
+			'sigmie_language',
+			array($this, 'sanitize_language')
+		);
+
+		add_settings_field(
 			'search_field_text',
 			esc_html__('Search field text', 'sigmie'),
 			array($this, 'search_field_text_callback'),
@@ -252,6 +289,7 @@ class Sigmie_Admin_Page_Search
 			'sigmie_search_field_text',
 			array($this, 'sanitize_search_field_text')
 		);
+
 
 		add_settings_field(
 			'show_loader',

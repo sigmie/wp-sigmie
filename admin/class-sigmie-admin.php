@@ -457,10 +457,7 @@ class Sigmie_Admin
 
 			$product = wc_get_product($post_id);
 
-			$body = [
-				'thumbnail_html' => $product->get_image(),
-				...$product->get_data()
-			];
+			$body = $this->map_product($product);
 
 			$this->sigmie->upsertDocument($this->index, $body, $post_id);
 		}
@@ -468,20 +465,14 @@ class Sigmie_Admin
 
 	function product_updated($product_id, $product)
 	{
-		$body = [
-			'thumbnail_html' => $product->get_image(),
-			...$product->get_data()
-		];
+		$body = $this->map_product($product);
 
 		$this->sigmie->upsertDocument($this->index, $body, $product_id);
 	}
 
 	function product_created($product_id, $product)
 	{
-		$body = [
-			'thumbnail_html' => $product->get_image(),
-			...$product->get_data()
-		];
+		$body = $this->map_product($product);
 
 		$this->sigmie->upsertDocument($this->index, $body, $product_id);
 	}
@@ -507,7 +498,11 @@ class Sigmie_Admin
 			/** @var  WC_Product_Variable $product */
 			global $product;
 
-			$docs[] = $this->map_product($product);
+			$docs[] = [
+				'_id' => $product->get_id(),
+				'action' => 'upsert',
+				'body' => $this->map_product($product)
+			];
 
 		endwhile;
 
@@ -539,24 +534,23 @@ class Sigmie_Admin
 		$image_url = $image_array[1];
 
 		return [
-			'_id' => $product->get_id(),
-			'action' => 'upsert',
-			'body' => [
-				'thumbnail_html' => $product->get_image(),
-				'image' => $image_url,
-				'price' => $price,
-				'slug' => $data['slug'],
-				'name' => $data['name'],
-				'sku' => $data['sku'],
-				'short_description' => $data['short_description'],
-				'description' => $data['description'],
-				'categories' => array_map(function ($categoryId) {
+			'thumbnail_html' => $product->get_image(),
+			'image' => $image_url,
+			'price' => $price,
+			'price_html' => $product->get_price_html(),
+			'review_count' => $data['review_count'],
+			'average_rating' => $data['average_rating'],
+			'slug' => $data['slug'],
+			'name' => $data['name'],
+			'sku' => $data['sku'],
+			'short_description' => $data['short_description'],
+			'description' => $data['description'],
+			'categories' => array_map(function ($categoryId) {
 
-					$category = get_term($categoryId, 'product_cat');
+				$category = get_term($categoryId, 'product_cat');
 
-					return $category->name;
-				}, $data['category_ids']),
-			]
+				return $category->name;
+			}, $data['category_ids']),
 		];
 	}
 
@@ -567,7 +561,6 @@ class Sigmie_Admin
 			'sigmie_sort_by',
 			'sigmie_number_of_results',
 			'sigmie_max_description_length',
-			'sigmie_results_display',
 			'sigmie_show_category',
 			'sigmie_show_description',
 			'sigmie_show_price',
@@ -576,26 +569,43 @@ class Sigmie_Admin
 			'sigmie_show_stock',
 			'sigmie_show_on_sale',
 			'sigmie_application_id',
-			'sigmie_search_api_key'
+			'sigmie_search_api_key',
+
+			'sigmie_search_field_text',
+			'sigmie_show_loader',
+			'sigmie_search_field_height',
+			'sigmie_search_field_width',
+			'sigmie_corner_radius',
+			'sigmie_show_categories',
+			'sigmie_number_of_categories'
 		]);
 
 		return '<div class="container flex flex-wrap items-center justify-between mx-auto" id="sigmie">
 			<search 
+				search-field-text="' . (string) $options['sigmie_search_field_text'] . '" 
+				:show-loader="' . (string) ($options['sigmie_show_loader'] === '1' ? 'true' : 'false') . '" 
+				search-field-height="' . (int) $options['sigmie_search_field_height'] . '" 
+				search-field-width="' . (int) $options['sigmie_search_field_width'] . '" 
+				corner-radius="' . (int) $options['sigmie_corner_radius'] . '" 
+				:show-categories="' . (string) ($options['sigmie_show_categories'] === '1' ? 'true' : 'false') . '" 
+
+
 				nothing-found-text="' . $options['sigmie_nothing_found_text'] . '" 
 				sort-by="' . $options['sigmie_sort_by'] . '"
 				number-of-results="' . $options['sigmie_number_of_results'] . '"
+				number-of-categories="' . $options['sigmie_number_of_categories'] . '"
 				max-description-length="' . $options['sigmie_max_description_length'] . '"
-				results-display="' . $options['sigmie_results_display'] . '"
-				show-category="' . $options['sigmie_show_category'] . '"
-				show-description="' . $options['sigmie_show_description'] . '"
-				show-price="' . $options['sigmie_show_price'] . '"
-				show-rating="' . $options['sigmie_show_rating'] . '"
-				show-sku="' . $options['sigmie_show_sku'] . '"
-				show-stock="' . $options['sigmie_show_stock'] . '"
-				show-on-sale="' . $options['sigmie_show_on_sale'] . '"
+				:show-category="' . ($options['sigmie_show_category'] === '1' ? 'true' : 'false') . '"
+				:show-description="' . ($options['sigmie_show_description'] === '1' ? 'true' : 'false') . '"
+				:show-price="' . ($options['sigmie_show_price'] === '1' ? 'true' : 'false') . '"
+				:show-rating="' . ($options['sigmie_show_rating'] === '1' ? 'true' : 'false') . '"
+				:show-sku="' . ($options['sigmie_show_sku'] === '1' ? 'true' : 'false') . '"
+				:show-stock="' . ($options['sigmie_show_stock'] === '1' ? 'true' : 'false') . '"
+				:show-on-sale="' . ($options['sigmie_show_on_sale'] === '1' ? 'true' : 'false') . '"
 				application="' . $options['sigmie_application_id'] . '" 
 				api-key="' . $options['sigmie_search_api_key'] . '" 
 				index="' . $this->index . '">
+
 			</search>
 		</div>';
 	}

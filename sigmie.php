@@ -8,7 +8,7 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              https://github.com/nicoorfi
+ * @link              https://github.com/sigmie/wp-sigmie
  * @since             1.0.0
  * @package           Sigmie
  *
@@ -18,9 +18,9 @@
  * Description:       Sigmie integration for WooCommerce.
  * Version:           1.0.0
  * Author:            Nico Orfanos
- * Author URI:        https://github.com/nicoorfi/
- * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * Author URI:        https://github.com/nicoorfi
+ * License:           MIT 
+ * License URI:       https://opensource.org/license/mit
  * Text Domain:       sigmie
  * Domain Path:       /languages
  */
