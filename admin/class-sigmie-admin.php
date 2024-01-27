@@ -432,7 +432,9 @@ class Sigmie_Admin
 		$product = wc_get_product($post);
 
 		if (isset($_POST['sigmie_boost'])) {
-			$boost = !empty($_POST['sigmie_boost']) ? sanitize_text_field($_POST['sigmie_boost']) : '';
+			if (isset($_POST['sigmie_boost']) && check_admin_referer('sigmie_boost_action', 'sigmie_boost_nonce')) {
+				$boost = !empty($_POST['sigmie_boost']) ? sanitize_text_field($_POST['sigmie_boost']) : '';
+			}
 			$product->update_meta_data('sigmie_boost', (int) $boost);
 		} else {
 			if ($product->meta_exists('sigmie_boost')) {

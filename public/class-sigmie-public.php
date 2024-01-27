@@ -62,7 +62,6 @@ class Sigmie_Public
 	 */
 	public function enqueue_styles()
 	{
-
 		/**
 		 * This function is provided for demonstration purposes only.
 		 *
@@ -75,17 +74,7 @@ class Sigmie_Public
 		 * class.
 		 */
 
-		$manifest = file_get_contents(plugin_dir_url(__FILE__) . '.vite/manifest.json');
-
-		$manifestDecoded = json_decode($manifest, true);
-
-		$vals = $manifestDecoded['resources/main.js'];
-
-		foreach ($vals['css'] as $value) {
-			wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . $value, [], $this->version, false);
-		}
-
-		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/sigmie-public.css', array(), $this->version, 'all');
+		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'sigmie-public.css', array(), $this->version, 'all');
 	}
 
 	/**
@@ -108,19 +97,6 @@ class Sigmie_Public
 		 * class.
 		 */
 
-		$manifest = file_get_contents(plugin_dir_url(__FILE__) . '.vite/manifest.json');
-
-		$manifestDecoded = json_decode($manifest, true);
-
-		$vals = $manifestDecoded['resources/main.js'];
-
-		// dd('d');
-
-		//  file_get_contents(plugin_dir_url(__FILE__));
-		// wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/sigmie-public.js', array('jquery'), $this->version, false);
-		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . $vals['file'], [], $this->version, false);
-
-		wp_enqueue_script('vite-client', 'http://127.0.0.1:5173/@vite/client', array(), null, true);
-		wp_enqueue_script('vite-main', 'http://127.0.0.1:5173/main.js', array('vite-client'), null, true);
+		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'sigmie-public.js', [], $this->version, false);
 	}
 }

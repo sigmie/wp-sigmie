@@ -5,7 +5,7 @@ Tags: search, filter
 Requires PHP: 8.0
 Requires at least: 5.5
 Tested up to: 6.2
-Stable tag: 1.7.5
+Stable tag: 1.0.0
 License: MIT
 
 Sigmie integration.

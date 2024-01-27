@@ -3,7 +3,7 @@
         'name' => 'sigmie/wp-sigmie',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '2735cbea4c75f0cdc256eee1e52dff8512152ace',
+        'reference' => 'b7f18fca1d971034bd94b21d1b2fb301d81ad3c9',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -181,7 +181,7 @@
         'sigmie/wp-sigmie' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '2735cbea4c75f0cdc256eee1e52dff8512152ace',
+            'reference' => 'b7f18fca1d971034bd94b21d1b2fb301d81ad3c9',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
