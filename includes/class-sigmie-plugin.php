@@ -186,6 +186,15 @@ class Sigmie_Plugin
 
 		add_shortcode('sigmie_search_bar', [$plugin_admin, 'render_sigmie_search_bar']);
 
+		add_shortcode('sigmie_filters', [$plugin_admin, 'render_sigmie_filters']);
+
+		// remove_action('woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30);
+		// $this->loader->add_action('woocommerce_before_shop_loop', $plugin_admin, 'render_shop', 99, 1);
+		// add_action('woocommerce_before_shop_loop', 'custom_content_before_shop_loop');
+		// $this->loader->add_filter('template_include', $plugin_admin, 'sigmie_template_include', 99);
+
+		$this->loader->add_filter('template_include', $plugin_admin, 'sigmie_template_include');
+
 		$this->loader->add_action('widgets_init', $plugin_admin, 'register_sigmie_widget');
 
 		if (get_option('sigmie_api_is_reachable') === 'yes') {

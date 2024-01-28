@@ -23,15 +23,16 @@ export default defineConfig({
     host: '127.0.0.1'
   },
   build: {
+    emptyOutDir: false,
     outDir: 'public',
     rollupOptions: {
       input: {
         main: 'resources/main.js',
       },
       output: {
-        entryFileNames: 'sigmie-public.js',
-        chunkFileNames: 'sigmie-public.js',
-        assetFileNames: 'sigmie-public.[ext]'
+        entryFileNames: 'assets/sigmie-public.js',
+        chunkFileNames: 'assets/sigmie-public.js',
+        assetFileNames: 'assets/sigmie-public.[ext]'
       },
     },
   },

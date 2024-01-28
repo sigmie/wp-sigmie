@@ -555,6 +555,12 @@ class Sigmie_Admin
 			}, $data['category_ids']),
 		];
 	}
+	function render_sigmie_filters()
+	{
+		return '<div class="w-full" id="sigmie-filters">
+		<filters></filters>
+		</div>';
+	}
 
 	function render_sigmie_search_bar()
 	{
@@ -582,7 +588,7 @@ class Sigmie_Admin
 			'sigmie_number_of_categories'
 		]);
 
-		return '<div class="container flex flex-wrap items-center justify-between mx-auto" id="sigmie">
+		return '<div class="container flex flex-wrap items-center justify-between mx-auto" id="sigmie-search">
 			<search 
 				search-field-text="' . (string) $options['sigmie_search_field_text'] . '" 
 				:show-loader="' . (string) ($options['sigmie_show_loader'] === '1' ? 'true' : 'false') . '" 
@@ -615,5 +621,22 @@ class Sigmie_Admin
 	function register_sigmie_widget()
 	{
 		register_widget('Sigmie_Search_Widget');
+	}
+
+	function sigmie_template_include($template)
+	{
+		if (get_post(get_the_ID())->post_name === 'filters') {
+			$new_template = plugin_dir_path(__FILE__) . 'class-sigmie-filters-template.php';
+			if (file_exists($new_template)) {
+				return $new_template;
+			}
+		}
+
+		return $template;
+	}
+
+	function render_shop($template)
+	{
+		// echo do_shortcode('[sigmie_filters]');
 	}
 }
