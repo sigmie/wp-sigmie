@@ -18,6 +18,11 @@ export default defineConfig({
         },
       },
     }),
+    {
+      config() {
+        return { define: { __VUE_PROD_DEVTOOLS__: process.env.NODE_ENV === 'production' } }
+      },
+    },
   ],
   server: {
     host: '127.0.0.1'

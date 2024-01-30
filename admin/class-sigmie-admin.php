@@ -557,8 +557,17 @@ class Sigmie_Admin
 	}
 	function render_sigmie_filters()
 	{
+		$options = get_options([
+			'sigmie_application_id',
+			'sigmie_search_api_key',
+		]);
+
 		return '<div class="w-full" id="sigmie-filters">
-		<filters></filters>
+		<filters
+				application="' . $options['sigmie_application_id'] . '" 
+				api-key="' . $options['sigmie_search_api_key'] . '" 
+				index="' . $this->index . '">
+		</filters>
 		</div>';
 	}
 
@@ -625,7 +634,7 @@ class Sigmie_Admin
 
 	function sigmie_template_include($template)
 	{
-		if (get_post(get_the_ID())->post_name === 'filters') {
+		if (get_post(get_the_ID())->post_name === 'shop' && get_option('woocommerce_shop_page_id') === '103') {
 			$new_template = plugin_dir_path(__FILE__) . 'class-sigmie-filters-template.php';
 			if (file_exists($new_template)) {
 				return $new_template;
@@ -635,8 +644,12 @@ class Sigmie_Admin
 		return $template;
 	}
 
-	function render_shop($template)
+	function add_display_post_states($post_states, $post)
 	{
-		// echo do_shortcode('[sigmie_filters]');
+		if (get_post(get_the_ID())->post_name === 'filters') {
+			$post_states['sigmie_fliter_page'] = __('Sigmie Filters', 'sigmie');
+		}
+
+		return $post_states;
 	}
 }

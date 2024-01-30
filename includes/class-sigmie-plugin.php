@@ -193,6 +193,8 @@ class Sigmie_Plugin
 		// add_action('woocommerce_before_shop_loop', 'custom_content_before_shop_loop');
 		// $this->loader->add_filter('template_include', $plugin_admin, 'sigmie_template_include', 99);
 
+
+		$this->loader->add_filter('display_post_states', $plugin_admin, 'add_display_post_states',10,2);
 		$this->loader->add_filter('template_include', $plugin_admin, 'sigmie_template_include');
 
 		$this->loader->add_action('widgets_init', $plugin_admin, 'register_sigmie_widget');
