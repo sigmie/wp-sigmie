@@ -27,7 +27,6 @@ let props = defineProps({
         <div>
             <div v-if="showCategory" class="mt-1 text-sm text-gray-500 text-left font-normal">{{ hit.categories.join(',') }}</div>
             <h3 class="text-sm text-gray-700 text-left mt-1">
-                <span aria-hidden="true" class="absolute inset-0" />
                 {{ hit.name }}
             </h3>
             <p v-if="showDescription" class="text-sm text-gray-500 text-left font-normal">
