@@ -447,36 +447,105 @@ class Sigmie_Admin
 
 	function post_trashed($post_id)
 	{
-		if (get_post_type($post_id) === 'product') {
+		if (get_post_type($post_id) !== 'product') {
+			return;
+		}
+
+		$product = wc_get_product($post_id);
+
+		if (!$product->is_type('variable')) {
 
 			$this->sigmie->deleteDocument($this->index, $post_id);
+
+			return;
 		}
+
+		$body = [];
+
+		foreach ($product->get_available_variations() as $variation) {
+
+			$body[] = [
+				'_id' => $variation['variation_id'],
+				'action' => 'delete',
+			];
+		}
+
+		$this->sigmie->batchWrite($this->index, $body);
 	}
 
 	function post_untrashed($post_id)
 	{
-		if (get_post_type($post_id) === 'product') {
+		if (get_post_type($post_id) !== 'product') {
+			return;
+		}
 
-			$product = wc_get_product($post_id);
+		$product = wc_get_product($post_id);
 
-			$body = $this->map_product($product);
+		if (!$product->is_type('variable')) {
+			$body =  $this->map_product($product);
 
 			$this->sigmie->upsertDocument($this->index, $body, $post_id);
+			return;
 		}
+
+		$body = [];
+
+		foreach ($product->get_available_variations() as $variation) {
+
+			$body[] = [
+				'_id' => $variation['variation_id'],
+				'action' => 'upsert',
+				'body' => $this->map_product($variation)
+			];
+		}
+
+		$this->sigmie->batchWrite($this->index, $body);
 	}
 
 	function product_updated($product_id, $product)
 	{
-		$body = $this->map_product($product);
+		if (!$product->is_type('variable')) {
+			$body =  $this->map_product($product);
 
-		$this->sigmie->upsertDocument($this->index, $body, $product_id);
+			$this->sigmie->upsertDocument($this->index, $body, $product_id);
+			return;
+		}
+
+		$body = [];
+
+		foreach ($product->get_available_variations() as $variation) {
+
+			$body[] = [
+				'_id' => $variation['variation_id'],
+				'action' => 'upsert',
+				'body' => $this->map_product($variation)
+			];
+		}
+
+		$this->sigmie->batchWrite($this->index, $body);
 	}
 
 	function product_created($product_id, $product)
 	{
-		$body = $this->map_product($product);
+		if (!$product->is_type('variable')) {
+			$body =  $this->map_product($product);
 
-		$this->sigmie->upsertDocument($this->index, $body, $product_id);
+			$this->sigmie->upsertDocument($this->index, $body, $product_id);
+			return;
+		}
+
+		$body = [];
+
+		foreach ($product->get_available_variations() as $variation) {
+
+			$body[] = [
+				'_id' => $variation['variation_id'],
+				'action' => 'upsert',
+				'body' => $this->map_product($variation)
+			];
+		}
+
+		$this->sigmie->batchWrite($this->index, $body);
 	}
 
 	function re_index()
@@ -500,11 +569,25 @@ class Sigmie_Admin
 			/** @var  WC_Product_Variable $product */
 			global $product;
 
-			$docs[] = [
-				'_id' => $product->get_id(),
-				'action' => 'upsert',
-				'body' => $this->map_product($product)
-			];
+			if (!$product->is_type('variable')) {
+
+				$docs[] = [
+					'_id' => $product->get_id(),
+					'action' => 'upsert',
+					'body' => $this->map_product($product)
+				];
+
+				continue;
+			}
+
+			foreach ($product->get_available_variations() as $variation) {
+
+				$docs[] = [
+					'_id' => $variation['variation_id'],
+					'action' => 'upsert',
+					'body' => $this->map_product(new WC_Product_Variation($variation['variation_id']))
+				];
+			}
 
 		endwhile;
 
@@ -528,6 +611,7 @@ class Sigmie_Admin
 	function map_product($product)
 	{
 		$data = $product->get_data();
+		$attributes = $product->get_attributes();
 
 		$price = wc_price($data['price']);
 
@@ -535,7 +619,7 @@ class Sigmie_Admin
 		preg_match('/src="([^"]*)"/i', $image_html, $image_array);
 		$image_url = $image_array[1];
 
-		return [
+		$res = [
 			'thumbnail_html' => $product->get_image(),
 			'image' => $image_url,
 			'price' => $price,
@@ -554,6 +638,12 @@ class Sigmie_Admin
 				return $category->name;
 			}, $data['category_ids']),
 		];
+
+		foreach ($attributes as $name => $attribute) {
+			$res[$name] = $attribute;
+		}
+
+		return $res;
 	}
 	function render_sigmie_filters()
 	{

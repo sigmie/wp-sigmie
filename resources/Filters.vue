@@ -1,5 +1,5 @@
 <template>
-  <SigmieSearch :facets="facetsString" :debounceMs="250" :apiKey="props.apiKey" :sort="sortBy" :query="query" :perPage="numberOfResults" :filters="filterString" :search="props.index" :applicationId="props.application" v-slot="{
+  <SigmieSearch :facets="facetsString" :debounceMs="250" :apiKey="props.apiKey" :sort="sortBy" :query="query" :perPage="200" :filters="filterString" :search="props.index" :applicationId="props.application" v-slot="{
     hits,
     facets,
     total,
