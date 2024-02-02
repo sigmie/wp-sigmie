@@ -26,8 +26,8 @@ class Client
     ) {
         $this->http = $http ?: JSONClient::createWithHeaders([
             "https://{$applicationId}-a.sigmie.app",
-            "https://{$applicationId}-b.sigmie.app",
-            "https://{$applicationId}-c.sigmie.app",
+            // "https://{$applicationId}-b.sigmie.app",
+            // "https://{$applicationId}-c.sigmie.app",
         ], [
             'X-Sigmie-Application' => $this->applicationId,
             'X-Sigmie-API-Key' => $this->apiKey

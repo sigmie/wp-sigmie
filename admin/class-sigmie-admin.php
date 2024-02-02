@@ -335,7 +335,14 @@ class Sigmie_Admin
 
 		$res = $this->sigmie->deleteIndex($this->index);
 
-		$res = $this->sigmie->createIndex($this->index);
+		$res = $this->sigmie->createIndex($this->index, [
+			'mappings' => [
+				[
+					'name' => 'price_as_number',
+					'type' => 'price',
+				],
+			]
+		]);
 
 		update_option('sigmie_api_is_reachable', $res->failed() ? 'no' : 'yes');
 
@@ -622,6 +629,7 @@ class Sigmie_Admin
 		$res = [
 			'thumbnail_html' => $product->get_image(),
 			'image' => $image_url,
+			'price_as_number'=> $product->get_price(),
 			'price' => $price,
 			'price_html' => $product->get_price_html(),
 			'review_count' => $data['review_count'],
