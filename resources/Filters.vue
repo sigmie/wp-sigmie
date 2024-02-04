@@ -13,15 +13,17 @@
   >
     <Layout title="New Arrivals">
       <template v-slot:categories>
-        <h3 class="sr-only">Categories</h3>
-        <ul role="list" class="px-2 py-3 font-medium text-gray-900">
-          <li
-            v-for="(categoryIdx, category) in facets.categories ?? []"
-            :key="categoryIdx"
-          >
-            <a href="#" class="block px-2 py-2">{{ category }}</a>
-          </li>
-        </ul>
+        <div class="h-96 overflow-y-scroll">
+          <h3 class="sr-only">Categories</h3>
+          <ul role="list" class="px-2 py-3 font-medium text-gray-900">
+            <li
+              v-for="(categoryIdx, category) in facets.categories ?? []"
+              :key="categoryIdx"
+            >
+              <a href="#" class="block px-2 py-2">{{ category }}</a>
+            </li>
+          </ul>
+        </div>
       </template>
 
       <template v-slot:sort>
@@ -118,20 +120,21 @@ const props = defineProps({
 const facetsString = ref("categories:20 price_as_number:5");
 const filterString = ref("");
 const filterVals = ref([]);
+const priceRange = ref([-1, -1]);
 
 function onRangeChange(values) {
-  [min, max] = values;
+  priceRange.value = values;
 
-  // filterVals.value = `${filterString.value} AND price_as_number>=${min} AND price_as_number<=${max}`
-  filterString.value = `price_as_number>=${min} AND price_as_number<=${max}`;
+  [min, max] = priceRange.value;
 
-    // filterString.value = Object.entries(newVal)
-    //   .flatMap(([key, values]) =>
-    //     Array.isArray(values)
-    //       ? values.map((value) => `${key}:'${value}'`)
-    //       : `${key}:'${values}'`
-    //   )
-    //   .join(" AND ");
+  filterString.value = `price_as_number>=${min} AND price_as_number<=${max} `;
+  // Object.entries(newVal)
+  //   .flatMap(([key, values]) =>
+  //     Array.isArray(values)
+  //       ? values.map((value) => `${key}:'${value}'`)
+  //       : `${key}:'${values}'`
+  //   )
+  //   .join(" AND ");
 
   // console.log(filterString.value);
 }
@@ -139,13 +142,17 @@ function onRangeChange(values) {
 watch(
   filterVals,
   (newVal, oldVal) => {
-    // filterString.value = Object.entries(newVal)
-    //   .flatMap(([key, values]) =>
-    //     Array.isArray(values)
-    //       ? values.map((value) => `${key}:'${value}'`)
-    //       : `${key}:'${values}'`
-    //   )
-    //   .join(" AND ");
+    // [min, max] = priceRange.value;
+
+    filterString.value =
+      `price_as_number>=${min} AND price_as_number<=${max} ` +
+      Object.entries(newVal)
+        .flatMap(([key, values]) =>
+          Array.isArray(values)
+            ? values.map((value) => `${key}:'${value}'`)
+            : `${key}:'${values}'`
+        )
+        .join(" AND ");
 
     console.log(filterVals.value);
   },
