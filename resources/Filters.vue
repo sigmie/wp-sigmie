@@ -68,13 +68,13 @@
       </template>
 
       <template v-slot:hits>
-        <div class="grid grid-cols-4 gap-8">
+        <div class="grid grid-cols-3 gap-8">
           <FilterHit v-for="hit in hits" :hit="hit"></FilterHit>
         </div>
       </template>
 
       <template v-slot:filters>
-        <div class="px-3">
+        <div class="px-3 flex flex-col space-y-5">
           <template v-for="(index, key) in filterVals">
             <Facet
               v-if="key === 'categories'"
@@ -88,9 +88,8 @@
               v-model="filterVals[key]"
             ></Facet>
             <PriceChart
-              :min="facets[key]?.min"
-              :max="facets[key]?.max"
-              :histogram="facets[key]?.histogram"
+              @rangeChanged="onRangeChange"
+              :data="facets.price_as_number"
               v-if="key === 'price_as_number'"
             ></PriceChart>
           </template>
@@ -120,16 +119,33 @@ const facetsString = ref("categories:20 price_as_number:5");
 const filterString = ref("");
 const filterVals = ref([]);
 
+function onRangeChange(values) {
+  [min, max] = values;
+
+  // filterVals.value = `${filterString.value} AND price_as_number>=${min} AND price_as_number<=${max}`
+  filterString.value = `price_as_number>=${min} AND price_as_number<=${max}`;
+
+    // filterString.value = Object.entries(newVal)
+    //   .flatMap(([key, values]) =>
+    //     Array.isArray(values)
+    //       ? values.map((value) => `${key}:'${value}'`)
+    //       : `${key}:'${values}'`
+    //   )
+    //   .join(" AND ");
+
+  // console.log(filterString.value);
+}
+
 watch(
   filterVals,
   (newVal, oldVal) => {
-    filterString.value = Object.entries(newVal)
-      .flatMap(([key, values]) =>
-        Array.isArray(values)
-          ? values.map((value) => `${key}:'${value}'`)
-          : `${key}:'${values}'`
-      )
-      .join(" AND ");
+    // filterString.value = Object.entries(newVal)
+    //   .flatMap(([key, values]) =>
+    //     Array.isArray(values)
+    //       ? values.map((value) => `${key}:'${value}'`)
+    //       : `${key}:'${values}'`
+    //   )
+    //   .join(" AND ");
 
     console.log(filterVals.value);
   },
@@ -139,8 +155,6 @@ watch(
 );
 
 onMounted(() => {
-  console.log(JSON.parse(JSON.stringify(props)));
-
   filterVals.value = facetsString.value.split(" ").reduce((acc, key) => {
     [key] = key.split(":");
 
@@ -148,8 +162,6 @@ onMounted(() => {
 
     return acc;
   }, {});
-
-  console.log(JSON.parse(JSON.stringify(filterVals.value)));
 });
 
 const mobileFiltersOpen = ref(false);

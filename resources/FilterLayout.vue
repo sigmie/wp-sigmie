@@ -51,16 +51,16 @@
         <section aria-labelledby="products-heading" class="pb-24 pt-6">
           <h2 id="products-heading" class="sr-only">Products</h2>
 
-          <div class="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+          <div class="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-6">
             <!-- Filters -->
-            <form class="hidden lg:block">
+            <form class="hidden lg:block col-span-2">
               <slot name="categories"></slot>
 
               <slot name="filters"></slot>
 
             </form>
 
-            <div class="lg:col-span-3">
+            <div class="lg:col-span-4">
               <slot name="hits"></slot>
             </div>
           </div>
