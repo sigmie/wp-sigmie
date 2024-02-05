@@ -87,7 +87,8 @@
                 }[key] ?? key
               "
               :facets="facets[key] ?? []"
-              v-model="filterVals[key]"
+              :modelValue="filterVals[key]"
+              @update:model-value="(value) => onTermChange(key, value)"
             ></Facet>
             <PriceChart
               @rangeChanged="onRangeChange"
@@ -122,40 +123,58 @@ const filterString = ref("");
 const filterVals = ref([]);
 const priceRange = ref([-1, -1]);
 
+function onTermChange(key, values) {
+  filterVals.value[key] = values;
+
+  updateFitlerString();
+}
+
 function onRangeChange(values) {
   priceRange.value = values;
 
-  [min, max] = priceRange.value;
-
-  filterString.value = `price_as_number>=${min} AND price_as_number<=${max} `;
-  // Object.entries(newVal)
-  //   .flatMap(([key, values]) =>
-  //     Array.isArray(values)
-  //       ? values.map((value) => `${key}:'${value}'`)
-  //       : `${key}:'${values}'`
-  //   )
-  //   .join(" AND ");
-
-  // console.log(filterString.value);
+  updateFitlerString();
 }
 
+function updateFitlerString() {
+  let priceFilter = "";
+
+  [min, max] = priceRange.value;
+
+  if (min !== -1 && max !== -1) {
+    priceFilter = `price_as_number>=${min} AND price_as_number<=${max}`;
+  }
+
+  let valueFilter = Object.entries(filterVals.value)
+    .filter(([key, values]) => key !== "price_as_number")
+    .filter(([key, values]) => values.length > 0)
+    .map(
+      ([key, values]) =>
+        `(${key}:[${values.map((value) => `'${value}'`).join(",")}])`
+    )
+    .join(" AND ");
+
+  let result = "";
+  if (priceFilter !== "" && valueFilter !== "") {
+    result = priceFilter + " AND " + valueFilter;
+  }
+
+  if (valueFilter === "") {
+    result = priceFilter;
+  }
+
+  if (priceFilter === "") {
+    result = valueFilter;
+  }
+
+  console.log(result);
+
+  filterString.value = result;
+}
 
 watch(
   filterVals,
   (newVal, oldVal) => {
-    // [min, max] = priceRange.value;
-
-    // filterString.value =
-    //   `price_as_number>=${min} AND price_as_number<=${max} ` +
-    //   Object.entries(newVal)
-    //     .flatMap(([key, values]) =>
-    //       Array.isArray(values)
-    //         ? values.map((value) => `${key}:'${value}'`)
-    //         : `${key}:'${values}'`
-    //     )
-    //     .join(" AND ");
-
-    console.log(filterVals.value);
+    // updateFitlerString();
   },
   {
     deep: true,
