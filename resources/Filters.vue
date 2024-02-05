@@ -139,20 +139,21 @@ function onRangeChange(values) {
   // console.log(filterString.value);
 }
 
+
 watch(
   filterVals,
   (newVal, oldVal) => {
     // [min, max] = priceRange.value;
 
-    filterString.value =
-      `price_as_number>=${min} AND price_as_number<=${max} ` +
-      Object.entries(newVal)
-        .flatMap(([key, values]) =>
-          Array.isArray(values)
-            ? values.map((value) => `${key}:'${value}'`)
-            : `${key}:'${values}'`
-        )
-        .join(" AND ");
+    // filterString.value =
+    //   `price_as_number>=${min} AND price_as_number<=${max} ` +
+    //   Object.entries(newVal)
+    //     .flatMap(([key, values]) =>
+    //       Array.isArray(values)
+    //         ? values.map((value) => `${key}:'${value}'`)
+    //         : `${key}:'${values}'`
+    //     )
+    //     .join(" AND ");
 
     console.log(filterVals.value);
   },

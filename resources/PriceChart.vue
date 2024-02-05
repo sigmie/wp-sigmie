@@ -5,8 +5,8 @@
       <Slider
         :min="min"
         :max="max"
-        v-model="number"
         :step="1"
+        :value="number"
         @update:modelValue="onSliderChange"
         :lazy="false"
         :tooltips="false"
@@ -157,19 +157,23 @@ const data = ref({
   series: [[]],
 });
 
-const number = ref([20, 40]);
+const number = ref([-1, -1]);
 
 watch(
   () => props.data,
   (newData) => {
     const labels = Object.keys(newData.histogram);
+    const minLabel = Math.min(...labels);
+    const maxLabel = Math.max(...labels);
 
     if (min.value === -1) {
-      min.value = Math.min(...labels);
+      min.value = minLabel;
+      number.value[0] = minLabel;
     }
 
     if (max.value === -1) {
-      max.value = Math.max(...labels);
+      max.value = maxLabel;
+      number.value[1] = maxLabel;
     }
 
     if (data.value.series[0].length === 0) {
@@ -180,8 +184,6 @@ watch(
       data.value.labels = labels;
     }
 
-    // const updatedVals = JSON.parse(JSON.stringify());
-
     chart.value.update(data.value);
   },
   {
@@ -190,9 +192,12 @@ watch(
 );
 
 function onSliderChange(value) {
-  chart.value.update(data.value);
+  if (value[0] !== -1 && value[1] !== -1) {
+    number.value = value;
+    emit("rangeChanged", value);
+  }
 
-  emit("rangeChanged", value);
+  chart.value.update(data.value);
 }
 
 onMounted(() => {
