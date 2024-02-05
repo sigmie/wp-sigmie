@@ -111,6 +111,7 @@ import { SigmieSearch } from "@sigmie/vue";
 import FilterHit from "./FilterHit.vue";
 import Facet from "./Facet.vue";
 import Layout from "./FilterLayout.vue";
+import debounce from 'debounce';
 
 const props = defineProps({
   application: String,
@@ -135,41 +136,24 @@ function onRangeChange(values) {
   updateFitlerString();
 }
 
-function updateFitlerString() {
+const updateFitlerString = debounce(() => {
   let priceFilter = "";
 
-  [min, max] = priceRange.value;
+  const [min, max] = priceRange.value;
 
   if (min !== -1 && max !== -1) {
     priceFilter = `price_as_number>=${min} AND price_as_number<=${max}`;
   }
 
   let valueFilter = Object.entries(filterVals.value)
-    .filter(([key, values]) => key !== "price_as_number")
-    .filter(([key, values]) => values.length > 0)
-    .map(
-      ([key, values]) =>
-        `(${key}:[${values.map((value) => `'${value}'`).join(",")}])`
-    )
+    .filter(([key, values]) => key !== "price_as_number" && values.length > 0)
+    .map(([key, values]) => `(${key}:[${values.map(value => `'${value}'`).join(",")}])`)
     .join(" AND ");
 
-  let result = "";
-  if (priceFilter !== "" && valueFilter !== "") {
-    result = priceFilter + " AND " + valueFilter;
-  }
-
-  if (valueFilter === "") {
-    result = priceFilter;
-  }
-
-  if (priceFilter === "") {
-    result = valueFilter;
-  }
-
-  console.log(result);
+  let result = [priceFilter, valueFilter].filter(part => part !== "").join(" AND ");
 
   filterString.value = result;
-}
+}, 100);
 
 watch(
   filterVals,

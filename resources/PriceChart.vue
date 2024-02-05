@@ -194,6 +194,7 @@ watch(
 function onSliderChange(value) {
   if (value[0] !== -1 && value[1] !== -1) {
     number.value = value;
+
     emit("rangeChanged", value);
   }
 
