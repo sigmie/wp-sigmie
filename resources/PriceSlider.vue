@@ -1,6 +1,6 @@
 <template>
   <div class="relative w-full">
-    <div class="h-32 ct-chart ct-chart-pie ct-perfect-fourth"></div>
+    <div class="h-12 ct-chart ct-chart-pie ct-perfect-fourth"></div>
     <div class="px-2">
       <Slider
         :min="min"

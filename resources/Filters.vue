@@ -10,67 +10,137 @@
     :applicationId="props.application"
     v-slot="{ hits, facets, total, loading, processing_time_ms }"
   >
-    <Layout title="New Arrivals">
-      <template v-slot:categories>
-        <div class="h-96 overflow-y-scroll">
-          <h3 class="sr-only">Categories</h3>
-          <ul role="list" class="px-2 py-3 font-medium text-gray-900">
-            <li
-              v-for="(categoryIdx, category) in facets.categories ?? []"
-              :key="categoryIdx"
-            >
-              <a href="#" class="block px-2 py-2">{{ category }}</a>
-            </li>
-          </ul>
+    <Layout
+      title="Filters"
+      hits-title="WooCommerce Products"
+      :total="total"
+      :active-filters="['Sports', 'red', 'Samsung']"
+    >
+      <template v-slot:pagination>
+        <div
+          class="flex items-center justify-between bg-white px-4 py-3 sm:px-6"
+        >
+          <div
+            class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between"
+          >
+            <div>
+              <nav
+                class="isolate inline-flex -space-x-px rounded-md shadow-sm"
+                aria-label="Pagination"
+              >
+                <a
+                  href="#"
+                  class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                >
+                  <span class="sr-only">Previous</span>
+                  <svg
+                    class="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </a>
+                <a
+                  href="#"
+                  aria-current="page"
+                  class="relative inline-flex items-center px-2 py-2 text-sm text-gray-900 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                  >1</a
+                >
+                <a
+                  href="#"
+                  aria-current="page"
+                  class="relative inline-flex items-center px-2 py-2 text-sm text-gray-900 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                  >2</a
+                >
+                <span
+                  class="relative inline-flex items-center px-2 py-2 text-sm text-gray-700 focus:outline-offset-0"
+                  >...</span
+                >
+                <a
+                  href="#"
+                  class="relative inline-flex items-center px-2 py-2 text-sm text-gray-900 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                  >12</a
+                >
+                <a
+                  href="#"
+                  class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                >
+                  <span class="sr-only">Next</span>
+                  <svg
+                    class="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </a>
+              </nav>
+            </div>
+          </div>
         </div>
       </template>
 
       <template v-slot:sort>
-        <Menu as="div" class="relative inline-block text-left">
-          <div>
-            <MenuButton
-              class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900"
-            >
-              Sort
-              <ChevronDownIcon
-                class="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
-                aria-hidden="true"
-              />
-            </MenuButton>
-          </div>
+        <div class="flex flex-row items-center space-x-3">
+          <Menu as="div" class="relative inline-block text-left rounded-full px-3 py-1 border border-gray-950">
+            <div>
+              <MenuButton
+                class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900"
+              >
+                Sort
+                <ChevronDownIcon
+                  class="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                  aria-hidden="true"
+                />
+              </MenuButton>
+            </div>
 
-          <transition
-            enter-active-class="transition ease-out duration-100"
-            enter-from-class="transform opacity-0 scale-95"
-            enter-to-class="transform opacity-100 scale-100"
-            leave-active-class="transition ease-in duration-75"
-            leave-from-class="transform opacity-100 scale-100"
-            leave-to-class="transform opacity-0 scale-95"
-          >
-            <MenuItems
-              class="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
+            <transition
+              enter-active-class="transition ease-out duration-100"
+              enter-from-class="transform opacity-0 scale-95"
+              enter-to-class="transform opacity-100 scale-100"
+              leave-active-class="transition ease-in duration-75"
+              leave-from-class="transform opacity-100 scale-100"
+              leave-to-class="transform opacity-0 scale-95"
             >
-              <div class="py-1">
-                <MenuItem
-                  :key="sortOptionIdx"
-                  v-for="(sortOption, sortOptionIdx) in sortOptions"
-                  v-slot="{ active }"
-                >
-                  <button
-                    :class="[
-                      true ? 'font-medium text-gray-900' : 'text-gray-500',
-                      active ? 'bg-gray-100' : '',
-                      'block px-4 py-2 text-sm w-full text-left',
-                    ]"
-                    @click="onSortChange(sortOption.value)"
+              <MenuItems
+                class="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
+              >
+                <div class="py-1">
+                  <MenuItem
+                    :key="sortOptionIdx"
+                    v-for="(sortOption, sortOptionIdx) in sortOptions"
+                    v-slot="{ active }"
                   >
-                    {{ sortOption.name }}
-                  </button>
-                </MenuItem>
-              </div>
-            </MenuItems>
-          </transition>
-        </Menu>
+                    <button
+                      :class="[
+                        true ? 'font-medium text-gray-900' : 'text-gray-500',
+                        active ? 'bg-gray-100' : '',
+                        'block px-4 py-2 text-sm w-full text-left',
+                      ]"
+                      @click="onSortChange(sortOption.value)"
+                    >
+                      {{ sortOption.name }}
+                    </button>
+                  </MenuItem>
+                </div>
+              </MenuItems>
+            </transition>
+          </Menu>
+
+          <div class="hover:bg-zinc-50 cursor-pointer transition-colors flex flex-row space-x-4 items-center border border-black rounded-full px-3 py-1 text-black">Offers</div>
+        </div>
       </template>
 
       <template v-slot:hits>
