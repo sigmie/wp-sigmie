@@ -439,7 +439,8 @@ class Sigmie_Admin
 		$product = wc_get_product($post);
 
 		if (isset($_POST['sigmie_boost'])) {
-			if (isset($_POST['sigmie_boost']) && check_admin_referer('sigmie_boost_action', 'sigmie_boost_nonce')) {
+			// if (isset($_POST['sigmie_boost']) && check_admin_referer('sigmie_boost_action', 'sigmie_boost_nonce')) {
+			if (isset($_POST['sigmie_boost'])) {
 				$boost = !empty($_POST['sigmie_boost']) ? sanitize_text_field($_POST['sigmie_boost']) : '';
 			}
 			$product->update_meta_data('sigmie_boost', (int) $boost);
@@ -667,12 +668,13 @@ class Sigmie_Admin
 			'sigmie_filterable_attributes',
 		]);
 
-		$values = array_map(fn ($value) => "pa_{$value}", json_decode($options['sigmie_filterable_attributes'], true));
+		$attributes = array_map(fn ($value) => "pa_{$value}", json_decode($options['sigmie_filterable_attributes'], true));
 
-		$attributes = str_replace('"', '\'', json_encode($values));
+		$facets = implode(' ', $attributes) . ' ' . 'categories:20 price_as_number:5';
 
 		return '<div class="w-full" id="sigmie-filters">
-					<filters :attributes="' . $attributes . '"
+					<filters 
+					facets="' . $facets . '"
 							application="' . $options['sigmie_application_id'] . '" 
 							api-key="' . $options['sigmie_search_api_key'] . '" 
 							index="' . $this->index . '">

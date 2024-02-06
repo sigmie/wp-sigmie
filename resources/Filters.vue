@@ -1,6 +1,6 @@
 <template>
   <SigmieSearch
-    :facets="facetsString"
+    :facets="props.facets"
     :apiKey="props.apiKey"
     :sort="sortBy"
     :query="query"
@@ -51,16 +51,21 @@
               class="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
             >
               <div class="py-1">
-                <MenuItem v-slot="{ active }">
-                  <a
-                    href="#"
+                <MenuItem
+                  :key="sortOptionIdx"
+                  v-for="(sortOption, sortOptionIdx) in sortOptions"
+                  v-slot="{ active }"
+                >
+                  <button
                     :class="[
                       true ? 'font-medium text-gray-900' : 'text-gray-500',
                       active ? 'bg-gray-100' : '',
-                      'block px-4 py-2 text-sm',
+                      'block px-4 py-2 text-sm w-full text-left',
                     ]"
-                    >Relevance</a
+                    @click="onSortChange(sortOption.value)"
                   >
+                    {{ sortOption.name }}
+                  </button>
                 </MenuItem>
               </div>
             </MenuItems>
@@ -69,13 +74,20 @@
       </template>
 
       <template v-slot:hits>
-        <div class="grid grid-cols-3 gap-8">
-          <FilterHit v-for="hit in hits" :hit="hit"></FilterHit>
+        <div class="relative w-full h-full">
+          <Curtain :is-open="loading" class="absolute left-0 right-0"></Curtain>
+          <div class="grid grid-cols-3 gap-8">
+            <FilterHit v-for="hit in hits" :hit="hit"></FilterHit>
+          </div>
         </div>
       </template>
 
       <template v-slot:filters>
         <div class="px-3 flex flex-col space-y-5">
+          <PriceSlider
+            @rangeChanged="onRangeChange"
+            :data="facets.price_as_number"
+          ></PriceSlider>
           <template v-for="(index, key) in filterVals">
             <Facet
               v-if="key !== 'categories' && key !== 'price_as_number'"
@@ -83,17 +95,13 @@
                 {
                   categories: 'Categories',
                   price_as_number: 'Price',
+                  pa_color: 'Color',
                 }[key] ?? key
               "
               :facets="facets[key] ?? []"
               :modelValue="filterVals[key]"
               @update:model-value="(value) => onTermChange(key, value)"
             ></Facet>
-            <PriceSlider
-              @rangeChanged="onRangeChange"
-              :data="facets.price_as_number"
-              v-if="key === 'price_as_number'"
-            ></PriceSlider>
           </template>
         </div>
       </template>
@@ -104,6 +112,7 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import PriceSlider from "./PriceSlider.vue";
+import Curtain from "./Curtain.vue";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { ChevronDownIcon } from "@heroicons/vue/20/solid";
 import { SigmieSearch } from "@sigmie/vue";
@@ -116,10 +125,18 @@ const props = defineProps({
   application: String,
   apiKey: String,
   index: String,
-  attributes: Array,
+  facets: String,
 });
 
-const facetsString = ref("categories:20 price_as_number:5");
+const sortBy = ref("_score");
+const sortOptions = ref([
+  { name: "Relevance", value: "_score", current: false },
+  { name: "Price High to Low", value: "price_as_number:desc", current: false },
+  { name: "Price Low to High", value: "price_as_number:asc", current: false },
+  { name: "Most Recent", value: "titles:desc", current: false },
+  { name: "Rating", value: "titles:desc", current: false },
+]);
+
 const filterString = ref("");
 const filterVals = ref([]);
 const priceRange = ref([-1, -1]);
@@ -134,6 +151,10 @@ function onRangeChange(values) {
   priceRange.value = values;
 
   updateFitlerString();
+}
+
+function onSortChange(value) {
+  sortBy.value = value;
 }
 
 const updateFitlerString = debounce(() => {
@@ -161,16 +182,13 @@ const updateFitlerString = debounce(() => {
 }, 100);
 
 onMounted(() => {
-  facetsString.value =
-    facetsString.value +
-    " " +
-    props.attributes.map((attribute) => attribute).join(" ");
-
-  filterVals.value = facetsString.value.split(" ").reduce((acc, key) => {
+  filterVals.value = props.facets.split(" ").reduce((acc, key) => {
     [key] = key.split(":");
     acc[key] = [];
     return acc;
   }, {});
+
+  console.log(filterVals);
 });
 
 const mobileFiltersOpen = ref(false);

@@ -189,12 +189,6 @@ class Sigmie_Plugin
 
 		add_shortcode('sigmie_filters', [$plugin_admin, 'render_sigmie_filters']);
 
-		// remove_action('woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30);
-		// $this->loader->add_action('woocommerce_before_shop_loop', $plugin_admin, 'render_shop', 99, 1);
-		// add_action('woocommerce_before_shop_loop', 'custom_content_before_shop_loop');
-		// $this->loader->add_filter('template_include', $plugin_admin, 'sigmie_template_include', 99);
-
-
 		$this->loader->add_filter('display_post_states', $plugin_admin, 'add_display_post_states',10,2);
 		$this->loader->add_filter('template_include', $plugin_admin, 'sigmie_template_include');
 
