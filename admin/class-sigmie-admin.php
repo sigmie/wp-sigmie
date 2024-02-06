@@ -369,7 +369,7 @@ class Sigmie_Admin
 
 		add_submenu_page(
 			'sigmie',
-			esc_html__('WP Search with Algolia Settings', 'sigmie'),
+			esc_html__('Settings', 'sigmie'),
 			esc_html__('Settings', 'sigmie'),
 			$this->capability,
 			$this->slug,
@@ -469,11 +469,13 @@ class Sigmie_Admin
 
 		$body = [];
 
-		foreach ($product->get_available_variations() as $variation) {
+		/** @var WC_Product_Variation $variation  */
+		foreach ($product->get_available_variations('objects') as $variation) {
 
 			$body[] = [
-				'_id' => $variation['variation_id'],
-				'action' => 'delete',
+				'_id' => $variation->get_id(),
+				'action' => 'upsert',
+				'body' => $this->map_product($variation)
 			];
 		}
 
@@ -497,10 +499,11 @@ class Sigmie_Admin
 
 		$body = [];
 
-		foreach ($product->get_available_variations() as $variation) {
+		/** @var WC_Product_Variation $variation  */
+		foreach ($product->get_available_variations('objects') as $variation) {
 
 			$body[] = [
-				'_id' => $variation['variation_id'],
+				'_id' => $variation->get_id(),
 				'action' => 'upsert',
 				'body' => $this->map_product($variation)
 			];
@@ -520,10 +523,11 @@ class Sigmie_Admin
 
 		$body = [];
 
-		foreach ($product->get_available_variations() as $variation) {
+		/** @var WC_Product_Variation $variation  */
+		foreach ($product->get_available_variations('objects') as $variation) {
 
 			$body[] = [
-				'_id' => $variation['variation_id'],
+				'_id' => $variation->get_id(),
 				'action' => 'upsert',
 				'body' => $this->map_product($variation)
 			];
@@ -543,10 +547,11 @@ class Sigmie_Admin
 
 		$body = [];
 
-		foreach ($product->get_available_variations() as $variation) {
+		/** @var WC_Product_Variation $variation  */
+		foreach ($product->get_available_variations('objects') as $variation) {
 
 			$body[] = [
-				'_id' => $variation['variation_id'],
+				'_id' => $variation->get_id(),
 				'action' => 'upsert',
 				'body' => $this->map_product($variation)
 			];
@@ -587,12 +592,13 @@ class Sigmie_Admin
 				continue;
 			}
 
-			foreach ($product->get_available_variations() as $variation) {
+			/** @var WC_Product_Variation $variation  */
+			foreach ($product->get_available_variations('objects') as $variation) {
 
-				$docs[] = [
-					'_id' => $variation['variation_id'],
+				$body[] = [
+					'_id' => $variation->get_id(),
 					'action' => 'upsert',
-					'body' => $this->map_product(new WC_Product_Variation($variation['variation_id']))
+					'body' => $this->map_product($variation)
 				];
 			}
 
@@ -629,7 +635,7 @@ class Sigmie_Admin
 		$res = [
 			'thumbnail_html' => $product->get_image(),
 			'image' => $image_url,
-			'price_as_number'=> $product->get_price(),
+			'price_as_number' => $product->get_price(),
 			'price' => $price,
 			'price_html' => $product->get_price_html(),
 			'review_count' => $data['review_count'],
@@ -658,15 +664,20 @@ class Sigmie_Admin
 		$options = get_options([
 			'sigmie_application_id',
 			'sigmie_search_api_key',
+			'sigmie_filterable_attributes',
 		]);
 
+		$values = array_map(fn ($value) => "pa_{$value}", json_decode($options['sigmie_filterable_attributes'], true));
+
+		$attributes = str_replace('"', '\'', json_encode($values));
+
 		return '<div class="w-full" id="sigmie-filters">
-		<filters
-				application="' . $options['sigmie_application_id'] . '" 
-				api-key="' . $options['sigmie_search_api_key'] . '" 
-				index="' . $this->index . '">
-		</filters>
-		</div>';
+					<filters :attributes="' . $attributes . '"
+							application="' . $options['sigmie_application_id'] . '" 
+							api-key="' . $options['sigmie_search_api_key'] . '" 
+							index="' . $this->index . '">
+					</filters>
+				</div>';
 	}
 
 	function render_sigmie_search_bar()

@@ -1,7 +1,6 @@
 <template>
   <SigmieSearch
     :facets="facetsString"
-    :debounceMs="250"
     :apiKey="props.apiKey"
     :sort="sortBy"
     :query="query"
@@ -79,7 +78,7 @@
         <div class="px-3 flex flex-col space-y-5">
           <template v-for="(index, key) in filterVals">
             <Facet
-              v-if="key === 'categories'"
+              v-if="key !== 'categories' && key !== 'price_as_number'"
               :label="
                 {
                   categories: 'Categories',
@@ -90,11 +89,11 @@
               :modelValue="filterVals[key]"
               @update:model-value="(value) => onTermChange(key, value)"
             ></Facet>
-            <PriceChart
+            <PriceSlider
               @rangeChanged="onRangeChange"
               :data="facets.price_as_number"
               v-if="key === 'price_as_number'"
-            ></PriceChart>
+            ></PriceSlider>
           </template>
         </div>
       </template>
@@ -104,19 +103,20 @@
 
 <script setup>
 import { ref, onMounted, watch } from "vue";
-import PriceChart from "./PriceChart.vue";
+import PriceSlider from "./PriceSlider.vue";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { ChevronDownIcon } from "@heroicons/vue/20/solid";
 import { SigmieSearch } from "@sigmie/vue";
 import FilterHit from "./FilterHit.vue";
 import Facet from "./Facet.vue";
 import Layout from "./FilterLayout.vue";
-import debounce from 'debounce';
+import debounce from "debounce";
 
 const props = defineProps({
   application: String,
   apiKey: String,
   index: String,
+  attributes: Array,
 });
 
 const facetsString = ref("categories:20 price_as_number:5");
@@ -147,30 +147,28 @@ const updateFitlerString = debounce(() => {
 
   let valueFilter = Object.entries(filterVals.value)
     .filter(([key, values]) => key !== "price_as_number" && values.length > 0)
-    .map(([key, values]) => `(${key}:[${values.map(value => `'${value}'`).join(",")}])`)
+    .map(
+      ([key, values]) =>
+        `(${key}:[${values.map((value) => `'${value}'`).join(",")}])`
+    )
     .join(" AND ");
 
-  let result = [priceFilter, valueFilter].filter(part => part !== "").join(" AND ");
+  let result = [priceFilter, valueFilter]
+    .filter((part) => part !== "")
+    .join(" AND ");
 
   filterString.value = result;
 }, 100);
 
-watch(
-  filterVals,
-  (newVal, oldVal) => {
-    // updateFitlerString();
-  },
-  {
-    deep: true,
-  }
-);
-
 onMounted(() => {
+  facetsString.value =
+    facetsString.value +
+    " " +
+    props.attributes.map((attribute) => attribute).join(" ");
+
   filterVals.value = facetsString.value.split(" ").reduce((acc, key) => {
     [key] = key.split(":");
-
     acc[key] = [];
-
     return acc;
   }, {});
 });
