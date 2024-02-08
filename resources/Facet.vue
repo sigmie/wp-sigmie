@@ -1,5 +1,5 @@
 <template>
-  <Disclosure as="div" class="py-6" v-slot="{ open }">
+  <Disclosure :defaultOpen="true" as="div" class="py-6" v-slot="{ open }">
     <h3 class="-my-3 flow-root">
       <DisclosureButton
         class="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500"
@@ -53,7 +53,7 @@
     <DisclosurePanel class="pt-6">
       <div class="overflow-y-scroll space-y-4">
         <div
-          v-for="(count, facet) in facets"
+          v-for="(count, facet) in options"
           :key="facet"
           class="flex flex-row items-center"
         >
@@ -82,30 +82,39 @@ label {
 </style>
 
 <script setup>
-import { ref, watch } from "vue";
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-  TransitionChild,
-  TransitionRoot,
-} from "@headlessui/vue";
-import { MinusIcon, PlusIcon } from "@heroicons/vue/20/solid";
+import { ref, watch, onMounted } from "vue";
+import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
 
 const emit = defineEmits(["update:modelValue"]);
 
 const props = defineProps({
-  facets: Object,
+  facets: {
+    type: Object,
+    required: true,
+  },
   label: String,
   modelValue: Array,
 });
 
 const values = ref([]);
+const options = ref([]);
+
+onMounted(() => {});
 
 watch(
   () => props.modelValue,
   (newVal) => {
     values.value = newVal;
+  },
+  { immediate: true }
+);
+
+watch(
+  () => props.facets,
+  (newVal) => {
+    if (options.value.length === 0) {
+      options.value = newVal;
+    }
   },
   { immediate: true }
 );
