@@ -81,7 +81,8 @@ label {
 }
 </style>
 
-<script>
+<script setup>
+import { ref, watch } from "vue";
 import {
   Disclosure,
   DisclosureButton,
@@ -91,48 +92,31 @@ import {
 } from "@headlessui/vue";
 import { MinusIcon, PlusIcon } from "@heroicons/vue/20/solid";
 
-export default {
-  components: {
-    Disclosure,
-    DisclosureButton,
-    DisclosurePanel,
-    TransitionChild,
-    TransitionRoot,
-    PlusIcon,
-    MinusIcon,
-  },
-  emits: ["update:modelValue"],
-  props: {
-    facets: {
-      type: Object,
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-    modelValue: {
-      type: Array,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      values: [],
-    };
-  },
-  mounted() {
-    this.values = this.modelValue;
-  },
-  methods: {
-    onChange(facet, value) {
-      if (value) {
-        this.values.push(facet);
-      } else {
-        this.values = this.values.filter((item) => item !== facet);
-      }
+const emit = defineEmits(["update:modelValue"]);
 
-      this.$emit("update:modelValue", this.values);
-    },
+const props = defineProps({
+  facets: Object,
+  label: String,
+  modelValue: Array,
+});
+
+const values = ref([]);
+
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    values.value = newVal;
   },
+  { immediate: true }
+);
+
+const onChange = (facet, value) => {
+  if (value) {
+    values.value.push(facet);
+  } else {
+    values.value = values.value.filter((item) => item !== facet);
+  }
+
+  emit("update:modelValue", values.value);
 };
 </script>

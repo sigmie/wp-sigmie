@@ -101,7 +101,8 @@
               <MenuButton
                 class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900"
               >
-                Sort
+                {{ sortByLabel }}
+
                 <ChevronDownIcon
                   class="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                   aria-hidden="true"
@@ -132,7 +133,7 @@
                         active ? 'bg-gray-100' : '',
                         'block px-4 py-2 text-sm w-full text-left',
                       ]"
-                      @click="onSortChange(sortOption.value)"
+                      @click="onSortChange(sortOption.value, sortOption.name)"
                     >
                       {{ sortOption.name }}
                     </button>
@@ -200,6 +201,7 @@ const props = defineProps({
 });
 
 const sortBy = ref("_score");
+const sortByLabel = ref("Relevance");
 const sortOptions = ref([
   { name: "Relevance", value: "_score", current: false },
   { name: "Price High to Low", value: "price_as_number:desc", current: false },
@@ -236,8 +238,9 @@ function onRangeChange(values) {
   updateFitlerString();
 }
 
-function onSortChange(value) {
+function onSortChange(value, label) {
   sortBy.value = value;
+  sortByLabel.value = label;
 }
 
 const updateFitlerString = debounce(() => {
