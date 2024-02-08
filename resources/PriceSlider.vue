@@ -66,7 +66,6 @@
             type="text"
             name="price"
             id="price"
-            style="padding-left: 38px"
             class="block w-full rounded-md border-0 py-1.5 pl-7 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             placeholder="0.00"
             aria-describedby="price-currency"
@@ -106,7 +105,6 @@
             type="text"
             name="price"
             id="price"
-            style="padding-left: 38px"
             class="block w-full rounded-md border-0 py-1.5 pl-7 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             placeholder="0.00"
             aria-describedby="price-currency"
@@ -164,7 +162,7 @@ watch(
   (newData) => {
     const labels = Object.keys(newData.histogram);
     const minLabel = Math.min(...labels);
-    const maxLabel = Math.max(...labels);
+    const maxLabel = newData.max;
 
     if (min.value === -1) {
       min.value = minLabel;
@@ -277,3 +275,9 @@ onMounted(() => {
   });
 });
 </script>
+
+<style scoped>
+input[type="text"] {
+  @apply pl-8;
+}
+</style>
