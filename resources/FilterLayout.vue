@@ -59,7 +59,9 @@
           <div class="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-6">
             <!-- Filters -->
             <form class="hidden lg:block col-span-2">
-              <h2 class="text-xl mb-10 font-normal tracking-tight text-gray-900">
+              <h2
+                class="text-xl mb-10 font-normal tracking-tight text-gray-900"
+              >
                 {{ title }}
               </h2>
               <slot name="filters"></slot>
@@ -128,28 +130,15 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from "vue";
+import { ref } from "vue";
 import {
   Dialog,
   DialogPanel,
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
   TransitionChild,
   TransitionRoot,
 } from "@headlessui/vue";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
-import {
-  ChevronDownIcon,
-  FunnelIcon,
-  MinusIcon,
-  PlusIcon,
-  Squares2X2Icon,
-} from "@heroicons/vue/20/solid";
+import { FunnelIcon } from "@heroicons/vue/20/solid";
 
 defineProps({
   title: String,
@@ -157,53 +146,6 @@ defineProps({
   total: String,
   activeFilters: Array,
 });
-
-const emit = defineEmits([]);
-
-const subCategories = [
-  { name: "Totes", href: "#" },
-  { name: "Backpacks", href: "#" },
-  { name: "Travel Bags", href: "#" },
-  { name: "Hip Bags", href: "#" },
-  { name: "Laptop Sleeves", href: "#" },
-];
-const filters = [
-  {
-    id: "color",
-    name: "Color",
-    options: [
-      { value: "white", label: "White", checked: false },
-      { value: "beige", label: "Beige", checked: false },
-      { value: "blue", label: "Blue", checked: true },
-      { value: "brown", label: "Brown", checked: false },
-      { value: "green", label: "Green", checked: false },
-      { value: "purple", label: "Purple", checked: false },
-    ],
-  },
-  {
-    id: "category",
-    name: "Category",
-    options: [
-      { value: "new-arrivals", label: "New Arrivals", checked: false },
-      { value: "sale", label: "Sale", checked: false },
-      { value: "travel", label: "Travel", checked: true },
-      { value: "organization", label: "Organization", checked: false },
-      { value: "accessories", label: "Accessories", checked: false },
-    ],
-  },
-  {
-    id: "size",
-    name: "Size",
-    options: [
-      { value: "2l", label: "2L", checked: false },
-      { value: "6l", label: "6L", checked: false },
-      { value: "12l", label: "12L", checked: false },
-      { value: "18l", label: "18L", checked: false },
-      { value: "20l", label: "20L", checked: false },
-      { value: "40l", label: "40L", checked: true },
-    ],
-  },
-];
 
 const mobileFiltersOpen = ref(false);
 </script>
