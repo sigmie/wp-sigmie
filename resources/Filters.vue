@@ -14,7 +14,7 @@
       title="Filters"
       hits-title="WooCommerce Products"
       :total="total"
-      :active-filters="['Sports', 'red', 'Samsung']"
+      :active-filters="activeFilters"
     >
       <template v-slot:pagination>
         <div
@@ -93,7 +93,10 @@
 
       <template v-slot:sort>
         <div class="flex flex-row items-center space-x-3">
-          <Menu as="div" class="relative inline-block text-left rounded-full px-3 py-1 border border-gray-950">
+          <Menu
+            as="div"
+            class="relative inline-block text-left rounded-full px-3 py-1 border border-gray-950"
+          >
             <div>
               <MenuButton
                 class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900"
@@ -139,7 +142,11 @@
             </transition>
           </Menu>
 
-          <div class="hover:bg-zinc-50 cursor-pointer transition-colors flex flex-row space-x-4 items-center border border-black rounded-full px-3 py-1 text-black">Offers</div>
+          <div
+            class="hover:bg-zinc-50 cursor-pointer transition-colors flex flex-row space-x-4 items-center border border-black rounded-full px-3 py-1 text-black"
+          >
+            Offers
+          </div>
         </div>
       </template>
 
@@ -161,13 +168,7 @@
           <template v-for="(index, key) in filterVals">
             <Facet
               v-if="key !== 'categories' && key !== 'price_as_number'"
-              :label="
-                {
-                  categories: 'Categories',
-                  price_as_number: 'Price',
-                  pa_color: 'Color',
-                }[key] ?? key
-              "
+              :label="filterLabels[key] ?? key"
               :facets="facets[key] ?? []"
               :modelValue="filterVals[key]"
               @update:model-value="(value) => onTermChange(key, value)"
@@ -180,7 +181,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import PriceSlider from "./PriceSlider.vue";
 import Curtain from "./Curtain.vue";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
@@ -206,6 +207,18 @@ const sortOptions = ref([
   { name: "Most Recent", value: "titles:desc", current: false },
   { name: "Rating", value: "titles:desc", current: false },
 ]);
+
+const filterLabels = {
+  categories: "Categories",
+  price_as_number: "Price",
+  pa_color: "Color",
+};
+
+const activeFilters = computed(() => {
+  return Object.entries(filterVals.value)
+    .filter(([key, values]) => key !== "price_as_number" && values.length > 0)
+    .flatMap(([key, values]) => values);
+});
 
 const filterString = ref("");
 const filterVals = ref([]);
@@ -260,6 +273,4 @@ onMounted(() => {
 
   console.log(filterVals);
 });
-
-const mobileFiltersOpen = ref(false);
 </script>
