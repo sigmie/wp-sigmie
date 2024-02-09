@@ -11,12 +11,24 @@
     :applicationId="props.application"
     v-slot="{ hits, facets, total, loading, processing_time_ms }"
   >
-    <Layout
-      title="Filters"
-      hits-title="WooCommerce Products"
-      :total="total"
-      :active-filters="activeFilters"
-    >
+    <Layout title="Filters" hits-title="WooCommerce Products" :total="total">
+      <template v-slot:active-filters>
+        <div class="flex flex-row py-6 space-x-4 mt-1">
+          <button
+            @click="onRemoveActiveFilter(activeFilterkey, activeFilter)"
+            class="hover:bg-zinc-50 cursor-pointer transition-colors flex flex-row space-x-4 items-center border border-black rounded-full px-3 py-1 text-black"
+            v-for="[activeFilterkey, activeFilter] in activeFilters"
+          >
+            <span>
+              {{ activeFilter }}
+            </span>
+            <span>
+              <XIcon class="h-4 w-4"></XIcon>
+            </span>
+          </button>
+        </div>
+      </template>
+
       <template v-slot:pagination>
         <Pagination
           :currentPage="currentPage"
@@ -78,11 +90,13 @@
             </transition>
           </Menu>
 
-          <div
+          <button
+            @click="onOffersClick"
+            :class="onlyOffers ? 'bg-gray-100' : ''"
             class="hover:bg-zinc-50 cursor-pointer transition-colors flex flex-row space-x-4 items-center border border-black rounded-full px-3 py-1 text-black"
           >
             Offers
-          </div>
+          </button>
         </div>
       </template>
 
@@ -118,6 +132,7 @@
 
 <script setup>
 import { ref, onMounted, watch, computed } from "vue";
+import XIcon from "./XIcon.vue";
 import PriceSlider from "./PriceSlider.vue";
 import Pagination from "./Pagination.vue";
 import Curtain from "./Curtain.vue";
@@ -144,8 +159,8 @@ const sortOptions = ref([
   { name: "Relevance", value: "_score", current: false },
   { name: "Price High to Low", value: "price_as_number:desc", current: false },
   { name: "Price Low to High", value: "price_as_number:asc", current: false },
-  { name: "Most Recent", value: "titles:desc", current: false },
-  { name: "Rating", value: "titles:desc", current: false },
+  { name: "Most Recent", value: "date_created:desc", current: false },
+  { name: "Rating", value: "average_rating:desc", current: false },
 ]);
 
 const filterLabels = {
@@ -154,15 +169,35 @@ const filterLabels = {
   pa_color: "Color",
 };
 
+const onlyOffers = ref(false);
 const activeFilters = computed(() => {
   return Object.entries(filterVals.value)
     .filter(([key, values]) => key !== "price_as_number" && values.length > 0)
-    .flatMap(([key, values]) => values);
+    .flatMap(([key, values]) => values.map((value) => [key, value]));
 });
 
 const filterString = ref("");
 const filterVals = ref([]);
 const priceRange = ref([-1, -1]);
+
+function onOffersClick() {
+  onlyOffers.value = !onlyOffers.value;
+
+  updateFitlerString();
+}
+
+function onRemoveActiveFilter(key, value) {
+  if (filterVals.value[key]) {
+    const index = filterVals.value[key].indexOf(value);
+    if (index > -1) {
+      filterVals.value[key].splice(index, 1);
+    }
+  }
+
+  // console.log(JSON.parse(JSON.stringify(filterVals.value)));
+
+  updateFitlerString();
+}
 
 function onTermChange(key, values) {
   filterVals.value[key] = values;
@@ -198,7 +233,9 @@ const updateFitlerString = debounce(() => {
     )
     .join(" AND ");
 
-  let result = [priceFilter, valueFilter]
+  let onlyOffersFilter = onlyOffers.value ? "is:on_sale" : "";
+
+  let result = [onlyOffersFilter, priceFilter, valueFilter]
     .filter((part) => part !== "")
     .join(" AND ");
 
@@ -212,7 +249,5 @@ onMounted(() => {
     acc[key] = [];
     return acc;
   }, {});
-
-  console.log(filterVals);
 });
 </script>

@@ -73,39 +73,7 @@
                   {{ hitsTitle }}
                 </h2>
                 <div class="text-gray-900 mt-2">{{ total }} Products</div>
-                <div class="flex flex-row py-6 space-x-4 mt-1">
-                  <div
-                    class="hover:bg-zinc-50 cursor-pointer transition-colors flex flex-row space-x-4 items-center border border-black rounded-full px-3 py-1 text-black"
-                    v-for="activeFilter in activeFilters"
-                  >
-                    <span>
-                      {{ activeFilter }}
-                    </span>
-                    <span>
-                      <svg
-                        class="h-4 w-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M6 6L18 18"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                        <path
-                          d="M18 6L6 18"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                    </span>
-                  </div>
-                </div>
+                <slot name="active-filters"></slot>
               </div>
               <div class="flex items-baseline justify-between w-full">
                 <slot name="sort"></slot>
@@ -153,7 +121,6 @@ defineProps({
   title: String,
   hitsTitle: String,
   total: String,
-  activeFilters: Array,
 });
 
 const mobileFiltersOpen = ref(false);
