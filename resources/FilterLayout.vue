@@ -110,7 +110,9 @@
               <div class="flex items-baseline justify-between w-full">
                 <slot name="sort"></slot>
 
-                <slot v-if="total > 0" name="pagination"></slot>
+                <div class="max-w-sm">
+                  <slot v-if="total > 0" name="pagination"></slot>
+                </div>
                 <button
                   type="button"
                   class="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
@@ -120,7 +122,14 @@
                   <FunnelIcon class="h-5 w-5" aria-hidden="true" />
                 </button>
               </div>
-              <slot name="hits"></slot>
+
+              <div>
+                <slot name="hits"></slot>
+
+                <div class="mt-6">
+                  <slot v-if="total > 0" name="pagination"></slot>
+                </div>
+              </div>
             </div>
           </div>
         </section>

@@ -137,7 +137,7 @@ const props = defineProps({
 });
 
 const currentPage = ref(1);
-const perPage = ref(4);
+const perPage = ref(8);
 const sortBy = ref("_score");
 const sortByLabel = ref("Relevance");
 const sortOptions = ref([
