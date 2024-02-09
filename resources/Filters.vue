@@ -202,6 +202,7 @@ const updateFitlerString = debounce(() => {
     .filter((part) => part !== "")
     .join(" AND ");
 
+  currentPage.value = 1;
   filterString.value = result;
 }, 100);
 
