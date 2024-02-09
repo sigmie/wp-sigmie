@@ -110,7 +110,7 @@
               <div class="flex items-baseline justify-between w-full">
                 <slot name="sort"></slot>
 
-                <slot name="pagination"></slot>
+                <slot v-if="total > 0" name="pagination"></slot>
                 <button
                   type="button"
                   class="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
