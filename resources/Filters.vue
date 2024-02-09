@@ -14,6 +14,7 @@
     <Layout title="Filters" hits-title="WooCommerce Products" :total="total">
       <template v-slot:reset>
         <button
+          v-if="filtersAreDirty"
           @click.prevent="onResetFilters"
           class="hover:bg-zinc-50 cursor-pointer transition-colors flex flex-row space-x-4 items-center px-3 text-red-800"
         >
@@ -121,6 +122,7 @@
       <template v-slot:filters>
         <div class="px-3 flex flex-col space-y-5">
           <PriceSlider
+            @minMaxInited="onSliderInited"
             @rangeChanged="onRangeChange"
             :data="facets.price_as_number"
           ></PriceSlider>
@@ -183,6 +185,13 @@ const activeFilters = computed(() => {
   return Object.entries(filterVals.value)
     .filter(([key, values]) => key !== "price_as_number" && values.length > 0)
     .flatMap(([key, values]) => values.map((value) => [key, value]));
+});
+
+const filtersAreDirty = computed(() => {
+  return (
+    onlyOffers.value ||
+    Object.values(filterVals.value).some((values) => values.length > 0)
+  );
 });
 
 const filterString = ref("");
