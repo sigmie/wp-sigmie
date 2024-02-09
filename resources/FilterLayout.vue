@@ -59,11 +59,18 @@
           <div class="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-6">
             <!-- Filters -->
             <form class="hidden lg:block col-span-2">
-              <h2
-                class="text-xl mb-10 font-normal tracking-tight text-gray-900"
-              >
-                {{ title }}
-              </h2>
+              <div class="flex flex-row space-x-3 items-center">
+                <h2
+                  class="text-xl font-normal tracking-tight text-gray-900"
+                >
+                  {{ title }}
+                </h2>
+                <div>
+                  <div>
+                    <slot name="reset"></slot>
+                  </div>
+                </div>
+              </div>
               <slot name="filters"></slot>
             </form>
 

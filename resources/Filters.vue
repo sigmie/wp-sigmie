@@ -12,6 +12,15 @@
     v-slot="{ hits, facets, total, loading, processing_time_ms }"
   >
     <Layout title="Filters" hits-title="WooCommerce Products" :total="total">
+      <template v-slot:reset>
+        <button
+          @click.prevent="onResetFilters"
+          class="hover:bg-zinc-50 cursor-pointer transition-colors flex flex-row space-x-4 items-center px-3 text-red-800"
+        >
+          Reset Filters
+        </button>
+      </template>
+
       <template v-slot:active-filters>
         <div class="flex flex-row py-6 space-x-4 mt-1">
           <button
@@ -207,6 +216,18 @@ function onTermChange(key, values) {
 
 function onRangeChange(values) {
   priceRange.value = values;
+
+  updateFitlerString();
+}
+
+function onResetFilters(values) {
+  filterVals.value = props.facets.split(" ").reduce((acc, key) => {
+    [key] = key.split(":");
+    acc[key] = [];
+    return acc;
+  }, {});
+
+  onlyOffers.value = false;
 
   updateFitlerString();
 }
