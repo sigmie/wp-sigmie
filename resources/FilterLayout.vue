@@ -60,9 +60,7 @@
             <!-- Filters -->
             <form class="hidden lg:block col-span-2">
               <div class="flex flex-row space-x-3 items-center">
-                <h2
-                  class="text-xl font-normal tracking-tight text-gray-900"
-                >
+                <h2 class="text-xl font-normal tracking-tight text-gray-900">
                   {{ title }}
                 </h2>
                 <div>
@@ -98,12 +96,15 @@
                 </button>
               </div>
 
-              <div>
+              <div v-if="total > 0">
                 <slot name="hits"></slot>
 
                 <div class="mt-6">
-                  <slot v-if="total > 0" name="pagination"></slot>
+                  <slot name="pagination"></slot>
                 </div>
+              </div>
+              <div class="h-80 flex justify-h justify-center flex-col items-center" v-else>
+                <slot name="no-results"></slot>
               </div>
             </div>
           </div>

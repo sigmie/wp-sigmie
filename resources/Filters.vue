@@ -26,6 +26,19 @@
       <template v-slot:active-filters>
         <div class="flex flex-row py-6 space-x-4 mt-1">
           <button
+            v-if="priceRangeIsDirty"
+            @click="onResetRange"
+            class="hover:bg-zinc-50 cursor-pointer transition-colors flex flex-row space-x-4 items-center border border-black rounded-full px-3 py-1 text-black"
+          >
+            <span
+              >Price Range: from {{ priceRange[0] }} to
+              {{ priceRange[1] }}</span
+            >
+            <span>
+              <XIcon class="h-4 w-4"></XIcon>
+            </span>
+          </button>
+          <button
             @click="onRemoveActiveFilter(activeFilterkey, activeFilter)"
             class="hover:bg-zinc-50 cursor-pointer transition-colors flex flex-row space-x-4 items-center border border-black rounded-full px-3 py-1 text-black"
             v-for="[activeFilterkey, activeFilter] in activeFilters"
@@ -120,6 +133,42 @@
         </div>
       </template>
 
+      <template v-slot:no-results>
+        <svg
+          class="h-10 w-10"
+          viewBox="0 0 25 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            opacity="0.4"
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M5.42237 2.59573C5.12937 2.30273 4.65437 2.30273 4.36137 2.59573C4.06837 2.88873 4.06837 3.36373 4.36137 3.65673L5.00037 4.29473C4.24437 4.87873 3.77637 5.79373 3.77637 6.79373V8.82373C3.77637 9.93173 4.22637 11.0237 5.03337 11.8417L9.34937 15.6737C9.54237 15.8667 9.64837 16.1237 9.64837 16.3987V19.5977C9.64837 20.2737 9.98337 20.9037 10.5444 21.2807C10.8824 21.5087 11.2754 21.6247 11.6704 21.6247C11.9244 21.6247 12.1804 21.5767 12.4224 21.4777L14.2814 20.7367C15.0524 20.4357 15.5704 19.6797 15.5704 18.8547V16.8847C15.5704 16.5887 15.6884 16.3187 15.9174 16.1107L16.3694 15.6637L17.6624 16.9567C17.8094 17.1037 18.0014 17.1767 18.1934 17.1767C18.3844 17.1767 18.5764 17.1037 18.7234 16.9567C19.0164 16.6637 19.0164 16.1897 18.7234 15.8967L5.42237 2.59573Z"
+            fill="currentColor"
+          />
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M19.0307 3.62793H10.5447C10.3417 3.62793 10.1587 3.75093 10.0817 3.93893C10.0057 4.12593 10.0497 4.34193 10.1937 4.48393L18.5277 12.6939C18.6247 12.7899 18.7517 12.8379 18.8787 12.8379C18.9977 12.8379 19.1167 12.7949 19.2127 12.7099L20.7937 11.2909C21.6777 10.4849 22.1847 9.33593 22.1847 8.13793V6.79193C22.1847 5.04693 20.7697 3.62793 19.0307 3.62793"
+            fill="currentColor"
+          />
+        </svg>
+        <h3 class="mt-2 text-sm font-semibold text-gray-900">
+          No products were found
+        </h3>
+        <p class="mt-1 text-sm text-gray-500">Try removing the last filter.</p>
+        <div class="mt-6">
+          <button
+            @click.prevent="onResetFilters"
+            type="button"
+            class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Clear all filters
+          </button>
+        </div>
+      </template>
+
       <template v-slot:filters>
         <div class="px-3 flex flex-col space-y-5">
           <PriceSlider
@@ -146,7 +195,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed } from "vue";
+import { ref, onMounted, computed, nextTick } from "vue";
 import XIcon from "./XIcon.vue";
 import PriceSlider from "./PriceSlider.vue";
 import Pagination from "./Pagination.vue";
@@ -193,16 +242,28 @@ const activeFilters = computed(() => {
 const filtersAreDirty = computed(() => {
   return (
     onlyOffers.value ||
-    Object.values(filterVals.value).some((values) => values.length > 0)
-    // ||
-    // priceRange[0] !== null ||
-    // priceRange[1] !== null
+    Object.values(filterVals.value).some((values) => values.length > 0) ||
+    priceRangeIsDirty.value
+  );
+});
+
+const priceRangeIsDirty = computed(() => {
+  return (
+    priceRange.value[0] !== initialPriceRange.value[0] ||
+    priceRange.value[1] !== initialPriceRange.value[1]
   );
 });
 
 const filterString = ref("");
 const filterVals = ref([]);
 const priceRange = ref([null, null]);
+const initialPriceRange = ref([null, null]);
+
+function onResetRange() {
+  priceRange.value = initialPriceRange.value;
+
+  updateFitlerString();
+}
 
 function onOffersClick() {
   onlyOffers.value = !onlyOffers.value;
@@ -228,17 +289,17 @@ function onTermChange(key, values) {
 }
 
 function onRangeInit(initialValue) {
+  initialPriceRange.value = initialValue;
   priceRange.value = initialValue;
 }
 
 function onRangeChange(values) {
-
   priceRange.value = values;
 
   updateFitlerString();
 }
 
-function onResetFilters(values) {
+async function onResetFilters(values) {
   filterVals.value = props.facets.split(" ").reduce((acc, key) => {
     [key] = key.split(":");
     acc[key] = [];
@@ -246,6 +307,9 @@ function onResetFilters(values) {
   }, {});
 
   onlyOffers.value = false;
+  priceRange.value = initialPriceRange.value;
+
+  // await nextTick();
 
   updateFitlerString();
 }

@@ -126,7 +126,7 @@
 </style>
 
 <script setup>
-import { onMounted, ref, defineEmits, nextTick } from "vue";
+import { onMounted, ref, defineEmits, nextTick, watch } from "vue";
 import { BarChart } from "chartist";
 import "chartist/dist/index.css";
 import Slider from "@vueform/slider";
@@ -170,6 +170,13 @@ const data = ref({
   labels: [],
   series: [[]],
 });
+
+watch(
+  () => props.range,
+  (newRange, oldRange) => {
+    chart.value.update(data.value);
+  }
+);
 
 async function onSliderChange(value) {
   emit("update:range", value);
