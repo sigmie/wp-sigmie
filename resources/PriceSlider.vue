@@ -6,7 +6,7 @@
         :min="min"
         :max="max"
         :step="1"
-        :value="number"
+        :value="range"
         @update:modelValue="onSliderChange"
         :lazy="false"
         :tooltips="false"
@@ -62,7 +62,7 @@
             <span class="text-gray-500 sm:text-sm">$</span>
           </div>
           <input
-            v-model="number[0]"
+            v-model="range[0]"
             type="text"
             name="price"
             id="price"
@@ -101,7 +101,7 @@
             <span class="text-gray-500 sm:text-sm">$</span>
           </div>
           <input
-            v-model="number[1]"
+            v-model="range[1]"
             type="text"
             name="price"
             id="price"
@@ -132,6 +132,22 @@ import "chartist/dist/index.css";
 import Slider from "@vueform/slider";
 
 const props = defineProps({
+  histogram: {
+    type: Object,
+    required: true,
+  },
+  min: {
+    type: Number,
+    required: true,
+  },
+  max: {
+    type: Number,
+    required: true,
+  },
+  range: {
+    type: Array,
+    required: true,
+  },
   data: Object,
   activeColor: {
     type: String,
@@ -143,11 +159,12 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["rangeChanged"]);
+const emit = defineEmits(["range-changed", "update:range"]);
 
-const chart = ref();
 const min = ref(-1);
 const max = ref(-1);
+const inited = ref(false);
+const chart = ref();
 const chartCreated = ref(false);
 
 const data = ref({
@@ -155,34 +172,26 @@ const data = ref({
   series: [[]],
 });
 
-const number = ref([-1, -1]);
-
 watch(
-  () => props.data,
-  (newData) => {
-    const labels = Object.keys(newData.histogram);
-    const minLabel = Math.min(...labels);
-    const maxLabel = newData.max;
+  () => props.histogram,
+  (histogram) => {
+    const labels = Object.keys(histogram);
 
-    if (min.value === -1) {
-      min.value = minLabel;
-      number.value[0] = minLabel;
+    if (inited.value) {
+      return;
     }
 
-    if (max.value === -1) {
-      max.value = maxLabel;
-      number.value[1] = maxLabel;
-    }
+    min.value = props.min;
+    max.value = props.max;
 
-    if (data.value.series[0].length === 0) {
-      data.value.series[0] = Object.values(newData.histogram);
-    }
+    emit("update:range", [props.min, props.max]);
 
-    if (data.value.labels.length === 0) {
-      data.value.labels = labels;
-    }
+    data.value.series[0] = Object.values(histogram);
+    data.value.labels = labels;
 
-    chart.value.update(data.value);
+    createChart();
+
+    inited.value = true;
   },
   {
     deep: true,
@@ -190,16 +199,13 @@ watch(
 );
 
 function onSliderChange(value) {
-  if (value[0] !== -1 && value[1] !== -1) {
-    number.value = value;
 
-    emit("rangeChanged", value);
-  }
+  emit("update:range", value);
 
   chart.value.update(data.value);
 }
 
-onMounted(() => {
+function createChart() {
   var options = {
     showPoint: false,
     showLine: false,
@@ -254,16 +260,13 @@ onMounted(() => {
       });
     }
 
-    if (drawData.index === Object.values(props.data.histogram).length - 1) {
+    if (drawData.index === Object.values(props.histogram).length - 1) {
       chartCreated.value = true;
     }
 
     const label = data.value.labels[drawData.index];
 
-    if (
-      parseInt(label) < number.value[0] ||
-      parseInt(label) > number.value[1]
-    ) {
+    if (parseInt(label) < props.range[0] || parseInt(label) > props.range[1]) {
       drawData.element.attr({
         style: `stroke: ${props.inactiveColor}`,
       });
@@ -273,7 +276,9 @@ onMounted(() => {
       });
     }
   });
-});
+}
+
+onMounted(() => {});
 </script>
 
 <style scoped>

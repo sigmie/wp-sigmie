@@ -122,9 +122,11 @@
       <template v-slot:filters>
         <div class="px-3 flex flex-col space-y-5">
           <PriceSlider
-            @minMaxInited="onSliderInited"
-            @rangeChanged="onRangeChange"
-            :data="facets.price_as_number"
+            :min="0"
+            :max="facets.price_as_number?.max"
+            :range="priceRange"
+            @update:range="onRangeChange"
+            :histogram="facets.price_as_number?.histogram"
           ></PriceSlider>
           <template v-for="(index, key) in filterVals">
             <Facet
@@ -191,12 +193,15 @@ const filtersAreDirty = computed(() => {
   return (
     onlyOffers.value ||
     Object.values(filterVals.value).some((values) => values.length > 0)
+    // ||
+    // priceRange[0] !== null ||
+    // priceRange[1] !== null
   );
 });
 
 const filterString = ref("");
 const filterVals = ref([]);
-const priceRange = ref([-1, -1]);
+const priceRange = ref([null, null]);
 
 function onOffersClick() {
   onlyOffers.value = !onlyOffers.value;
@@ -212,8 +217,6 @@ function onRemoveActiveFilter(key, value) {
     }
   }
 
-  // console.log(JSON.parse(JSON.stringify(filterVals.value)));
-
   updateFitlerString();
 }
 
@@ -224,9 +227,13 @@ function onTermChange(key, values) {
 }
 
 function onRangeChange(values) {
+  const oldValue = priceRange.value;
+
   priceRange.value = values;
 
-  updateFitlerString();
+  if (oldValue[0] !== null || oldValue[1] !== null) {
+    updateFitlerString();
+  }
 }
 
 function onResetFilters(values) {
