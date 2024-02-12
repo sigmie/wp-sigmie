@@ -1,5 +1,6 @@
 <template>
   <SigmieSearch
+    :debounce-ms="100"
     :facets="props.facets"
     :apiKey="props.apiKey"
     :sort="sortBy"
@@ -155,7 +156,6 @@ import { SigmieSearch } from "@sigmie/vue";
 import FilterHit from "./FilterHit.vue";
 import Facet from "./Facet.vue";
 import Layout from "./FilterLayout.vue";
-import debounce from "debounce";
 
 const props = defineProps({
   application: String,
@@ -231,8 +231,6 @@ function onRangeChange(values) {
 
   priceRange.value = values;
 
-  console.log("on-range", values);
-
   if (oldValue[0] !== null || oldValue[1] !== null) {
     updateFitlerString();
   }
@@ -255,7 +253,7 @@ function onSortChange(value, label) {
   sortByLabel.value = label;
 }
 
-const updateFitlerString = debounce(() => {
+const updateFitlerString = () => {
   let priceFilter = "";
 
   const [min, max] = priceRange.value;
@@ -280,7 +278,7 @@ const updateFitlerString = debounce(() => {
 
   currentPage.value = 1;
   filterString.value = result;
-}, 100);
+};
 
 onMounted(() => {
   filterVals.value = props.facets.split(" ").reduce((acc, key) => {

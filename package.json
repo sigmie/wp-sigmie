@@ -19,7 +19,7 @@
   "devDependencies": {
     "@headlessui/vue": "^1.7.17",
     "@heroicons/vue": "^2.1.1",
-    "@sigmie/vue": "^1.9.0",
+    "@sigmie/vue": "^1.10.0",
     "@vitejs/plugin-vue": "^4.5.2",
     "autoprefixer": "^10.4.16",
     "debounce": "^2.0.0",

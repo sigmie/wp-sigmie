@@ -126,7 +126,7 @@
 </style>
 
 <script setup>
-import { onMounted, ref, watch, defineEmits, nextTick } from "vue";
+import { onMounted, ref, defineEmits, nextTick } from "vue";
 import { BarChart } from "chartist";
 import "chartist/dist/index.css";
 import Slider from "@vueform/slider";
@@ -172,34 +172,7 @@ const data = ref({
   series: [[]],
 });
 
-watch(
-  () => props.histogram,
-  (histogram) => {
-    const labels = Object.keys(histogram);
-
-    if (inited.value) {
-      return;
-    }
-
-    min.value = props.min;
-    max.value = props.max;
-
-    emit("update:range", [props.min, props.max]);
-
-    data.value.series[0] = Object.values(histogram);
-    data.value.labels = labels;
-
-    createChart();
-
-    inited.value = true;
-  },
-  {
-    deep: true,
-  }
-);
-
 async function onSliderChange(value) {
-
   emit("update:range", value);
 
   await nextTick();
@@ -268,8 +241,6 @@ function createChart() {
 
     const label = data.value.labels[drawData.index];
 
-    console.log(props.range[0]);
-
     if (parseInt(label) < props.range[0] || parseInt(label) > props.range[1]) {
       drawData.element.attr({
         style: `stroke: ${props.inactiveColor}`,
@@ -282,7 +253,25 @@ function createChart() {
   });
 }
 
-onMounted(() => {});
+onMounted(() => {
+  const labels = Object.keys(props.histogram);
+
+  if (inited.value) {
+    return;
+  }
+
+  min.value = props.min;
+  max.value = props.max;
+
+  emit("update:range", [props.min, props.max]);
+
+  data.value.series[0] = Object.values(props.histogram);
+  data.value.labels = labels;
+
+  createChart();
+
+  inited.value = true;
+});
 </script>
 
 <style scoped>
