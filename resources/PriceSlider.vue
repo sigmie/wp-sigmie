@@ -159,11 +159,10 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["range-changed", "update:range"]);
+const emit = defineEmits(["update:range", "range:inited"]);
 
 const min = ref(-1);
 const max = ref(-1);
-const inited = ref(false);
 const chart = ref();
 const chartCreated = ref(false);
 
@@ -256,21 +255,15 @@ function createChart() {
 onMounted(() => {
   const labels = Object.keys(props.histogram);
 
-  if (inited.value) {
-    return;
-  }
-
   min.value = props.min;
   max.value = props.max;
 
-  emit("update:range", [props.min, props.max]);
+  emit("range:inited", [props.min, props.max]);
 
   data.value.series[0] = Object.values(props.histogram);
   data.value.labels = labels;
 
   createChart();
-
-  inited.value = true;
 });
 </script>
 

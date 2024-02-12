@@ -1,6 +1,6 @@
 <template>
   <SigmieSearch
-    :debounce-ms="100"
+    :debounce-ms="200"
     :facets="props.facets"
     :apiKey="props.apiKey"
     :sort="sortBy"
@@ -127,6 +127,7 @@
             :max="facets.price_as_number?.max"
             :range="priceRange"
             @update:range="onRangeChange"
+            @range:inited="onRangeInit"
             :histogram="facets.price_as_number?.histogram"
           ></PriceSlider>
           <template v-for="(index, key) in filterVals">
@@ -226,14 +227,15 @@ function onTermChange(key, values) {
   updateFitlerString();
 }
 
+function onRangeInit(initialValue) {
+  priceRange.value = initialValue;
+}
+
 function onRangeChange(values) {
-  const oldValue = priceRange.value;
 
   priceRange.value = values;
 
-  if (oldValue[0] !== null || oldValue[1] !== null) {
-    updateFitlerString();
-  }
+  updateFitlerString();
 }
 
 function onResetFilters(values) {
