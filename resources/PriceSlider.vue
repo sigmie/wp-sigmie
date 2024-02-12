@@ -126,7 +126,7 @@
 </style>
 
 <script setup>
-import { onMounted, ref, watch, defineEmits } from "vue";
+import { onMounted, ref, watch, defineEmits, nextTick } from "vue";
 import { BarChart } from "chartist";
 import "chartist/dist/index.css";
 import Slider from "@vueform/slider";
@@ -198,15 +198,17 @@ watch(
   }
 );
 
-function onSliderChange(value) {
+async function onSliderChange(value) {
 
   emit("update:range", value);
+
+  await nextTick();
 
   chart.value.update(data.value);
 }
 
 function createChart() {
-  var options = {
+  let options = {
     showPoint: false,
     showLine: false,
     showArea: true,
@@ -226,7 +228,7 @@ function createChart() {
     low: 0,
   };
 
-  var responsiveOptions = [
+  let responsiveOptions = [
     [
       "screen and (max-width: 640px)",
       {
@@ -265,6 +267,8 @@ function createChart() {
     }
 
     const label = data.value.labels[drawData.index];
+
+    console.log(props.range[0]);
 
     if (parseInt(label) < props.range[0] || parseInt(label) > props.range[1]) {
       drawData.element.attr({

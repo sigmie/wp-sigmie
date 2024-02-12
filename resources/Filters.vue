@@ -231,6 +231,8 @@ function onRangeChange(values) {
 
   priceRange.value = values;
 
+  console.log("on-range", values);
+
   if (oldValue[0] !== null || oldValue[1] !== null) {
     updateFitlerString();
   }
