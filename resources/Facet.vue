@@ -1,10 +1,11 @@
 <template>
   <Disclosure :defaultOpen="true" as="div" class="py-6" v-slot="{ open }">
-    <h3 class="-my-3 flow-root">
+    <div class="-my-3 flow-root">
       <DisclosureButton
-        class="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500"
+        as="h3"
+        class="flex w-full cursor-pointer items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500"
       >
-        <span class="font-medium text-gray-900">{{ label }}</span>
+        <span class="text-lg font-normal text-gray-900">{{ label }}</span>
         <span class="ml-6 flex items-center">
           <svg
             class="h-5 w-5 text-black"
@@ -49,7 +50,7 @@
           </svg>
         </span>
       </DisclosureButton>
-    </h3>
+    </div>
     <DisclosurePanel class="pt-6">
       <div class="overflow-y-scroll space-y-4">
         <div
@@ -58,13 +59,14 @@
           class="flex flex-row items-center"
         >
           <Checkbox
-            :id="`filter-${facet}`"
+            :input-id="`filter-${facet}`"
             :name="facet"
             :binary="true"
-            v-model="value"
+            :modelValue="values.includes(facet)"
+            @update:model-value="(newVal) => onChange(facet, newVal)"
           ></Checkbox>
 
-          <label :for="`filter-${facet}`" class="ml-3 text-sm"
+          <label :for="`filter-${facet}`" class="ml-3 text-base"
             ><span class="text-black">{{ facet }}</span> ({{ count }})</label
           >
         </div>
@@ -97,16 +99,14 @@ import Checkbox from "primevue/checkbox";
 // black
 // import "primevue/resources/themes/aura-light-noir/theme.css";
 
-// blue 
+// blue
 // import "primevue/resources/themes/aura-light-blue/theme.css";
 
 // yellow
-// import "primevue/resources/themes/aura-light-amber/theme.css";
-
-// lime 
+import "primevue/resources/themes/aura-light-amber/theme.css";
+//
+// lime
 // import "primevue/resources/themes/aura-light-lime/theme.css";
-
-
 
 const emit = defineEmits(["update:modelValue"]);
 

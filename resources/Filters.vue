@@ -1,12 +1,5 @@
 <template>
-  <Facet
-    label="Label"
-    :facets="{
-      foo: 'bar',
-    }"
-  ></Facet>
-
-  <!-- <SigmieSearch
+  <SigmieSearch
     :debounce-ms="200"
     :facets="props.facets"
     :apiKey="props.apiKey"
@@ -121,13 +114,13 @@
             </transition>
           </Menu>
 
-          <button
+          <Chip
             @click="onOffersClick"
-            :class="onlyOffers ? 'bg-gray-100' : ''"
-            class="hover:bg-zinc-50 cursor-pointer transition-colors flex flex-row space-x-4 items-center border border-black rounded-full px-3 py-1 text-black"
+            :class="onlyOffers ? '' : ''"
+            class=""
           >
             Offers
-          </button>
+          </Chip>
         </div>
       </template>
 
@@ -198,7 +191,7 @@
         </div>
       </template>
     </Layout>
-  </SigmieSearch> -->
+  </SigmieSearch>
 </template>
 
 <script setup>
@@ -213,6 +206,7 @@ import { SigmieSearch } from "@sigmie/vue";
 import FilterHit from "./FilterHit.vue";
 import Facet from "./Facet.vue";
 import Layout from "./FilterLayout.vue";
+import Chip from 'primevue/chip';
 
 const props = defineProps({
   application: String,
