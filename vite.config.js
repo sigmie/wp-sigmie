@@ -1,8 +1,30 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import prefixer from 'postcss-prefix-selector';
+import tailwindcss from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
+import safeImportant from 'postcss-safe-important';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  css: {
+    postcss: {
+      plugins: [
+        tailwindcss,
+        autoprefixer,
+        // safeImportant,
+        prefixer({
+          prefix: '#sigmie-filters',
+          transform(prefix, selector, prefixedSelector, filePath, rule) {
+            if (selector.startsWith('@') || selector.includes('box-sizing')) {
+              return selector;
+            }
+            return prefixedSelector;
+          },
+        }),
+      ],
+    }
+  },
   resolve: {
     alias: {
       '@': '/resources',

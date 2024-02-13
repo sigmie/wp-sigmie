@@ -51,77 +51,35 @@
     <div class="flex flex-row justify-between items-center mt-2 space-x-4">
       <div>
         <label
-          for="price"
+          for="min-price"
           class="block text-sm font-medium leading-6 text-gray-900"
           >Min</label
         >
         <div class="relative mt-2 rounded-md shadow-sm">
-          <div
-            class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
-          >
-            <span class="text-gray-500 sm:text-sm">$</span>
-          </div>
-          <input
-            v-model="range[0]"
-            type="text"
-            name="price"
-            id="price"
-            class="block w-full rounded-md border-0 py-1.5 pl-7 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            placeholder="0.00"
-            aria-describedby="price-currency"
-          />
-          <div
-            class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3"
-          >
-            <span class="text-gray-500 sm:text-sm" id="price-currency"
-              >USD</span
-            >
-          </div>
+          <InputGroup>
+            <InputGroupAddon>$</InputGroupAddon>
+            <InputNumber input-id="min-price" v-model="range[0]" />
+          </InputGroup>
         </div>
       </div>
 
       <div>
         <label
-          for="price"
+          for="max-price"
           class="block text-sm font-medium leading-6 text-gray-900"
-        ></label>
-        <div class="relative mt-2 rounded-md shadow-sm">—</div>
-      </div>
-
-      <div>
-        <label
-          for="price"
-          class="block text-sm font-medium leading-6 text-gray-900"
-          >Mix</label
+          >Max</label
         >
         <div class="relative mt-2 rounded-md shadow-sm">
-          <div
-            class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
-          >
-            <span class="text-gray-500 sm:text-sm">$</span>
-          </div>
-          <input
-            v-model="range[1]"
-            type="text"
-            name="price"
-            id="price"
-            class="block w-full rounded-md border-0 py-1.5 pl-7 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            placeholder="0.00"
-            aria-describedby="price-currency"
-          />
-          <div
-            class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3"
-          >
-            <span class="text-gray-500 sm:text-sm" id="price-currency"
-              >USD</span
-            >
-          </div>
+          <InputGroup>
+            <InputGroupAddon>$</InputGroupAddon>
+            <InputNumber input-id="max-price" v-model="range[1]" />
+          </InputGroup>
         </div>
       </div>
     </div>
   </div>
 </template>
-<style lang="scss">
+<style lang="scss" scoped>
 @import "../node_modules/@vueform/slider/themes/tailwind.scss";
 </style>
 
@@ -130,6 +88,9 @@ import { onMounted, ref, defineEmits, nextTick, watch } from "vue";
 import { BarChart } from "chartist";
 import "chartist/dist/index.css";
 import Slider from "@vueform/slider";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
+import InputNumber from "primevue/inputnumber";
 
 const props = defineProps({
   histogram: {

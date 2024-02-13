@@ -103,7 +103,6 @@ import Checkbox from "primevue/checkbox";
 // import "primevue/resources/themes/aura-light-blue/theme.css";
 
 // yellow
-import "primevue/resources/themes/aura-light-amber/theme.css";
 //
 // lime
 // import "primevue/resources/themes/aura-light-lime/theme.css";
