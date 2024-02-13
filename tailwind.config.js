@@ -1,9 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   // prefix: 'sigmie-tw-',
+  // important: true,
   content: [
     'resources/**/*.vue',
-    'resources/Hit.vue'
   ],
   theme: {
     extend: {
