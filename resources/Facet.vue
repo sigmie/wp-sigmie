@@ -61,8 +61,7 @@
             :id="`filter-${facet}`"
             :name="facet"
             :binary="true"
-            :modelValue="value"
-            @update:model-value="(newValue) => onChange(facet, newValue)"
+            v-model="value"
           ></Checkbox>
 
           <label :for="`filter-${facet}`" class="ml-3 text-sm"
@@ -91,9 +90,23 @@
 import { ref, watch, onMounted } from "vue";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
 import Checkbox from "primevue/checkbox";
-import Button from "primevue/button";
 
-import "primevue/resources/themes/aura-light-green/theme.css";
+// green
+// import "primevue/resources/themes/aura-light-green/theme.css";
+
+// black
+// import "primevue/resources/themes/aura-light-noir/theme.css";
+
+// blue 
+// import "primevue/resources/themes/aura-light-blue/theme.css";
+
+// yellow
+// import "primevue/resources/themes/aura-light-amber/theme.css";
+
+// lime 
+// import "primevue/resources/themes/aura-light-lime/theme.css";
+
+
 
 const emit = defineEmits(["update:modelValue"]);
 
