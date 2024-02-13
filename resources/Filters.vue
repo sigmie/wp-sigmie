@@ -1,5 +1,12 @@
 <template>
-  <SigmieSearch
+  <Facet
+    label="Label"
+    :facets="{
+      foo: 'bar',
+    }"
+  ></Facet>
+
+  <!-- <SigmieSearch
     :debounce-ms="200"
     :facets="props.facets"
     :apiKey="props.apiKey"
@@ -191,7 +198,7 @@
         </div>
       </template>
     </Layout>
-  </SigmieSearch>
+  </SigmieSearch> -->
 </template>
 
 <script setup>
@@ -354,3 +361,15 @@ onMounted(() => {
   }, {});
 });
 </script>
+
+<style scoped>
+/* Order */
+@layer reset, primevue;
+
+/* Reset CSS */
+@layer reset {
+  input,
+  button {
+  }
+}
+</style>

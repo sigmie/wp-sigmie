@@ -3,6 +3,9 @@ import Search from "@/Search.vue";
 import Filters from "@/Filters.vue";
 import './main.css'
 
+import PrimeVue from "primevue/config";
+
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const search = createApp({})
@@ -10,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
     search.mount('#sigmie-search')
 
     const filters = createApp({})
+    filters.use(PrimeVue);
     filters.component('filters', Filters);
     filters.mount('#sigmie-filters')
 });

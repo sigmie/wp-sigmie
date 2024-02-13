@@ -57,15 +57,14 @@
           :key="facet"
           class="flex flex-row items-center"
         >
-          <input
+          <Checkbox
             :id="`filter-${facet}`"
             :name="facet"
-            @change="($event) => onChange(facet, $event.target.checked)"
-            :checked="values.includes(facet)"
-            :value="facet"
-            type="checkbox"
-            class="h-5 w-5 rounded-full"
-          />
+            :binary="true"
+            :modelValue="value"
+            @update:model-value="(newValue) => onChange(facet, newValue)"
+          ></Checkbox>
+
           <label :for="`filter-${facet}`" class="ml-3 text-sm"
             ><span class="text-black">{{ facet }}</span> ({{ count }})</label
           >
@@ -76,14 +75,25 @@
 </template>
 
 <style scoped>
-label {
-  @apply m-0;
+/* Order */
+@layer reset, primevue;
+
+/* Reset CSS */
+@layer reset {
+  button,
+  input {
+    /* CSS to Reset */
+  }
 }
 </style>
 
 <script setup>
 import { ref, watch, onMounted } from "vue";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
+import Checkbox from "primevue/checkbox";
+import Button from "primevue/button";
+
+import "primevue/resources/themes/aura-light-green/theme.css";
 
 const emit = defineEmits(["update:modelValue"]);
 
@@ -96,6 +106,7 @@ const props = defineProps({
   modelValue: Array,
 });
 
+const value = ref(false);
 const values = ref([]);
 const options = ref([]);
 

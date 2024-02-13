@@ -69,7 +69,9 @@
                   </div>
                 </div>
               </div>
-              <slot name="filters"></slot>
+              <div class="mt-6">
+                <slot name="filters"></slot>
+              </div>
             </form>
 
             <div class="lg:col-span-4">
@@ -103,7 +105,10 @@
                   <slot name="pagination"></slot>
                 </div>
               </div>
-              <div class="h-80 flex justify-h justify-center flex-col items-center" v-else>
+              <div
+                class="h-80 flex justify-h justify-center flex-col items-center"
+                v-else
+              >
                 <slot name="no-results"></slot>
               </div>
             </div>
@@ -113,6 +118,12 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+button {
+  @apply bg-transparent;
+}
+</style>
 
 <script setup>
 import { ref } from "vue";
