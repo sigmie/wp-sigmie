@@ -5,6 +5,7 @@ import './main.css'
 
 import PrimeVue from "primevue/config";
 
+import 'primevue/resources/themes/aura-light-green/theme.css'
 
 document.addEventListener("DOMContentLoaded", function () {
 

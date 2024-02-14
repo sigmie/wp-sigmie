@@ -121,7 +121,7 @@
           </div>
         </template>
 
-        <template v-slot:hits>
+        <template sgm-slot:hits>
           <div class="sgm-relative sgm-w-full sgm-h-full">
             <Curtain
               :is-open="loading"
@@ -133,7 +133,7 @@
           </div>
         </template>
 
-        <template v-slot:no-results>
+        <template sgm-slot:no-results>
           <svg
             class="sgm-h-10 sgm-w-10"
             viewBox="0 0 25 24"
@@ -358,7 +358,3 @@ onMounted(() => {
   }, {});
 });
 </script>
-
-<style lang="scss">
-@import "primevue/resources/themes/aura-light-amber/theme.css";
-</style>
