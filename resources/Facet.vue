@@ -5,7 +5,9 @@
         as="h3"
         class="sgm-flex sgm-w-full sgm-cursor-pointer sgm-items-center sgm-justify-between sgm-bg-white sgm-py-3 sgm-text-sm sgm-text-gray-400 sgm-hover:text-gray-500"
       >
-        <span class="sgm-text-lg sgm-font-normal sgm-text-gray-900">{{ label }}</span>
+        <span class="sgm-text-lg sgm-font-normal sgm-text-gray-900">{{
+          label
+        }}</span>
         <span class="sgm-ml-6 sgm-flex sgm-items-center">
           <svg
             class="sgm-h-5 sgm-w-5 sgm-text-black"
@@ -51,27 +53,38 @@
         </span>
       </DisclosureButton>
     </div>
-    <DisclosurePanel class="sgm-pt-6">
-      <div class="sgm-overflow-y-scroll sgm-space-y-4">
-        <div
-          v-for="(count, facet) in options"
-          :key="facet"
-          class="sgm-flex sgm-flex-row sgm-items-center"
-        >
-          <Checkbox
-            :input-id="`filter-${facet}`"
-            :name="facet"
-            :binary="true"
-            :modelValue="values.includes(facet)"
-            @update:model-value="(newVal) => onChange(facet, newVal)"
-          ></Checkbox>
-
-          <label :for="`filter-${facet}`" class="sgm-ml-3 sgm-text-base"
-            ><span class="sgm-text-black">{{ facet }}</span> ({{ count }})</label
+    <transition
+      enter-active-class="sgm-transition sgm-duration-150 sgm-ease-out"
+      enter-from-class="sgm-transform sgm-scale-95 sgm-opacity-0"
+      enter-to-class="sgm-transform sgm-scale-100 sgm-opacity-100"
+      leave-active-class="sgm-transition sgm-duration-150 sgm-ease-out"
+      leave-from-class="sgm-transform sgm-scale-100 sgm-opacity-100"
+      leave-to-class="sgm-transform sgm-scale-95 sgm-opacity-0"
+    >
+      <DisclosurePanel class="sgm-pt-6">
+        <div class="sgm-overflow-y-scroll sgm-space-y-4">
+          <div
+            v-for="(count, facet) in options"
+            :key="facet"
+            class="sgm-flex sgm-flex-row sgm-items-center"
           >
+            <Checkbox
+              :input-id="`filter-${facet}`"
+              :name="facet"
+              :binary="true"
+              :modelValue="values.includes(facet)"
+              @update:model-value="(newVal) => onChange(facet, newVal)"
+            ></Checkbox>
+
+            <label :for="`filter-${facet}`" class="sgm-ml-3 sgm-text-base"
+              ><span class="sgm-text-black">{{ facet }}</span> ({{
+                count
+              }})</label
+            >
+          </div>
         </div>
-      </div>
-    </DisclosurePanel>
+      </DisclosurePanel>
+    </transition>
   </Disclosure>
 </template>
 
