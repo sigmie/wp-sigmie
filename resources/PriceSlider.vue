@@ -175,11 +175,11 @@ function createChart() {
 
     if (parseInt(label) < props.range[0] || parseInt(label) > props.range[1]) {
       drawData.element.attr({
-        style: `stroke: ${props.inactiveColor}`,
+        style: `stroke: var(--primary-100)`,
       });
     } else {
       drawData.element.attr({
-        style: `stroke: ${props.activeColor}`,
+        style: `stroke: var(--primary-300)`,
       });
     }
   });
