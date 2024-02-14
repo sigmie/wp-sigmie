@@ -21,8 +21,8 @@ let props = defineProps({
 
 <template>
     <a href="#" class="sgm-group">
-        <div class="sgm-aspect-h-1 sgm-aspect-w-1 sgm-w-full sgm-overflow-hidden sgm-rounded-lg sgm-bg-gray-200 sgm-xl:aspect-h-8 sgm-xl:aspect-w-7">
-            <img :src="hit.image" class="sgm-h-full sgm-w-full sgm-object-cover sgm-object-center sgm-lg:h-full sgm-lg:w-full" />
+        <div class="sgm-aspect-h-1 sgm-aspect-w-1 sgm-w-full sgm-overflow-hidden sgm-rounded-lg sgm-bg-gray-200 xl:sgm-aspect-h-8 xl:sgm-aspect-w-7">
+            <img :src="hit.image" class="sgm-h-full sgm-w-full sgm-object-cover sgm-object-center lg:sgm-h-full lg:sgm-w-full" />
         </div>
         <div>
             <div v-if="showCategory" class="sgm-mt-1 sgm-text-sm sgm-text-gray-500 sgm-text-left sgm-font-normal">{{ hit.categories.join(',') }}</div>

@@ -21,8 +21,8 @@ let props = defineProps({
 
 <template>
     <div class="sgm-group sgm-relative sgm-cursor-pointer sgm-p-3" :class="(active || selected) ? 'sgm-bg-zinc-100/50' : ''">
-        <div class="sgm-aspect-h-1 sgm-aspect-w-1 sgm-w-full sgm-overflow-hidden sgm-rounded-md sgm-lg:aspect-none sgm-group-hover:sgm-opacity-75">
-            <img :src="hit.image" class="sgm-h-full sgm-w-full sgm-object-cover sgm-object-center sgm-lg:h-full sgm-lg:w-full" />
+        <div class="sgm-aspect-h-1 sgm-aspect-w-1 sgm-w-full sgm-overflow-hidden sgm-rounded-md lg:sgm-aspect-none sgm-group-hover:sgm-opacity-75">
+            <img :src="hit.image" class="sgm-h-full sgm-w-full sgm-object-cover sgm-object-center lg:sgm-h-full lg:sgm-w-full" />
         </div>
         <div class="sgm-mt-4 sgm-flex sgm-justify-between">
             <div>

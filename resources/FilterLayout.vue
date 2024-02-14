@@ -4,7 +4,7 @@
       <TransitionRoot as="template" :show="mobileFiltersOpen">
         <Dialog
           as="div"
-          class="sgm-relative sgm-z-40 sgm-lg:hidden"
+          class="sgm-relative sgm-z-40 lg:sgm-hidden"
           @close="mobileFiltersOpen = false"
         >
           <TransitionChild
@@ -58,13 +58,13 @@
         </Dialog>
       </TransitionRoot>
 
-      <main class="sgm-mx-auto sgm-max-w-7xl sgm-px-4 sgm-sm:px-6 sgm-lg:px-8">
+      <main class="sgm-mx-auto sgm-max-w-7xl sgm-px-4 sm:sgm-px-6 lg:sgm-px-8">
         <section aria-labelledby="products-heading" class="sgm-pb-24 sgm-pt-6">
           <div
-            class="sgm-grid sgm-grid-cols-1 sgm-gap-x-8 sgm-gap-y-10 sgm-lg:grid-cols-6"
+            class="sgm-grid sgm-grid-cols-1 sgm-gap-x-8 sgm-gap-y-10 lg:sgm-grid-cols-6"
           >
             <!-- Filters -->
-            <form class="sgm-hidden sgm-lg:block sgm-col-span-2">
+            <form class="sgm-hidden lg:sgm-block lg:sgm-lg sgm-col-span-2">
               <div class="sgm-flex sgm-flex-row sgm-space-x-3 sgm-items-center">
                 <h2
                   class="sgm-text-xl sgm-font-normal sgm-tracking-tight sgm-text-gray-900"
@@ -82,7 +82,7 @@
               </div>
             </form>
 
-            <div class="sgm-lg:col-span-4">
+            <div class="lg:sgm-col-span-4">
               <div class="sgm-flex sgm-flex-col sgm-items-start sgm-w-full">
                 <h2
                   class="sgm-text-xl sgm-font-normal sgm-tracking-tight sgm-text-gray-900"
@@ -104,7 +104,7 @@
                 </div>
                 <button
                   type="button"
-                  class="sgm--m-2 sgm-ml-4 sgm-p-2 sgm-text-gray-400 sgm-hover:text-gray-500 sgm-sm:ml-6 sgm-lg:hidden"
+                  class="sgm--m-2 sgm-ml-4 sgm-p-2 sgm-text-gray-400 sgm-hover:text-gray-500 sgm-sm:ml-6 lg:sgm-hidden"
                   @click="mobileFiltersOpen = true"
                 >
                   <span class="sgm-sr-only">Filters</span>
@@ -133,8 +133,7 @@
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
 
 <script setup>
 import { ref } from "vue";
