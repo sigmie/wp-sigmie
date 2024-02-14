@@ -13,15 +13,15 @@ export default defineConfig({
         tailwindcss,
         autoprefixer,
         // safeImportant,
-        prefixer({
-          prefix: '#sigmie-filters',
-          transform(prefix, selector, prefixedSelector, filePath, rule) {
-            if (selector.startsWith('@') || selector.includes('box-sizing')) {
-              return selector;
-            }
-            return prefixedSelector;
-          },
-        }),
+        // prefixer({
+        //   prefix: '#sigmie-filters',
+        //   transform(prefix, selector, prefixedSelector, filePath, rule) {
+        //     if (selector.startsWith('@') || selector.includes('box-sizing')) {
+        //       return selector;
+        //     }
+        //     return prefixedSelector;
+        //   },
+        // }),
       ],
     }
   },

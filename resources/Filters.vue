@@ -1,5 +1,5 @@
 <template>
-  <div class="sigmie-filters">
+  <div class="sgm-sigmie-filters">
     <SigmieSearch
       :debounce-ms="200"
       :facets="props.facets"
@@ -18,37 +18,37 @@
           <button
             v-if="filtersAreDirty"
             @click.prevent="onResetFilters"
-            class="hover:bg-zinc-50 cursor-pointer transition-colors flex flex-row space-x-4 items-center px-3 text-red-800"
+            class="sgm-hover:bg-zinc-50 sgm-cursor-pointer sgm-transition-colors sgm-flex sgm-flex-row sgm-space-x-4 sgm-items-center sgm-px-3 sgm-text-red-800"
           >
             Reset Filters
           </button>
         </template>
 
         <template v-slot:active-filters>
-          <div class="flex flex-row py-6 space-x-4 mt-1">
+          <div class="sgm-flex sgm-flex-row sgm-py-6 sgm-space-x-4 sgm-mt-1">
             <button
               v-if="priceRangeIsDirty"
               @click="onResetRange"
-              class="hover:bg-zinc-50 cursor-pointer transition-colors flex flex-row space-x-4 items-center border border-black rounded-full px-3 py-1 text-black"
+              class="sgm-hover:bg-zinc-50 sgm-cursor-pointer sgm-transition-colors sgm-flex sgm-flex-row sgm-space-x-4 sgm-items-center sgm-border sgm-border-black sgm-rounded-full sgm-px-3 sgm-py-1 sgm-text-black"
             >
               <span
                 >Price Range: from {{ priceRange[0] }} to
                 {{ priceRange[1] }}</span
               >
               <span>
-                <XIcon class="h-4 w-4"></XIcon>
+                <XIcon class="sgm-h-4 sgm-w-4"></XIcon>
               </span>
             </button>
             <button
               @click="onRemoveActiveFilter(activeFilterkey, activeFilter)"
-              class="hover:bg-zinc-50 cursor-pointer transition-colors flex flex-row space-x-4 items-center border border-black rounded-full px-3 py-1 text-black"
+              class="sgm-hover:bg-zinc-50 sgm-cursor-pointer sgm-transition-colors sgm-flex sgm-flex-row sgm-space-x-4 sgm-items-center sgm-border sgm-border-black sgm-rounded-full sgm-px-3 sgm-py-1 sgm-text-black"
               v-for="[activeFilterkey, activeFilter] in activeFilters"
             >
               <span>
                 {{ activeFilter }}
               </span>
               <span>
-                <XIcon class="h-4 w-4"></XIcon>
+                <XIcon class="sgm-h-4 sgm-w-4"></XIcon>
               </span>
             </button>
           </div>
@@ -64,36 +64,36 @@
         </template>
 
         <template v-slot:sort>
-          <div class="flex flex-row items-center space-x-3">
+          <div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3">
             <Menu
               as="div"
-              class="relative inline-block text-left rounded-full px-3 py-1 border border-gray-950"
+              class="sgm-relative sgm-inline-block sgm-text-left sgm-rounded-full sgm-px-3 sgm-py-1 sgm-border sgm-border-gray-950"
             >
               <div>
                 <MenuButton
-                  class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900"
+                  class="sgm-group sgm-inline-flex sgm-justify-center sgm-text-sm sgm-font-medium sgm-text-gray-700 sgm-hover:text-gray-900"
                 >
                   {{ sortByLabel }}
 
                   <ChevronDownIcon
-                    class="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                    class="sgm--mr-1 sgm-ml-1 sgm-h-5 sgm-w-5 sgm-flex-shrink-0 sgm-text-gray-400 sgm-group-hover:text-gray-500"
                     aria-hidden="true"
                   />
                 </MenuButton>
               </div>
 
               <transition
-                enter-active-class="transition ease-out duration-100"
-                enter-from-class="transform opacity-0 scale-95"
-                enter-to-class="transform opacity-100 scale-100"
-                leave-active-class="transition ease-in duration-75"
-                leave-from-class="transform opacity-100 scale-100"
-                leave-to-class="transform opacity-0 scale-95"
+                enter-active-class="sgm-transition ease-out sgm-duration-100"
+                enter-from-class="sgm-transform sgm-opacity-0 sgm-scale-95"
+                enter-to-class="sgm-transform sgm-opacity-100 sgm-scale-100"
+                leave-active-class="sgm-transition ease-in sgm-duration-75"
+                leave-from-class="sgm-transform sgm-opacity-100 sgm-scale-100"
+                leave-to-class="sgm-transform sgm-opacity-0 sgm-scale-95"
               >
                 <MenuItems
-                  class="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  class="sgm-absolute sgm-right-0 sgm-z-10 sgm-mt-2 sgm-w-40 sgm-origin-top-right sgm-rounded-md sgm-bg-white sgm-shadow-2xl sgm-ring-1 sgm-ring-black sgm-ring-opacity-5 sgm-focus:outline-none"
                 >
-                  <div class="py-1">
+                  <div class="sgm-py-1">
                     <MenuItem
                       :key="sortOptionIdx"
                       v-for="(sortOption, sortOptionIdx) in sortOptions"
@@ -101,9 +101,9 @@
                     >
                       <button
                         :class="[
-                          true ? 'font-medium text-gray-900' : 'text-gray-500',
-                          active ? 'bg-gray-100' : '',
-                          'block px-4 py-2 text-sm w-full text-left',
+                          true ? 'sgm-font-medium sgm-text-gray-900' : 'sgm-text-gray-500',
+                          active ? 'sgm-bg-gray-100' : '',
+                          'sgm-block sgm-px-4 sgm-py-2 sgm-text-sm sgm-w-full sgm-text-left',
                         ]"
                         @click="onSortChange(sortOption.value, sortOption.name)"
                       >
@@ -121,21 +121,21 @@
           </div>
         </template>
 
-        <template v-slot:hits>
-          <div class="relative w-full h-full">
+        <template sgm-slot:hits>
+          <div class="sgm-relative sgm-w-full sgm-h-full">
             <Curtain
               :is-open="loading"
-              class="absolute left-0 right-0"
+              class="sgm-absolute sgm-left-0 sgm-right-0"
             ></Curtain>
-            <div class="grid grid-cols-3 gap-8">
+            <div class="sgm-grid sgm-grid-cols-3 sgm-gap-8">
               <FilterHit v-for="hit in hits" :hit="hit"></FilterHit>
             </div>
           </div>
         </template>
 
-        <template v-slot:no-results>
+        <template sgm-slot:no-results>
           <svg
-            class="h-10 w-10"
+            class="sgm-h-10 sgm-w-10"
             viewBox="0 0 25 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -154,25 +154,25 @@
               fill="currentColor"
             />
           </svg>
-          <h3 class="mt-2 text-sm font-semibold text-gray-900">
+          <h3 class="sgm-mt-2 sgm-text-sm sgm-font-semibold sgm-text-gray-900">
             No products were found
           </h3>
-          <p class="mt-1 text-sm text-gray-500">
+          <p class="sgm-mt-1 sgm-text-sm sgm-text-gray-500">
             Try removing the last filter.
           </p>
-          <div class="mt-6">
+          <div class="sgm-mt-6">
             <button
               @click.prevent="onResetFilters"
               type="button"
-              class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              class="sgm-inline-flex sgm-items-center sgm-rounded-md sgm-bg-indigo-600 sgm-px-3 sgm-py-2 sgm-text-sm sgm-font-semibold sgm-text-white sgm-shadow-sm sgm-hover:bg-indigo-500 sgm-focus-visible:outline sgm-focus-visible:outline-2 sgm-focus-visible:outline-offset-2 sgm-focus-visible:outline-indigo-600"
             >
               Clear all filters
             </button>
           </div>
         </template>
 
-        <template v-slot:filters>
-          <div class="px-3 flex flex-col space-y-5">
+        <template sgm-slot:filters>
+          <div class="sgm-px-3 sgm-flex sgm-flex-col sgm-space-y-5">
             <PriceSlider
               :min="0"
               :max="facets.price_as_number?.max"

@@ -1,7 +1,9 @@
 <template>
-  <div class="relative w-full">
-    <div class="h-12 ct-chart ct-chart-pie ct-perfect-fourth"></div>
-    <div class="px-2">
+  <div class="sgm-relative sgm-w-full">
+    <div
+      class="sgm-h-12 sgm-ct-chart sgm-ct-chart-pie sgm-ct-perfect-fourth"
+    ></div>
+    <div class="sgm-px-2">
       <Slider
         :min="min"
         :max="max"
@@ -10,52 +12,56 @@
         @update:modelValue="onSliderChange"
         :lazy="false"
         :tooltips="false"
-        class="mt-2"
+        class="sgm-mt-2"
         :classes="{
           target:
-            'relative box-border select-none touch-none tap-highlight-transparent touch-callout-none disabled:cursor-not-allowed',
-          focused: 'slider-focused',
-          tooltipFocus: 'slider-tooltip-focus',
-          tooltipDrag: 'slider-tooltip-drag',
-          ltr: 'slider-ltr',
-          rtl: 'slider-rtl',
-          horizontal: 'slider-horizontal h-1.5',
-          vertical: 'slider-vertical w-1.5 h-80',
-          textDirectionRtl: 'slider-txt-rtl',
-          textDirectionLtr: 'slider-txt-ltr',
-          base: 'w-full h-full relative z-1 bg-gray-300 rounded',
-          connects: 'w-full h-full relative overflow-hidden z-0 rounded',
+            'sgm-relative sgm-box-border sgm-select-none sgm-touch-none sgm-tap-highlight-transparent sgm-touch-callout-none sgm-disabled:cursor-not-allowed',
+          focused: 'sgm-slider-focused',
+          tooltipFocus: 'sgm-slider-tooltip-focus',
+          tooltipDrag: 'sgm-slider-tooltip-drag',
+          ltr: 'sgm-slider-ltr',
+          rtl: 'sgm-slider-rtl',
+          horizontal: 'sgm-slider-horizontal sgm-h-1.5',
+          vertical: 'sgm-slider-vertical sgm-w-1.5 sgm-h-80',
+          textDirectionRtl: 'sgm-slider-txt-rtl',
+          textDirectionLtr: 'sgm-slider-txt-ltr',
+          base: 'sgm-w-full sgm-h-full sgm-relative sgm-z-1 sgm-bg-gray-300 sgm-rounded',
+          connects:
+            'sgm-w-full sgm-h-full sgm-relative sgm-overflow-hidden sgm-z-0 sgm-rounded',
           connect:
-            'absolute z-1 top-0 right-0 transform-origin-0 transform-style-flat h-full w-full bg-gray-500 cursor-pointer tap:duration-300 tap:transition-transform disabled:bg-gray-400 disabled:cursor-not-allowed',
+            'sgm-absolute sgm-z-1 sgm-top-0 sgm-right-0 sgm-transform-origin-0 sgm-transform-style-flat sgm-h-full sgm-w-full sgm-bg-gray-500 sgm-cursor-pointer sgm-tap:duration-300 sgm-tap:transition-transform sgm-disabled:bg-gray-400 sgm-disabled:cursor-not-allowed',
           origin:
-            'slider-origin absolute z-1 top-0 right-0 transform-origin-0 transform-style-flat h-full w-full h:h-0 v:-top-full txt-rtl-h:left-0 txt-rtl-h:right-auto v:w-0 tap:duration-300 tap:transition-transform',
+            'sgm-slider-origin sgm-absolute sgm-z-1 sgm-top-0 sgm-right-0 sgm-transform-origin-0 sgm-transform-style-flat sgm-h-full sgm-w-full sgm-h:h-0 sgm-v:-top-full sgm-txt-rtl-h:left-0 sgm-txt-rtl-h:right-auto sgm-v:w-0 sgm-tap:duration-300 sgm-tap:transition-transform',
           handle:
-            'absolute rounded-full bg-white border-0 shadow-slider cursor-grab focus:outline-none h:w-4 h:h-4 h:-top-1.5 h:-right-2 txt-rtl-h:-left-2 txt-rtl-h:right-auto v:w-4 v:h-4 v:-top-2 v:-right-1.25 disabled:cursor-not-allowed focus:ring focus:ring-gray-500 focus:ring-opacity-30',
-          handleLower: 'slider-hande-lower',
-          handleUpper: 'slider-hande-upper',
-          touchArea: 'h-full w-full',
+            'sgm-absolute sgm-rounded-full sgm-bg-white sgm-border-0 sgm-shadow-slider sgm-cursor-grab sgm-focus:outline-none sgm-h:w-4 sgm-h:h-4 sgm-h:-top-1.5 sgm-h:-right-2 sgm-txt-rtl-h:-left-2 sgm-txt-rtl-h:right-auto sgm-v:w-4 sgm-v:h-4 sgm-v:-top-2 sgm-v:-right-1.25 sgm-disabled:cursor-not-allowed sgm-focus:ring sgm-focus:ring-gray-500 sgm-focus:ring-opacity-30',
+          handleLower: 'sgm-slider-hande-lower',
+          handleUpper: 'sgm-slider-hande-upper',
+          touchArea: 'sgm-h-full sgm-w-full',
           tooltip:
-            'absolute block text-sm font-semibold whitespace-nowrap py-1 px-1.5 min-w-5 text-center text-white rounded border border-gray-500 bg-gray-500 transform h:-translate-x-1/2 h:left-1/2 v:-translate-y-1/2 v:top-1/2 disabled:bg-gray-400 disabled:border-gray-400 merge-h:translate-x-1/2 merge-h:left-auto merge-v:-translate-x-4 merge-v:top-auto tt-focus:hidden tt-focused:block tt-drag:hidden tt-dragging:block',
-          tooltipTop: 'bottom-6 h:arrow-bottom merge-h:bottom-3.5',
-          tooltipBottom: 'top-6 h:arrow-top merge-h:top-5',
-          tooltipLeft: 'right-6 v:arrow-right merge-v:right-1',
-          tooltipRight: 'left-6 v:arrow-left merge-v:left-7',
-          tooltipHidden: 'slider-tooltip-hidden',
-          active: 'slider-active shadow-slider-active cursor-grabbing',
-          draggable: 'cursor-ew-resize v:cursor-ns-resize',
-          tap: 'slider-state-tap',
-          drag: 'slider-state-drag',
+            'sgm-absolute sgm-block sgm-text-sm sgm-font-semibold sgm-whitespace-nowrap sgm-py-1 sgm-px-1.5 sgm-min-w-5 sgm-text-center sgm-text-white sgm-rounded sgm-border sgm-border-gray-500 sgm-bg-gray-500 sgm-transform sgm-h:-translate-x-1/2 sgm-h:left-1/2 sgm-v:-translate-y-1/2 sgm-v:top-1/2 sgm-disabled:bg-gray-400 sgm-disabled:border-gray-400 sgm-merge-h:translate-x-1/2 sgm-merge-h:left-auto sgm-merge-v:-translate-x-4 sgm-merge-v:top-auto sgm-tt-focus:hidden sgm-tt-focused:block sgm-tt-drag:hidden sgm-tt-dragging:block',
+          tooltipTop: 'sgm-bottom-6 sgm-h:arrow-bottom sgm-merge-h:bottom-3.5',
+          tooltipBottom: 'sgm-top-6 sgm-h:arrow-top sgm-merge-h:top-5',
+          tooltipLeft: 'sgm-right-6 sgm-v:arrow-right sgm-merge-v:right-1',
+          tooltipRight: 'sgm-left-6 sgm-v:arrow-left sgm-merge-v:left-7',
+          tooltipHidden: 'sgm-slider-tooltip-hidden',
+          active:
+            'sgm-slider-active sgm-shadow-slider-active sgm-cursor-grabbing',
+          draggable: 'sgm-cursor-ew-resize sgm-v:cursor-ns-resize',
+          tap: 'sgm-slider-state-tap',
+          drag: 'sgm-slider-state-drag',
         }"
       />
     </div>
-    <div class="flex flex-row justify-between items-center mt-2 space-x-4">
+    <div
+      class="sgm-flex sgm-flex-row sgm-justify-between sgm-items-center sgm-mt-2 sgm-space-x-4"
+    >
       <div>
         <label
           for="min-price"
-          class="block text-sm font-medium leading-6 text-gray-900"
+          class="sgm-block sgm-text-sm sgm-font-medium sgm-leading-6 sgm-text-gray-900"
           >Min</label
         >
-        <div class="relative mt-2 rounded-md shadow-sm">
+        <div class="sgm-relative sgm-mt-2 sgm-rounded-md sgm-shadow-sm">
           <InputGroup>
             <InputGroupAddon>$</InputGroupAddon>
             <InputNumber input-id="min-price" v-model="range[0]" />
@@ -66,10 +72,10 @@
       <div>
         <label
           for="max-price"
-          class="block text-sm font-medium leading-6 text-gray-900"
+          class="sgm-block sgm-text-sm sgm-font-medium sgm-leading-6 sgm-text-gray-900"
           >Max</label
         >
-        <div class="relative mt-2 rounded-md shadow-sm">
+        <div class="sgm-relative sgm-mt-2 sgm-rounded-md sgm-shadow-sm">
           <InputGroup>
             <InputGroupAddon>$</InputGroupAddon>
             <InputNumber input-id="max-price" v-model="range[1]" />
@@ -79,8 +85,9 @@
     </div>
   </div>
 </template>
+
 <style lang="scss" scoped>
-@import "../node_modules/@vueform/slider/themes/tailwind.scss";
+// @import "../node_modules/@vueform/slider/themes/tailwind.scss";
 </style>
 
 <script setup>
@@ -237,6 +244,6 @@ onMounted(() => {
 
 <style scoped>
 input[type="text"] {
-  @apply pl-8;
+  @apply sgm-pl-8;
 }
 </style>

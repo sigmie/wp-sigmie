@@ -189,7 +189,7 @@ class Sigmie_Plugin
 
 		add_shortcode('sigmie_filters', [$plugin_admin, 'render_sigmie_filters']);
 
-		$this->loader->add_filter('display_post_states', $plugin_admin, 'add_display_post_states',10,2);
+		$this->loader->add_filter('display_post_states', $plugin_admin, 'add_display_post_states', 10, 2);
 		$this->loader->add_filter('template_include', $plugin_admin, 'sigmie_template_include');
 
 		$this->loader->add_action('widgets_init', $plugin_admin, 'register_sigmie_widget');

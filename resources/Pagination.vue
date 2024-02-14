@@ -18,30 +18,30 @@ const totalPages = computed(() => Math.ceil(props.total / props.perPage));
 </script>
 
 <template>
-  <div class="flex flex-row w-full justify-end pb-4 max-w-7xl mx-auto">
-    <div class="flex flex-row justify-between w-full items-center bg-white">
+  <div class="sgm-flex sgm-flex-row sgm-w-full sgm-justify-end sgm-pb-4 sgm-max-w-7xl sgm-mx-auto">
+    <div class="sgm-flex sgm-flex-row sgm-justify-between sgm-w-full sgm-items-center sgm-bg-white">
       <button
         :disabled="currentPage <= 1"
         @click="$emit('changePage', currentPage - 1)"
-        class="relative inline-flex items-center px-2 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 rounded-l-md"
+        class="sgm-relative sgm-inline-flex sgm-items-center sgm-px-2 sgm-py-2 sgm-text-sm sgm-font-semibold sgm-text-gray-900 sgm-hover:bg-gray-50 sgm-focus:z-20 sgm-focus:outline-offset-0 sgm-rounded-l-md"
       >
-        <span class="sr-only">Previous</span>
-        <ChevronLeftIcon class="h-5 w-5" aria-hidden="true" />
+        <span class="sgm-sr-only">Previous</span>
+        <ChevronLeftIcon class="sgm-h-5 sgm-w-5" aria-hidden="true" />
       </button>
       <div>
         <button
           @click="$emit('changePage', 1)"
           :class="{
-            'text-red-500': parseInt(currentPage) === 1,
-            'text-gray-900': parseInt(currentPage) !== 1,
+            'sgm-text-red-500': parseInt(currentPage) === 1,
+            'sgm-text-gray-900': parseInt(currentPage) !== 1,
           }"
-          class="relative inline-flex items-center px-2 py-2 text-sm font-semibold hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+          class="sgm-relative sgm-inline-flex sgm-items-center sgm-px-2 sgm-py-2 sgm-text-sm sgm-font-semibold sgm-hover:bg-gray-50 sgm-focus:z-20 sgm-focus:outline-offset-0"
         >
           1
         </button>
         <span
           v-if="currentPage > 3 && totalPages > 5"
-          class="px-2 py-2 text-sm font-semibold text-gray-700"
+          class="sgm-px-2 sgm-py-2 sgm-text-sm sgm-font-semibold sgm-text-gray-700"
           >...</span
         >
         <template
@@ -54,27 +54,27 @@ const totalPages = computed(() => Math.ceil(props.total / props.perPage));
             v-if="page > 1 && page < totalPages"
             @click="$emit('changePage', page)"
             :class="{
-              'text-red-500': parseInt(page) === parseInt(currentPage),
-              'text-gray-900': parseInt(page) !== parseInt(currentPage),
+              'sgm-text-red-500': parseInt(page) === parseInt(currentPage),
+              'sgm-text-gray-900': parseInt(page) !== parseInt(currentPage),
             }"
-            class="relative inline-flex items-center px-2 py-2 text-sm font-semibold hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+            class="sgm-relative sgm-inline-flex sgm-items-center sgm-px-2 sgm-py-2 sgm-text-sm sgm-font-semibold sgm-hover:bg-gray-50 sgm-focus:z-20 sgm-focus:outline-offset-0"
           >
             {{ page }}
           </button>
         </template>
         <span
           v-if="currentPage < totalPages - 2 && totalPages > 5"
-          class="px-2 py-2 text-sm font-semibold text-gray-700"
+          class="sgm-px-2 sgm-py-2 sgm-text-sm sgm-font-semibold sgm-text-gray-700"
           >...</span
         >
         <button
           v-if="totalPages > 1"
           @click="$emit('changePage', totalPages)"
           :class="{
-            'text-red-500': parseInt(currentPage) === parseInt(totalPages),
-            'text-gray-900': parseInt(currentPage) !== parseInt(totalPages),
+            'sgm-text-red-500': parseInt(currentPage) === parseInt(totalPages),
+            'sgm-text-gray-900': parseInt(currentPage) !== parseInt(totalPages),
           }"
-          class="relative inline-flex items-center px-2 py-2 text-sm font-semibold hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+          class="sgm-relative sgm-inline-flex sgm-items-center sgm-px-2 sgm-py-2 sgm-text-sm sgm-font-semibold sgm-hover:bg-gray-50 sgm-focus:z-20 sgm-focus:outline-offset-0"
         >
           {{ totalPages }}
         </button>
@@ -82,10 +82,10 @@ const totalPages = computed(() => Math.ceil(props.total / props.perPage));
       <button
         :disabled="currentPage >= totalPages"
         @click="$emit('changePage', currentPage + 1)"
-        class="relative inline-flex items-center px-2 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 rounded-r-md"
+        class="sgm-relative sgm-inline-flex sgm-items-center sgm-px-2 sgm-py-2 sgm-text-sm sgm-font-semibold sgm-text-gray-900 sgm-hover:bg-gray-50 sgm-focus:z-20 sgm-focus:outline-offset-0 sgm-rounded-r-md"
       >
-        <span class="sr-only">Next</span>
-        <ChevronRightIcon class="h-5 w-5" aria-hidden="true" />
+        <span class="sgm-sr-only">Next</span>
+        <ChevronRightIcon class="sgm-h-5 sgm-w-5" aria-hidden="true" />
       </button>
     </div>
   </div>

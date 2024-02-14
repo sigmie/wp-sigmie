@@ -1,14 +1,14 @@
 <template>
-  <Disclosure :defaultOpen="true" as="div" class="py-6" v-slot="{ open }">
-    <div class="-my-3 flow-root">
+  <Disclosure :defaultOpen="true" as="div" class="sgm-py-6" v-slot="{ open }">
+    <div class="sgm--my-3 sgm-flow-root">
       <DisclosureButton
         as="h3"
-        class="flex w-full cursor-pointer items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500"
+        class="sgm-flex sgm-w-full sgm-cursor-pointer sgm-items-center sgm-justify-between sgm-bg-white sgm-py-3 sgm-text-sm sgm-text-gray-400 sgm-hover:text-gray-500"
       >
-        <span class="text-lg font-normal text-gray-900">{{ label }}</span>
-        <span class="ml-6 flex items-center">
+        <span class="sgm-text-lg sgm-font-normal sgm-text-gray-900">{{ label }}</span>
+        <span class="sgm-ml-6 sgm-flex sgm-items-center">
           <svg
-            class="h-5 w-5 text-black"
+            class="sgm-h-5 sgm-w-5 sgm-text-black"
             v-if="!open"
             viewBox="0 0 24 24"
             version="1.1"
@@ -29,7 +29,7 @@
           </svg>
           <svg
             v-else
-            class="h-5 w-5"
+            class="sgm-h-5 sgm-w-5"
             viewBox="0 0 24 24"
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
@@ -51,12 +51,12 @@
         </span>
       </DisclosureButton>
     </div>
-    <DisclosurePanel class="pt-6">
-      <div class="overflow-y-scroll space-y-4">
+    <DisclosurePanel class="sgm-pt-6">
+      <div class="sgm-overflow-y-scroll sgm-space-y-4">
         <div
           v-for="(count, facet) in options"
           :key="facet"
-          class="flex flex-row items-center"
+          class="sgm-flex sgm-flex-row sgm-items-center"
         >
           <Checkbox
             :input-id="`filter-${facet}`"
@@ -66,8 +66,8 @@
             @update:model-value="(newVal) => onChange(facet, newVal)"
           ></Checkbox>
 
-          <label :for="`filter-${facet}`" class="ml-3 text-base"
-            ><span class="text-black">{{ facet }}</span> ({{ count }})</label
+          <label :for="`filter-${facet}`" class="sgm-ml-3 sgm-text-base"
+            ><span class="sgm-text-black">{{ facet }}</span> ({{ count }})</label
           >
         </div>
       </div>

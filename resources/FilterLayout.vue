@@ -1,51 +1,55 @@
 <template>
-  <div class="bg-white">
+  <div class="sgm-bg-white">
     <div>
       <TransitionRoot as="template" :show="mobileFiltersOpen">
         <Dialog
           as="div"
-          class="relative z-40 lg:hidden"
+          class="sgm-relative sgm-z-40 sgm-lg:hidden"
           @close="mobileFiltersOpen = false"
         >
           <TransitionChild
             as="template"
-            enter="transition-opacity ease-linear duration-300"
-            enter-from="opacity-0"
-            enter-to="opacity-100"
-            leave="transition-opacity ease-linear duration-300"
-            leave-from="opacity-100"
-            leave-to="opacity-0"
+            enter="sgm-transition-opacity sgm-ease-linear sgm-duration-300"
+            enter-from="sgm-opacity-0"
+            enter-to="sgm-opacity-100"
+            leave="sgm-transition-opacity sgm-ease-linear sgm-duration-300"
+            leave-from="sgm-opacity-100"
+            leave-to="sgm-opacity-0"
           >
-            <div class="fixed inset-0 bg-black bg-opacity-25" />
+            <div class="sgm-fixed sgm-inset-0 sgm-bg-black sgm-bg-opacity-25" />
           </TransitionChild>
 
-          <div class="fixed inset-0 z-40 flex">
+          <div class="sgm-fixed sgm-inset-0 sgm-z-40 sgm-flex">
             <TransitionChild
               as="template"
-              enter="transition ease-in-out duration-300 transform"
-              enter-from="translate-x-full"
-              enter-to="translate-x-0"
-              leave="transition ease-in-out duration-300 transform"
-              leave-from="translate-x-0"
-              leave-to="translate-x-full"
+              enter="sgm-transition sgm-ease-in-out sgm-duration-300 sgm-transform"
+              enter-from="sgm-translate-x-full"
+              enter-to="sgm-translate-x-0"
+              leave="sgm-transition sgm-ease-in-out sgm-duration-300 sgm-transform"
+              leave-from="sgm-translate-x-0"
+              leave-to="sgm-translate-x-full"
             >
               <DialogPanel
-                class="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl"
+                class="sgm-relative sgm-ml-auto sgm-flex sgm-h-full sgm-w-full sgm-max-w-xs sgm-flex-col sgm-overflow-y-auto sgm-bg-white sgm-py-4 sgm-pb-12 sgm-shadow-xl"
               >
-                <div class="flex items-center justify-between px-4">
-                  <h2 class="text-lg font-medium text-gray-900">Filters</h2>
+                <div
+                  class="sgm-flex sgm-items-center sgm-justify-between sgm-px-4"
+                >
+                  <h2 class="sgm-text-lg sgm-font-medium sgm-text-gray-900">
+                    Filters
+                  </h2>
                   <button
                     type="button"
-                    class="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-gray-400"
+                    class="sgm--mr-2 sgm-flex sgm-h-10 sgm-w-10 sgm-items-center sgm-justify-center sgm-rounded-md sgm-bg-white sgm-p-2 sgm-text-gray-400"
                     @click="mobileFiltersOpen = false"
                   >
-                    <span class="sr-only">Close menu</span>
-                    <XMarkIcon class="h-6 w-6" aria-hidden="true" />
+                    <span class="sgm-sr-only">Close menu</span>
+                    <XMarkIcon class="sgm-h-6 sgm-w-6" aria-hidden="true" />
                   </button>
                 </div>
 
                 <!-- Filters -->
-                <form class="mt-4 border-t border-gray-200">
+                <form class="sgm-mt-4 sgm-border-t sgm-border-gray-200">
                   <slot name="filters"></slot>
                 </form>
               </DialogPanel>
@@ -54,13 +58,17 @@
         </Dialog>
       </TransitionRoot>
 
-      <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <section aria-labelledby="products-heading" class="pb-24 pt-6">
-          <div class="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-6">
+      <main class="sgm-mx-auto sgm-max-w-7xl sgm-px-4 sgm-sm:px-6 sgm-lg:px-8">
+        <section aria-labelledby="products-heading" class="sgm-pb-24 sgm-pt-6">
+          <div
+            class="sgm-grid sgm-grid-cols-1 sgm-gap-x-8 sgm-gap-y-10 sgm-lg:grid-cols-6"
+          >
             <!-- Filters -->
-            <form class="hidden lg:block col-span-2">
-              <div class="flex flex-row space-x-3 items-center">
-                <h2 class="text-xl font-normal tracking-tight text-gray-900">
+            <form class="sgm-hidden sgm-lg:block sgm-col-span-2">
+              <div class="sgm-flex sgm-flex-row sgm-space-x-3 sgm-items-center">
+                <h2
+                  class="sgm-text-xl sgm-font-normal sgm-tracking-tight sgm-text-gray-900"
+                >
                   {{ title }}
                 </h2>
                 <div>
@@ -69,44 +77,50 @@
                   </div>
                 </div>
               </div>
-              <div class="mt-6">
+              <div class="sgm-mt-6">
                 <slot name="filters"></slot>
               </div>
             </form>
 
-            <div class="lg:col-span-4">
-              <div class="flex flex-col items-start w-full">
-                <h2 class="text-xl font-normal tracking-tight text-gray-900">
+            <div class="sgm-lg:col-span-4">
+              <div class="sgm-flex sgm-flex-col sgm-items-start sgm-w-full">
+                <h2
+                  class="sgm-text-xl sgm-font-normal sgm-tracking-tight sgm-text-gray-900"
+                >
                   {{ hitsTitle }}
                 </h2>
-                <div class="text-gray-900 mt-2">{{ total }} Products</div>
+                <div class="sgm-text-gray-900 sgm-mt-2">
+                  {{ total }} Products
+                </div>
                 <slot name="active-filters"></slot>
               </div>
-              <div class="flex items-baseline justify-between w-full">
+              <div
+                class="sgm-flex sgm-items-baseline sgm-justify-between sgm-w-full"
+              >
                 <slot name="sort"></slot>
 
-                <div class="max-w-sm">
+                <div class="sgm-max-w-sm">
                   <slot v-if="total > 0" name="pagination"></slot>
                 </div>
                 <button
                   type="button"
-                  class="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
+                  class="sgm--m-2 sgm-ml-4 sgm-p-2 sgm-text-gray-400 sgm-hover:text-gray-500 sgm-sm:ml-6 sgm-lg:hidden"
                   @click="mobileFiltersOpen = true"
                 >
-                  <span class="sr-only">Filters</span>
-                  <FunnelIcon class="h-5 w-5" aria-hidden="true" />
+                  <span class="sgm-sr-only">Filters</span>
+                  <FunnelIcon class="sgm-h-5 sgm-w-5" aria-hidden="true" />
                 </button>
               </div>
 
               <div v-if="total > 0">
                 <slot name="hits"></slot>
 
-                <div class="mt-6">
+                <div class="sgm-mt-6">
                   <slot name="pagination"></slot>
                 </div>
               </div>
               <div
-                class="h-80 flex justify-h justify-center flex-col items-center"
+                class="sgm-h-80 sgm-flex sgm-justify-h sgm-justify-center sgm-flex-col sgm-items-center"
                 v-else
               >
                 <slot name="no-results"></slot>
@@ -120,9 +134,6 @@
 </template>
 
 <style scoped>
-button {
-  @apply bg-transparent;
-}
 </style>
 
 <script setup>

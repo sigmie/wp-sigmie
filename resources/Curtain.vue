@@ -2,14 +2,14 @@
   <TransitionRoot appear :show="isOpen" as="template">
     <TransitionChild
       as="template"
-      enter="duration-300 ease-out"
-      enter-from="opacity-0"
-      enter-to="opacity-100"
-      leave="duration-200 ease-in"
-      leave-from="opacity-100"
-      leave-to="opacity-0"
+      enter="sgm-duration-300 sgm-ease-out"
+      enter-from="sgm-opacity-0"
+      enter-to="sgm-opacity-100"
+      leave="sgm-duration-200 sgm-ease-in"
+      leave-from="sgm-opacity-100"
+      leave-to="sgm-opacity-0"
     >
-      <div class="bg-white/50 h-full w-full"></div>
+      <div class="sgm-bg-white/50 sgm-h-full sgm-w-full"></div>
     </TransitionChild>
   </TransitionRoot>
 </template>
