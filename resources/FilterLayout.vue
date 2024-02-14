@@ -58,7 +58,7 @@
         </Dialog>
       </TransitionRoot>
 
-      <main class="sgm-mx-auto sgm-max-w-7xl sgm-px-4 sm:sgm-px-6 lg:sgm-px-8">
+      <main class="">
         <section aria-labelledby="products-heading" class="sgm-pb-24 sgm-pt-6">
           <div
             class="sgm-grid sgm-grid-cols-1 sgm-gap-x-8 sgm-gap-y-10 lg:sgm-grid-cols-6"
