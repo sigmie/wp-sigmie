@@ -200,8 +200,9 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 input[type="text"] {
   @apply sgm-pl-8;
 }
+
 </style>

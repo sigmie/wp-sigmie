@@ -1,11 +1,14 @@
 import { createApp } from 'vue'
 import Search from "@/Search.vue";
 import Filters from "@/Filters.vue";
+
+
 import './main.css'
+
+import 'primevue/resources/themes/aura-light-amber/theme.css'
 
 import PrimeVue from "primevue/config";
 
-import 'primevue/resources/themes/aura-light-green/theme.css'
 
 document.addEventListener("DOMContentLoaded", function () {
 

@@ -133,7 +133,9 @@
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+</style>
 
 <script setup>
 import { ref } from "vue";

@@ -15,19 +15,20 @@ export default defineConfig({
         safeImportant(
           {
             excludeSelectors: (selector) => {
+              // apply only the primevue
               return !selector.startsWith('.p-');
             }
           },
         ),
-        prefixer({
-          prefix: '#sigmie-filters',
-          transform(prefix, selector, prefixedSelector, filePath, rule) {
-            if (selector.startsWith('@') || selector.includes('box-sizing')) {
-              return selector;
-            }
-            return prefixedSelector;
-          },
-        }),
+        // prefixer({
+        //   prefix: '#sigmie-filters',
+        //   transform(prefix, selector, prefixedSelector, filePath, rule) {
+        //     if (selector.startsWith('@') || selector.includes('box-sizing')) {
+        //       return selector;
+        //     }
+        //     return prefixedSelector;
+        //   },
+        // }),
       ],
     }
   },
