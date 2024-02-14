@@ -121,7 +121,7 @@
           </div>
         </template>
 
-        <template sgm-slot:hits>
+        <template v-slot:hits>
           <div class="sgm-relative sgm-w-full sgm-h-full">
             <Curtain
               :is-open="loading"
@@ -133,7 +133,7 @@
           </div>
         </template>
 
-        <template sgm-slot:no-results>
+        <template v-slot:no-results>
           <svg
             class="sgm-h-10 sgm-w-10"
             viewBox="0 0 25 24"

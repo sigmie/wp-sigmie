@@ -12,7 +12,13 @@ export default defineConfig({
       plugins: [
         tailwindcss,
         autoprefixer,
-        // safeImportant,
+        safeImportant(
+          {
+            excludeSelectors: (selector) => {
+              return !selector.startsWith('.p-');
+            }
+          },
+        ),
         prefixer({
           prefix: '#sigmie-filters',
           transform(prefix, selector, prefixedSelector, filePath, rule) {
