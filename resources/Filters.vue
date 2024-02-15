@@ -15,13 +15,13 @@
     >
       <Layout title="Filters" hits-title="WooCommerce Products" :total="total">
         <template v-slot:reset>
-          <button
+          <Button
             v-if="filtersAreDirty"
             @click.prevent="onResetFilters"
             class="sgm-hover:bg-zinc-50 sgm-cursor-pointer sgm-transition-colors sgm-flex sgm-flex-row sgm-space-x-4 sgm-items-center sgm-px-3 sgm-text-red-800"
           >
             Reset Filters
-          </button>
+          </Button>
         </template>
 
         <template v-slot:active-filters>
@@ -67,18 +67,21 @@
           <div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3">
             <Menu
               as="div"
-              class="sgm-relative sgm-inline-block sgm-text-left sgm-rounded-full sgm-px-3 sgm-py-1 sgm-border sgm-border-gray-950"
+              class="sgm-relative sgm-inline-block sgm-text-left sgm-rounded-full sgm-py-1 sgm-border sgm-border-gray-950"
             >
               <div>
                 <MenuButton
+                  as="div"
                   class="sgm-group sgm-inline-flex sgm-justify-center sgm-text-sm sgm-font-medium sgm-text-gray-700 sgm-hover:text-gray-900"
                 >
-                  {{ sortByLabel }}
+                  <Button severity="secondary" :label="sortByLabel" outlined>
+                    {{ sortByLabel }}
 
-                  <ChevronDownIcon
-                    class="sgm--mr-1 sgm-ml-1 sgm-h-5 sgm-w-5 sgm-flex-shrink-0 sgm-text-gray-400 sgm-group-hover:text-gray-500"
-                    aria-hidden="true"
-                  />
+                    <ChevronDownIcon
+                      class="sgm--mr-1 sgm-ml-1 sgm-h-5 sgm-w-5 sgm-flex-shrink-0 sgm-text-gray-400 sgm-group-hover:text-gray-500"
+                      aria-hidden="true"
+                    />
+                  </Button>
                 </MenuButton>
               </div>
 
@@ -101,7 +104,9 @@
                     >
                       <button
                         :class="[
-                          true ? 'sgm-font-medium sgm-text-gray-900' : 'sgm-text-gray-500',
+                          true
+                            ? 'sgm-font-medium sgm-text-gray-900'
+                            : 'sgm-text-gray-500',
                           active ? 'sgm-bg-gray-100' : '',
                           'sgm-block sgm-px-4 sgm-py-2 sgm-text-sm sgm-w-full sgm-text-left',
                         ]"
@@ -210,6 +215,7 @@ import FilterHit from "./FilterHit.vue";
 import Facet from "./Facet.vue";
 import Layout from "./FilterLayout.vue";
 import Chip from "primevue/chip";
+import Button from "primevue/button";
 
 const props = defineProps({
   application: String,
