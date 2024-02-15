@@ -1,7 +1,4 @@
 <template>
-  <Button severity="secondary" :label="'I am a button'" outlined>
-  </Button>
-
   <div class="sgm-sigmie-filters">
     <SigmieSearch
       :debounce-ms="200"
@@ -29,31 +26,31 @@
 
         <template v-slot:active-filters>
           <div class="sgm-flex sgm-flex-row sgm-py-6 sgm-space-x-4 sgm-mt-1">
-            <button
+            <Chip
               v-if="priceRangeIsDirty"
               @click="onResetRange"
-              class="sgm-hover:bg-zinc-50 sgm-cursor-pointer sgm-transition-colors sgm-flex sgm-flex-row sgm-space-x-4 sgm-items-center sgm-border sgm-border-black sgm-rounded-full sgm-px-3 sgm-py-1 sgm-text-black"
+              class="sgm-cursor-pointer"
             >
-              <span
-                >Price Range: from {{ priceRange[0] }} to
-                {{ priceRange[1] }}</span
-              >
-              <span>
+              <div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3">
+                <span
+                  >Price Range: from {{ priceRange[0] }} to
+                  {{ priceRange[1] }}</span
+                >
                 <XIcon class="sgm-h-4 sgm-w-4"></XIcon>
-              </span>
-            </button>
-            <button
+              </div>
+            </Chip>
+            <Chip
               @click="onRemoveActiveFilter(activeFilterkey, activeFilter)"
-              class="sgm-hover:bg-zinc-50 sgm-cursor-pointer sgm-transition-colors sgm-flex sgm-flex-row sgm-space-x-4 sgm-items-center sgm-border sgm-border-black sgm-rounded-full sgm-px-3 sgm-py-1 sgm-text-black"
+              class="sgm-cursor-pointer"
               v-for="[activeFilterkey, activeFilter] in activeFilters"
             >
-              <span>
-                {{ activeFilter }}
-              </span>
-              <span>
+              <div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3">
+                <span>
+                  {{ activeFilter }}
+                </span>
                 <XIcon class="sgm-h-4 sgm-w-4"></XIcon>
-              </span>
-            </button>
+              </div>
+            </Chip>
           </div>
         </template>
 
@@ -123,9 +120,15 @@
               </transition>
             </Menu>
 
-            <Chip @click="onOffersClick" :class="onlyOffers ? '' : ''" class="">
-              Offers
-            </Chip>
+            <div>
+              <Button
+                outlined
+                label="Offers"
+                severity="secondary"
+                @click="onOffersClick"
+              >
+              </Button>
+            </div>
           </div>
         </template>
 

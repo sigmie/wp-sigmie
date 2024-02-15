@@ -62,12 +62,12 @@ export default defineConfig({
     outDir: 'public',
     rollupOptions: {
       input: {
-        main: process.env.NODE_ENV === 'production' ? 'resources/' + process.env.SIGMIE_THEME + '-main.js' : 'resources/aura-light-lime-main.js',
+        main: 'resources/' + process.env.SIGMIE_THEME + '-main.js',
       },
       output: {
-        entryFileNames: process.env.NODE_ENV === 'production' ? 'assets/sigmie-' + process.env.SIGMIE_THEME + '.js' : 'assets/sigmie-aura-light-lime.js',
-        chunkFileNames: process.env.NODE_ENV === 'production' ? 'assets/sigmie-' + process.env.SIGMIE_THEME + '.js' : 'assets/sigmie-aura-light-lime.js',
-        assetFileNames: process.env.NODE_ENV === 'production' ? 'assets/sigmie-' + process.env.SIGMIE_THEME + '.[ext]' : 'assets/sigmie-aura-light-lime.[ext]'
+        entryFileNames: 'assets/sigmie-' + process.env.SIGMIE_THEME + '.js',
+        chunkFileNames: 'assets/sigmie-' + process.env.SIGMIE_THEME + '.js',
+        assetFileNames: 'assets/sigmie-' + process.env.SIGMIE_THEME + '.[ext]'
       },
     },
   },
