@@ -99,7 +99,7 @@ class Sigmie_Public
 		 * class.
 		 */
 
-		$theme =  get_option('sigmie_theme', 'aura-light-amber');
+		$theme =  get_option('sigmie_theme', 'aura-light-lime');
 
 		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'assets/sigmie-' . $theme . '.js', [], $this->version, false);
 	}

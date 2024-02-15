@@ -124,6 +124,50 @@ class Sigmie_Admin_Page_Filters
 			'sigmie_filterable_attributes',
 			array($this, 'sanitize_filterable_attributes')
 		);
+
+		add_settings_field(
+			'theme',
+			esc_html__('Theme', 'sigmie'),
+			array($this, 'theme_callback'),
+			$this->slug,
+			$this->section
+		);
+
+		register_setting(
+			$this->option_group,
+			'sigmie_theme',
+			array($this, 'sanitize_theme')
+		);
+	}
+
+	public function sanitize_theme($values)
+	{
+		return $values;
+	}
+
+	public function theme_callback()
+	{
+		$selectedTheme = (string) get_option('sigmie_theme', 'aura-light-lime');
+
+		echo '<select name="sigmie_theme" class="regular-text">';
+		$themes = [
+			"aura-light-amber",
+			"aura-light-green",
+			"aura-light-noir",
+			"aura-light-teal",
+			"aura-light-blue",
+			"aura-light-indigo",
+			"aura-light-pink",
+			"aura-light-cyan",
+			"aura-light-lime",
+			"aura-light-purple"
+		];
+		foreach ($themes as $theme) {
+			$selected = $selectedTheme === $theme ? ' selected' : '';
+			$label = ucwords(end(explode('-', $theme)));
+			echo '<option value="' . esc_attr($theme) . '"' . $selected . '>' . esc_html($label) . '</option>';
+		}
+		echo '</select>';
 	}
 
 	public function sanitize_filterable_attributes($values)

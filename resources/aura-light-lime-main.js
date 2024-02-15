@@ -1,3 +1,3 @@
-import 'primevue/resources/themes/aura-light-pink/theme.css'
+import 'primevue/resources/themes/aura-light-lime/theme.css'
 
 import './main.js';
