@@ -96,26 +96,15 @@
                 <MenuItems
                   class="sgm-absolute sgm-right-0 sgm-z-10 sgm-mt-2 sgm-w-40 sgm-origin-top-right sgm-rounded-md sgm-bg-white sgm-shadow-2xl sgm-ring-1 sgm-ring-black sgm-ring-opacity-5 sgm-focus:outline-none"
                 >
-                  <div class="sgm-py-1">
-                    <MenuItem
-                      :key="sortOptionIdx"
-                      v-for="(sortOption, sortOptionIdx) in sortOptions"
-                      v-slot="{ active }"
-                    >
-                      <button
-                        :class="[
-                          true
-                            ? 'sgm-font-medium sgm-text-gray-900'
-                            : 'sgm-text-gray-500',
-                          active ? 'sgm-bg-gray-100' : '',
-                          'sgm-block sgm-px-4 sgm-py-2 sgm-text-sm sgm-w-full sgm-text-left',
-                        ]"
-                        @click="onSortChange(sortOption.value, sortOption.name)"
-                      >
-                        {{ sortOption.name }}
-                      </button>
-                    </MenuItem>
-                  </div>
+                  <PrimeMenu :model="sortOptions">
+                    <template #item="{ item, props }">
+                      <MenuItem v-slot="{ active }">
+                        <div class="smg-py-2 sgm-px-1" @click="onSortChange(item.value, item.name)">
+                          {{ item.name }}
+                        </div>
+                      </MenuItem>
+                    </template>
+                  </PrimeMenu>
                 </MenuItems>
               </transition>
             </Menu>
@@ -222,6 +211,7 @@ import Facet from "./Facet.vue";
 import Layout from "./FilterLayout.vue";
 import Chip from "primevue/chip";
 import Button from "primevue/button";
+import PrimeMenu from "primevue/menu";
 
 const props = defineProps({
   application: String,
