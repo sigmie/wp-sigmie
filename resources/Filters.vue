@@ -99,7 +99,7 @@
                   <PrimeMenu :model="sortOptions">
                     <template #item="{ item, props }">
                       <MenuItem v-slot="{ active }">
-                        <div class="smg-py-2 sgm-px-1" @click="onSortChange(item.value, item.name)">
+                        <div ole="button" tabindex="0" class="sgm-py-2 sgm-px-1 sgm-cursor-pointer" @click.prevent="onSortChange(item.value, item.name)">
                           {{ item.name }}
                         </div>
                       </MenuItem>
