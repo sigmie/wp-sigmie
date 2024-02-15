@@ -1,4 +1,7 @@
 <template>
+  <Button severity="secondary" :label="'I am a button'" outlined>
+  </Button>
+
   <div class="sgm-sigmie-filters">
     <SigmieSearch
       :debounce-ms="200"

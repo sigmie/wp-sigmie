@@ -74,7 +74,9 @@ class Sigmie_Public
 		 * class.
 		 */
 
-		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'assets/sigmie-public.css', array(), $this->version, 'all');
+		$theme =  get_option('sigmie_theme', 'aura-light-amber');
+
+		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'assets/sigmie-' . $theme . '.css', array(), $this->version, 'all');
 	}
 
 	/**
@@ -97,6 +99,8 @@ class Sigmie_Public
 		 * class.
 		 */
 
-		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'assets/sigmie-public.js', [], $this->version, false);
+		$theme =  get_option('sigmie_theme', 'aura-light-amber');
+
+		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'assets/sigmie-' . $theme . '.js', [], $this->version, false);
 	}
 }
