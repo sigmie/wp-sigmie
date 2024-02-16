@@ -80,7 +80,7 @@
               </div>
             </form>
 
-            <div class="">
+            <div class="sgm-w-full">
               <div class="sgm-flex sgm-flex-col sgm-items-start sgm-w-full">
                 <h2
                   class="sgm-text-xl sgm-font-normal sgm-tracking-tight sgm-text-gray-900"
