@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   prefix: 'sgm-',
-  // important: true,
+  important: true,
   content: [
     'resources/**/*.vue',
   ],

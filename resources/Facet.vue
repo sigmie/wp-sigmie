@@ -5,7 +5,7 @@
         as="h3"
         class="sgm-flex sgm-w-full sgm-cursor-pointer sgm-items-center sgm-justify-between sgm-bg-white sgm-py-3 sgm-text-sm sgm-text-gray-400 sgm-hover:text-gray-500"
       >
-        <span class="sgm-text-lg sgm-font-normal sgm-text-gray-900">{{
+        <span class="sgm-block sgm-text-base sgm-font-semibold sgm-text-gray-900">{{
           label
         }}</span>
         <span class="sgm-ml-6 sgm-flex sgm-items-center">
@@ -62,7 +62,7 @@
       leave-to-class="sgm-transform sgm-scale-95 sgm-opacity-0"
     >
       <DisclosurePanel class="sgm-pt-6">
-        <div class="sgm-overflow-y-scroll sgm-space-y-4">
+        <div class="sgm-space-y-4">
           <div
             v-for="(count, facet) in options"
             :key="facet"

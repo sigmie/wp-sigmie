@@ -15,27 +15,26 @@
     >
       <Layout title="Filters" hits-title="WooCommerce Products" :total="total">
         <template v-slot:reset>
-          <Button
+          <a
             v-if="filtersAreDirty"
             @click.prevent="onResetFilters"
-            class="sgm-hover:bg-zinc-50 sgm-cursor-pointer sgm-transition-colors sgm-flex sgm-flex-row sgm-space-x-4 sgm-items-center sgm-px-3 sgm-text-red-800"
+            class="sgm-hover:bg-zinc-50 sgm-text-primary-color sgm-cursor-pointer sgm-transition-colors sgm-flex sgm-flex-row sgm-space-x-4 sgm-items-center sgm-px-3"
           >
             Reset Filters
-          </Button>
+          </a>
         </template>
 
         <template v-slot:active-filters>
-          <div class="sgm-flex sgm-flex-row sgm-py-6 sgm-space-x-4 sgm-mt-1">
+          <div
+            class="sgm-flex sgm-flex-row sgm-py-6 sgm-space-x-4 sgm-mt-1 sgm-h-20"
+          >
             <Chip
-              v-if="priceRangeIsDirty"
-              @click="onResetRange"
+              v-if="onlyOffers"
+              @click="onOffersClick"
               class="sgm-cursor-pointer"
             >
               <div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3">
-                <span
-                  >Price Range: from {{ priceRange[0] }} to
-                  {{ priceRange[1] }}</span
-                >
+                <span>Offers</span>
                 <XIcon class="sgm-h-4 sgm-w-4"></XIcon>
               </div>
             </Chip>
@@ -48,6 +47,19 @@
                 <span>
                   {{ activeFilter }}
                 </span>
+                <XIcon class="sgm-h-4 sgm-w-4"></XIcon>
+              </div>
+            </Chip>
+            <Chip
+              v-if="priceRangeIsDirty"
+              @click="onResetRange"
+              class="sgm-cursor-pointer"
+            >
+              <div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3">
+                <span
+                  >Price Range: from {{ priceRange[0] }} to
+                  {{ priceRange[1] }}</span
+                >
                 <XIcon class="sgm-h-4 sgm-w-4"></XIcon>
               </div>
             </Chip>
@@ -94,12 +106,17 @@
                 leave-to-class="sgm-transform sgm-opacity-0 sgm-scale-95"
               >
                 <MenuItems
-                  class="sgm-absolute sgm-right-0 sgm-z-10 sgm-mt-2 sgm-w-40 sgm-origin-top-right sgm-rounded-md sgm-bg-white sgm-shadow-2xl sgm-ring-1 sgm-ring-black sgm-ring-opacity-5 sgm-focus:outline-none"
+                  class="sgm-absolute sgm-left-0 sgm-z-10 sgm-mt-2 sgm-w-40 sgm-origin-top-right sgm-rounded-md sgm-bg-white sgm-shadow-2xl sgm-ring-1 sgm-ring-black sgm-ring-opacity-5 sgm-focus:outline-none"
                 >
                   <PrimeMenu :model="sortOptions">
                     <template #item="{ item, props }">
                       <MenuItem v-slot="{ active }">
-                        <div ole="button" tabindex="0" class="sgm-py-2 sgm-px-3 sgm-cursor-pointer" @click.prevent="onSortChange(item.value, item.name)">
+                        <div
+                          ole="button"
+                          tabindex="0"
+                          class="sgm-py-2 sgm-px-3 sgm-cursor-pointer"
+                          @click.prevent="onSortChange(item.value, item.name)"
+                        >
                           {{ item.name }}
                         </div>
                       </MenuItem>
@@ -154,25 +171,25 @@
               fill="currentColor"
             />
           </svg>
-          <h3 class="sgm-mt-2 sgm-text-sm sgm-font-semibold sgm-text-gray-900">
+          <h3 class="sgm-mt-2 sgm-text-lg sgm-font-semibold sgm-text-gray-900">
             No products were found
           </h3>
           <p class="sgm-mt-1 sgm-text-sm sgm-text-gray-500">
             Try removing the last filter.
           </p>
           <div class="sgm-mt-6">
-            <button
+            <Button
+              label="Clear all filters"
               @click.prevent="onResetFilters"
               type="button"
               class="sgm-inline-flex sgm-items-center sgm-rounded-md sgm-bg-indigo-600 sgm-px-3 sgm-py-2 sgm-text-sm sgm-font-semibold sgm-text-white sgm-shadow-sm sgm-hover:bg-indigo-500 sgm-focus-visible:outline sgm-focus-visible:outline-2 sgm-focus-visible:outline-offset-2 sgm-focus-visible:outline-indigo-600"
             >
-              Clear all filters
-            </button>
+            </Button>
           </div>
         </template>
 
         <template v-slot:filters>
-          <div class="sgm-px-3 sgm-flex sgm-flex-col sgm-space-y-5">
+          <div class="sgm-flex sgm-flex-col sgm-space-y-5">
             <PriceSlider
               :min="0"
               :max="facets.price_as_number?.max"

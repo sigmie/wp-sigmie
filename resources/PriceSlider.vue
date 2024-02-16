@@ -1,8 +1,9 @@
 <template>
   <div class="sgm-relative sgm-w-full">
-    <div
-      class="sgm-h-12 ct-chart sgm-ct-chart-pie sgm-ct-perfect-fourth"
-    ></div>
+    <span class="sgm-block sgm-text-base sgm-font-semibold sgm-text-gray-900">
+      Price range slider
+    </span>
+    <div class="sgm-h-12 ct-chart sgm-ct-chart-pie sgm-ct-perfect-fourth  sgm-mt-5"></div>
     <div class="sgm-px-2">
       <Slider
         :range="true"
@@ -204,5 +205,4 @@ onMounted(() => {
 input[type="text"] {
   @apply sgm-pl-8;
 }
-
 </style>

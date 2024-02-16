@@ -67,14 +67,12 @@
             <form class="sgm-hidden lg:sgm-block lg:sgm-lg sgm-col-span-2">
               <div class="sgm-flex sgm-flex-row sgm-space-x-3 sgm-items-center">
                 <h2
-                  class="sgm-text-xl sgm-font-normal sgm-tracking-tight sgm-text-gray-900"
+                  class="sgm-text-xl sgm-font-normal sgm-tracking-tight sgm-text-gray-900 sgm-m-0"
                 >
                   {{ title }}
                 </h2>
                 <div>
-                  <div>
-                    <slot name="reset"></slot>
-                  </div>
+                  <slot name="reset"></slot>
                 </div>
               </div>
               <div class="sgm-mt-6">
@@ -133,9 +131,7 @@
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
 
 <script setup>
 import { ref } from "vue";

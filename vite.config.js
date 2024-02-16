@@ -17,7 +17,7 @@ export default defineConfig({
           {
             excludeSelectors: (selector) => {
               // apply only the primevue
-              return !selector.startsWith('.p-');
+              return !selector.startsWith('.p-') || selector.startsWith('.p-slider-horizontal');
             }
           },
         ),
