@@ -30,7 +30,7 @@
               leave-to="sgm-translate-x-full"
             >
               <DialogPanel
-                class="sgm-relative sgm-ml-auto sgm-flex sgm-h-full sgm-w-full sgm-max-w-xs sgm-flex-col sgm-overflow-y-auto sgm-bg-white sgm-py-4 sgm-pb-12 sgm-shadow-xl"
+                class="sgm-px-4 sgm-relative sgm-ml-auto sgm-flex sgm-h-full sgm-w-full sgm-max-w-xs sgm-flex-col sgm-overflow-y-auto sgm-bg-white sgm-py-4 sgm-pb-12 sgm-shadow-xl"
               >
                 <div
                   class="sgm-flex sgm-items-center sgm-justify-between sgm-px-4"
@@ -49,7 +49,7 @@
                 </div>
 
                 <!-- Filters -->
-                <form class="sgm-mt-4 sgm-border-t sgm-border-gray-200">
+                <form class="sgm-mt-4 sgm-border-t sgm-border-gray-200 px-4">
                   <slot name="filters"></slot>
                 </form>
               </DialogPanel>
@@ -61,10 +61,10 @@
       <main class="">
         <section aria-labelledby="products-heading" class="sgm-pb-24 sgm-pt-6">
           <div
-            class="sgm-grid sgm-grid-cols-1 sgm-gap-x-8 sgm-gap-y-10 lg:sgm-grid-cols-6"
+            class="sgm-flex sgm-flex-row sgm-space-x-5 sgm-mx-auto sgm-max-w-7xl"
           >
             <!-- Filters -->
-            <form class="sgm-hidden lg:sgm-block lg:sgm-lg sgm-col-span-2">
+            <form class="sgm-hidden lg:sgm-block sgm-max-w-xs">
               <div class="sgm-flex sgm-flex-row sgm-space-x-3 sgm-items-center">
                 <h2
                   class="sgm-text-xl sgm-font-normal sgm-tracking-tight sgm-text-gray-900 sgm-m-0"
@@ -80,7 +80,7 @@
               </div>
             </form>
 
-            <div class="lg:sgm-col-span-4">
+            <div class="">
               <div class="sgm-flex sgm-flex-col sgm-items-start sgm-w-full">
                 <h2
                   class="sgm-text-xl sgm-font-normal sgm-tracking-tight sgm-text-gray-900"
@@ -100,14 +100,10 @@
                 <div class="sgm-max-w-sm">
                   <slot v-if="total > 0" name="pagination"></slot>
                 </div>
-                <button
-                  type="button"
-                  class="sgm--m-2 sgm-ml-4 sgm-p-2 sgm-text-gray-400 sgm-hover:text-gray-500 sgm-sm:ml-6 lg:sgm-hidden"
-                  @click="mobileFiltersOpen = true"
-                >
+                <Button outlined severity="secondary" @click="mobileFiltersOpen = true">
                   <span class="sgm-sr-only">Filters</span>
-                  <FunnelIcon class="sgm-h-5 sgm-w-5" aria-hidden="true" />
-                </button>
+                  <FunnelIcon class="sgm-h-5 sgm-w-5 sgm-fill-secondary-color" aria-hidden="true" />
+                </Button>
               </div>
 
               <div v-if="total > 0">
@@ -143,6 +139,7 @@ import {
 } from "@headlessui/vue";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
 import { FunnelIcon } from "@heroicons/vue/20/solid";
+import Button from "primevue/button";
 
 defineProps({
   title: String,

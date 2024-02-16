@@ -24,7 +24,7 @@
           class="sgm-block sgm-text-sm sgm-font-medium sgm-leading-6 sgm-text-gray-900"
           >Min</label
         >
-        <div class="sgm-relative sgm-mt-2 sgm-rounded-md sgm-shadow-sm">
+        <div class="sgm-relative sgm-mt-2 sgm-rounded-md sgm-shadow-sm sgm-font-normal">
           <InputGroup>
             <InputGroupAddon>$</InputGroupAddon>
             <InputNumber input-id="min-price" v-model="range[0]" />
@@ -38,7 +38,7 @@
           class="sgm-block sgm-text-sm sgm-font-medium sgm-leading-6 sgm-text-gray-900"
           >Max</label
         >
-        <div class="sgm-relative sgm-mt-2 sgm-rounded-md sgm-shadow-sm">
+        <div class="sgm-relative sgm-mt-2 sgm-rounded-md sgm-shadow-sm sgm-font-normal">
           <InputGroup>
             <InputGroupAddon>$</InputGroupAddon>
             <InputNumber input-id="max-price" v-model="range[1]" />
