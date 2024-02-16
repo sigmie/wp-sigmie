@@ -61,7 +61,7 @@
       <main class="">
         <section aria-labelledby="products-heading" class="sgm-pb-24 sgm-pt-6">
           <div
-            class="sgm-flex sgm-flex-row sgm-space-x-5 sgm-mx-auto sgm-max-w-7xl"
+            class="sgm-flex sgm-flex-row lg:sgm-space-x-5 sgm-px-4 lg:sgm-px-0 sgm-mx-auto sgm-max-w-7xl"
           >
             <!-- Filters -->
             <form class="sgm-hidden lg:sgm-block sgm-max-w-xs">
@@ -100,10 +100,20 @@
                 <div class="sgm-max-w-sm">
                   <slot v-if="total > 0" name="pagination"></slot>
                 </div>
-                <Button outlined severity="secondary" @click="mobileFiltersOpen = true">
-                  <span class="sgm-sr-only">Filters</span>
-                  <FunnelIcon class="sgm-h-5 sgm-w-5 sgm-fill-secondary-color" aria-hidden="true" />
-                </Button>
+                <div class="lg:sgm-hidden">
+                  <Button
+                    class=""
+                    outlined
+                    severity="secondary"
+                    @click="mobileFiltersOpen = true"
+                  >
+                    <span class="sgm-sr-only">Filters</span>
+                    <FunnelIcon
+                      class="sgm-h-5 sgm-w-5 sgm-fill-secondary-color"
+                      aria-hidden="true"
+                    />
+                  </Button>
+                </div>
               </div>
 
               <div v-if="total > 0">

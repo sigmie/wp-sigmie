@@ -28,7 +28,10 @@
           <div
             class="sgm-flex sgm-flex-row sgm-py-6 sgm-space-x-4 sgm-mt-1 sgm-h-20"
           >
-            <Chip
+            <Button
+              outlined
+              severity="secondary"
+              rounded
               v-if="onlyOffers"
               @click="onOffersClick"
               class="sgm-cursor-pointer"
@@ -37,8 +40,11 @@
                 <span>Offers</span>
                 <XIcon class="sgm-h-4 sgm-w-4"></XIcon>
               </div>
-            </Chip>
-            <Chip
+            </Button>
+            <Button
+              outlined
+              severity="secondary"
+              rounded
               @click="onRemoveActiveFilter(activeFilterkey, activeFilter)"
               class="sgm-cursor-pointer"
               v-for="[activeFilterkey, activeFilter] in activeFilters"
@@ -49,8 +55,11 @@
                 </span>
                 <XIcon class="sgm-h-4 sgm-w-4"></XIcon>
               </div>
-            </Chip>
-            <Chip
+            </Button>
+            <Button
+              outlined
+              severity="secondary"
+              rounded
               v-if="priceRangeIsDirty"
               @click="onResetRange"
               class="sgm-cursor-pointer"
@@ -60,9 +69,9 @@
                   >Price Range: from {{ priceRange[0] }} to
                   {{ priceRange[1] }}</span
                 >
-                <XIcon class="sgm-h-4 sgm-w-4"></XIcon>
+                <XIcon class="sgm-h-3 sgm-w-3"></XIcon>
               </div>
-            </Chip>
+            </Button>
           </div>
         </template>
 
