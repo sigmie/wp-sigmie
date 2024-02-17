@@ -61,7 +61,7 @@
       <main class="">
         <section aria-labelledby="products-heading" class="sgm-pb-24 sgm-pt-6 sgm-px-6">
           <div
-            class="sgm-flex sgm-flex-row lg:sgm-space-x-5 sgm-px-4 lg:sgm-px-0 sgm-mx-auto"
+            class="sgm-flex sgm-flex-row lg:sgm-space-x-14 sgm-px-4 lg:sgm-px-0 sgm-mx-auto"
           >
             <!-- Filters -->
             <form class="sgm-hidden lg:sgm-block sgm-max-w-xs">
@@ -116,7 +116,7 @@
                 </div>
               </div>
 
-              <div v-if="total > 0">
+              <div class="" v-if="total > 0">
                 <slot name="hits"></slot>
 
                 <div class="sgm-mt-6">

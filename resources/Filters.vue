@@ -153,7 +153,7 @@
               :is-open="loading"
               class="sgm-absolute sgm-left-0 sgm-right-0"
             ></Curtain>
-            <div class="sgm-grid sgm-grid-cols-3 sgm-gap-8">
+            <div class="sgm-grid sgm-grid-cols-6">
               <FilterHit v-for="hit in hits" :hit="hit"></FilterHit>
             </div>
           </div>
