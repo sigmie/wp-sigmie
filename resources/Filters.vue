@@ -198,7 +198,7 @@
         </template>
 
         <template v-slot:filters>
-          <div class="sgm-flex sgm-flex-col sgm-space-y-5">
+          <div class="sgm-flex sgm-flex-col sgm-space-y-2">
             <PriceSlider
               :min="0"
               :max="facets.price_as_number?.max"

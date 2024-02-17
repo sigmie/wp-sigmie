@@ -1,5 +1,5 @@
 <template>
-  <Disclosure :defaultOpen="true" as="div" class="sgm-py-6" v-slot="{ open }">
+  <Disclosure :defaultOpen="true" as="div" class="sgm-py-3" v-slot="{ open }">
     <div class="sgm--my-3 sgm-flow-root">
       <DisclosureButton
         as="h3"
