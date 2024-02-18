@@ -157,7 +157,7 @@ export default {
     submenuheader: {
         class: [
             'font-medium',
-            'sm:text-md',
+            'sm:text-base',
 
             // Spacing
             'py-2.5 px-2',

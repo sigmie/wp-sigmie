@@ -89,12 +89,12 @@ let props = defineProps({
         </div>
         <div
           v-if="showOnSale"
-          class="sgm-text-md sgm-font-medium sgm-text-gray-900 sgm-mt-2 sgm-text-left"
+          class="sgm-text-base sgm-font-medium sgm-text-gray-900 sgm-mt-2 sgm-text-left"
           v-html="hit.price_html"
         ></div>
         <div
           v-else
-          class="sgm-text-md sgm-font-medium sgm-text-gray-900 sgm-mt-2 sgm-text-left"
+          class="sgm-text-base sgm-font-medium sgm-text-gray-900 sgm-mt-2 sgm-text-left"
           v-html="hit.price"
         ></div>
       </div>

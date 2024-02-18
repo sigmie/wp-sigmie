@@ -636,6 +636,7 @@ class Sigmie_Admin
 		$res = [
 			'thumbnail_html' => $product->get_image(),
 			'image' => $image_url,
+			'link' => $product->get_permalink(),
 			'price_as_number' => $product->get_price(),
 			'price' => $price,
 			'on_sale' => $product->is_on_sale(),
@@ -656,9 +657,22 @@ class Sigmie_Admin
 			}, $data['category_ids']),
 		];
 
+		/** @var WC_Product_Attribute|string $attribute  */
 		foreach ($attributes as $name => $attribute) {
+
+			if ($attribute instanceof WC_Product_Attribute) {
+				$options = $attribute->get_options();
+				$options_text = array_map(function ($option_id) use ($attribute) {
+					return get_term_by('id', $option_id, $attribute->get_taxonomy())->name;
+				}, $options);
+
+				$attribute = $options_text;
+			}
+
 			$res[$name] = $attribute;
 		}
+
+		ray($res);
 
 		return $res;
 	}

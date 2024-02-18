@@ -26,7 +26,7 @@ export default {
 
             // Font
             'font-medium',
-            'text-md',
+            'text-base',
 
             // Flexbox and Alignment
             'flex items-center',

@@ -183,7 +183,7 @@ onUnmounted(() => {
                                                                 '': !open,
                                                                 '':
                                                                     open,
-                                                            }" class="sgm-ring-0 sgm-h-10 sgm-mx-auto sgm-p-2 sgm-w-full sgm-outline-none sgm-border-none sgm-focus:outline-none sgm-px-12 sgm-text-md sgm-leading-3 sgm-text-zinc-400" :displayValue="() => query" @change="
+                                                            }" class="sgm-ring-0 sgm-h-10 sgm-mx-auto sgm-p-2 sgm-w-full sgm-outline-none sgm-border-none sgm-focus:outline-none sgm-px-12 sgm-text-base sgm-leading-3 sgm-text-zinc-400" :displayValue="() => query" @change="
     query =
     $event.target
         .value

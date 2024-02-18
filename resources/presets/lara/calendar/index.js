@@ -105,7 +105,7 @@ export default {
     header: ({ props }) => ({
         class: [
             //Font
-            'font-semibold text-md',
+            'font-semibold text-base',
 
             // Flexbox and Alignment
             'flex items-center justify-between',
@@ -330,7 +330,7 @@ export default {
             'w-1/3',
             'px-2.5 py-1.5',
             'mt-1',
-            'text-md leading-none',
+            'text-base leading-none',
 
             // Shape
             'rounded-md',
@@ -364,7 +364,7 @@ export default {
             'w-1/3',
             'px-2.5 py-1.5',
             'mt-1',
-            'text-md leading-none',
+            'text-base leading-none',
 
             // Shape
             'rounded-md',

@@ -74,7 +74,7 @@ export default {
                 // Spacing
                 'm-0',
                 {
-                    'py-3 px-4 text-lg sm:text-md': props.size == 'large',
+                    'py-3 px-4 text-lg sm:text-base': props.size == 'large',
                     'py-1 px-2 sm:text-sm': props.size == 'small',
                     'py-1.5 px-3 sm:text-sm': props.size == null
                 },

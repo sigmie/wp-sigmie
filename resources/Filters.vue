@@ -93,13 +93,13 @@
               <div>
                 <MenuButton
                   as="div"
-                  class="sgm-group sgm-inline-flex sgm-justify-center sgm-text-sm sgm-font-medium sgm-text-gray-700 sgm-hover:text-gray-900"
+                  class="sgm-group sgm-inline-flex sgm-justify-center sgm-text-sm sgm-text-gray-700 sgm-hover:text-gray-900"
                 >
                   <Button severity="secondary" :label="sortByLabel" outlined>
                     {{ sortByLabel }}
 
                     <ChevronDownIcon
-                      class="sgm--mr-1 sgm-ml-1 sgm-h-5 sgm-w-5 sgm-flex-shrink-0 sgm-text-gray-400 sgm-group-hover:text-gray-500"
+                      class="sgm--mr-1 sgm-ml-1 sgm-h-5 sgm-w-5 sgm-flex-shrink-0 sgm-text-secondary-color sgm-group-hover:text-gray-500"
                       aria-hidden="true"
                     />
                   </Button>
@@ -136,24 +136,22 @@
             </Menu>
 
             <div>
-              <Button
-                outlined
-                label="Offers"
-                severity="secondary"
-                @click="onOffersClick"
-              >
+              <Button outlined severity="secondary" @click="onOffersClick">
+                Offers
               </Button>
             </div>
           </div>
         </template>
 
         <template v-slot:hits>
-          <div class="sgm-relative sgm-w-full sgm-h-full">
+          <div class="sgm-relative sgm-w-full sgm-h-full sgm-mt-10">
             <Curtain
               :is-open="loading"
-              class="sgm-absolute sgm-left-0 sgm-right-0"
+              class="sgm-absolute sgm-left-0 sgm-right-0 sgm-z-10"
             ></Curtain>
-            <div class="sgm-grid sgm-grid-cols-6">
+            <div
+              class="sgm-grid sgm-grid-cols-1 sm:sgm-grid-cols-2 md:sgm-grid-cols-3 xl:sgm-grid-cols-4 sgm-gap-8"
+            >
               <FilterHit v-for="hit in hits" :hit="hit"></FilterHit>
             </div>
           </div>
