@@ -26,7 +26,7 @@ const totalPages = computed(() => Math.ceil(props.total / props.perPage));
     >
       <div
         :disabled="currentPage <= 1"
-        @click="$emit('changePage', currentPage - 1)"
+        @click="currentPage <= 1 ? null : $emit('changePage', currentPage - 1)"
         class="sgm-cursor-pointer sgm-relative sgm-inline-flex sgm-items-center sgm-px-2 sgm-py-2 sgm-text-sm sgm-font-semibold sgm-text-gray-900 sgm-hover:bg-gray-50 sgm-focus:z-20 sgm-focus:outline-offset-0 sgm-rounded-l-md"
       >
         <span class="sgm-sr-only">Previous</span>
@@ -87,7 +87,11 @@ const totalPages = computed(() => Math.ceil(props.total / props.perPage));
       </div>
       <div
         :disabled="currentPage >= totalPages"
-        @click="$emit('changePage', currentPage + 1)"
+        @click="
+          currentPage >= totalPages
+            ? null
+            : $emit('changePage', currentPage + 1)
+        "
         class="sgm-cursor-pointer sgm-relative sgm-inline-flex sgm-items-center sgm-px-2 sgm-py-2 sgm-text-sm sgm-font-semibold sgm-text-gray-900 sgm-hover:bg-gray-50 sgm-focus:z-20 sgm-focus:outline-offset-0 sgm-rounded-r-md"
       >
         <span class="sgm-sr-only">Next</span>

@@ -672,8 +672,6 @@ class Sigmie_Admin
 			$res[$name] = $attribute;
 		}
 
-		ray($res);
-
 		return $res;
 	}
 	function render_sigmie_filters()
