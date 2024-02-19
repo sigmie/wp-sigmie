@@ -1,5 +1,5 @@
 <template>
-  <div class="sgm-bg-white">
+  <div class="sgm-max-w-[1500px] sgm-mx-auto">
     <div>
       <TransitionRoot as="template" :show="mobileFiltersOpen">
         <Dialog
@@ -64,7 +64,7 @@
             class="sgm-flex sgm-flex-row lg:sgm-space-x-14 sgm-px-4 lg:sgm-px-0 sgm-mx-auto"
           >
             <!-- Filters -->
-            <form class="sgm-hidden lg:sgm-block sgm-max-w-xs">
+            <form class="sgm-hidden lg:sgm-block sgm-max-w-[350px]">
               <div class="sgm-flex sgm-flex-row sgm-space-x-3 sgm-items-center">
                 <h2
                   class="sgm-text-xl sgm-font-normal sgm-tracking-tight sgm-text-gray-900 sgm-m-0"

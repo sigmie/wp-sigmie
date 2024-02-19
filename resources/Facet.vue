@@ -62,7 +62,7 @@
       leave-to-class="sgm-transform sgm-scale-95 sgm-opacity-0"
     >
       <DisclosurePanel class="sgm-pt-6">
-        <div class="sgm-space-y-4">
+        <div class="sgm-space-y-2">
           <div
             v-for="(count, facet) in options"
             :key="facet"
