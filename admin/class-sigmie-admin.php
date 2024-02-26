@@ -680,6 +680,20 @@ class Sigmie_Admin
 			'sigmie_application_id',
 			'sigmie_search_api_key',
 			'sigmie_filterable_attributes',
+			'sigmie_theme',
+			'sigmie_filterable_attributes',
+			'sigmie_show_price_range_chart',
+			'sigmie_show_categories_filter',
+			'sigmie_products_per_page',
+			'sigmie_currency_symbol',
+			'sigmie_show_offers_filter',
+			'sigmie_products_title_text',
+			'sigmie_filters_title_text',
+			'sigmie_reset_filters_text',
+			'sigmie_price_range_label',
+			'sigmie_show_products_count',
+			'sigmie_price_range_filter_label',
+			'sigmie_offers_filter_text'
 		]);
 
 		$attributes = array_map(fn ($value) => "pa_{$value}", json_decode($options['sigmie_filterable_attributes'], true));
@@ -691,7 +705,20 @@ class Sigmie_Admin
 					facets="' . $facets . '"
 							application="' . $options['sigmie_application_id'] . '" 
 							api-key="' . $options['sigmie_search_api_key'] . '" 
-							index="' . $this->index . '">
+							index="' . $this->index . '"
+							:show-price-range-chart="' . (string) ($options['sigmie_show_price_range_chart'] === '1' ? 'true' : 'false') . '"
+							:show-categories-filter="' . (string) ($options['sigmie_show_categories_filter'] === '1' ? 'true' : 'false') . '"
+							:show-offers-filter="' . (string) ($options['sigmie_show_offers_filter'] === '1' ? 'true' : 'false') . '"
+							:show-products-count="' . (string) ($options['sigmie_show_products_count'] === '1' ? 'true' : 'false') . '"
+
+							products-per-page="' . $options['sigmie_products_per_page'] . '"
+							currency-symbol="' . $options['sigmie_currency_symbol'] . '"
+							products-title-text="' . $options['sigmie_products_title_text'] . '"
+							filters-title-text="' . $options['sigmie_filters_title_text'] . '"
+							offers-filter-text="' . $options['sigmie_offers_filter_text'] . '"
+							reset-filters-text="' . $options['sigmie_reset_filters_text'] . '"
+							price-range-label="' . $options['sigmie_price_range_label'] . '"
+							price-range-filter-label="' . $options['sigmie_price_range_filter_label'] . '">
 					</filters>
 				</div>';
 	}

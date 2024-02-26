@@ -1,49 +1,48 @@
 <template>
   <div class="sgm-relative sgm-w-full">
     <span class="sgm-block sgm-text-base sgm-font-semibold sgm-text-gray-900">
-      Price range slider
+      {{ label }}
     </span>
-    <div class="sgm-h-12 ct-chart sgm-ct-chart-pie sgm-ct-perfect-fourth  sgm-mt-5"></div>
-    <div class="sgm-px-2">
-      <Slider
-        :range="true"
-        :min="min"
-        :max="max"
-        :step="1"
-        :modelValue="range"
-        @update:modelValue="onSliderChange"
-        class="sgm-mt-2"
-      />
-    </div>
     <div
       class="sgm-flex sgm-flex-row sgm-justify-between sgm-items-center sgm-mt-2 sgm-space-x-4"
     >
       <div>
-        <label
-          for="min-price"
-          class="sgm-block sgm-text-sm sgm-font-medium sgm-leading-6 sgm-text-gray-900"
-          >Min</label
+        <div
+          class="sgm-relative sgm-mt-2 sgm-rounded-md sgm-shadow-sm sgm-font-normal"
         >
-        <div class="sgm-relative sgm-mt-2 sgm-rounded-md sgm-shadow-sm sgm-font-normal">
           <InputGroup>
-            <InputGroupAddon>$</InputGroupAddon>
+            <InputGroupAddon>{{ currency }}</InputGroupAddon>
             <InputNumber input-id="min-price" v-model="range[0]" />
           </InputGroup>
         </div>
       </div>
 
       <div>
-        <label
-          for="max-price"
-          class="sgm-block sgm-text-sm sgm-font-medium sgm-leading-6 sgm-text-gray-900"
-          >Max</label
+        <div
+          class="sgm-relative sgm-mt-2 sgm-rounded-md sgm-shadow-sm sgm-font-normal"
         >
-        <div class="sgm-relative sgm-mt-2 sgm-rounded-md sgm-shadow-sm sgm-font-normal">
           <InputGroup>
-            <InputGroupAddon>$</InputGroupAddon>
+            <InputGroupAddon>{{ currency }}</InputGroupAddon>
             <InputNumber input-id="max-price" v-model="range[1]" />
           </InputGroup>
         </div>
+      </div>
+    </div>
+    <div class="sgm-mt-5">
+      <div
+        v-if="showChart"
+        class="sgm-h-12 ct-chart sgm-ct-chart-pie sgm-ct-perfect-fourth"
+      ></div>
+      <div class="sgm-px-2">
+        <Slider
+          :range="true"
+          :min="min"
+          :max="max"
+          :step="1"
+          :modelValue="range"
+          @update:modelValue="onSliderChange"
+          class="sgm-mt-2"
+        />
       </div>
     </div>
   </div>
@@ -59,6 +58,22 @@ import InputNumber from "primevue/inputnumber";
 import Slider from "primevue/slider";
 
 const props = defineProps({
+  label: {
+    type: String,
+    required: true,
+  },
+  currency: {
+    type: String,
+    required: true,
+  },
+  showChart: {
+    type: Boolean,
+    required: true,
+  },
+  currencyPosition: {
+    type: String,
+    required: true,
+  },
   histogram: {
     type: Object,
     required: true,

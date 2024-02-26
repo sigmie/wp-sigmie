@@ -13,14 +13,18 @@
       :applicationId="props.application"
       v-slot="{ hits, facets, total, loading, processing_time_ms }"
     >
-      <Layout title="Filters" hits-title="WooCommerce Products" :total="total">
+      <Layout
+        :title="filtersTitleText"
+        :hits-title="productsTitleText"
+        :total="total"
+      >
         <template v-slot:reset>
           <a
             v-if="filtersAreDirty"
             @click.prevent="onResetFilters"
             class="sgm-hover:bg-zinc-50 sgm-text-primary-color sgm-cursor-pointer sgm-transition-colors sgm-flex sgm-flex-row sgm-space-x-4 sgm-items-center sgm-px-3"
           >
-            Reset Filters
+            {{ resetFiltersText }}
           </a>
         </template>
 
@@ -37,7 +41,7 @@
               class="sgm-cursor-pointer"
             >
               <div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3">
-                <span>Offers</span>
+                <span> {{ offersFilterText }}</span>
                 <XIcon class="sgm-h-4 sgm-w-4"></XIcon>
               </div>
             </Button>
@@ -186,7 +190,7 @@
           </p>
           <div class="sgm-mt-6">
             <Button
-              label="Clear all filters"
+              :label="resetFiltersText"
               @click.prevent="onResetFilters"
               type="button"
               class="sgm-inline-flex sgm-items-center sgm-rounded-md sgm-bg-indigo-600 sgm-px-3 sgm-py-2 sgm-text-sm sgm-font-semibold sgm-text-white sgm-shadow-sm sgm-hover:bg-indigo-500 sgm-focus-visible:outline sgm-focus-visible:outline-2 sgm-focus-visible:outline-offset-2 sgm-focus-visible:outline-indigo-600"
@@ -198,6 +202,9 @@
         <template v-slot:filters>
           <div class="sgm-flex sgm-flex-col sgm-space-y-2">
             <PriceSlider
+            :show-chart="showPriceRangeChart"
+              :currency="currencySymbol"
+              :label="priceRangeLabel"
               :min="0"
               :max="facets.price_as_number?.max"
               :range="priceRange"
@@ -242,6 +249,17 @@ const props = defineProps({
   apiKey: String,
   index: String,
   facets: String,
+  showPriceRangeChart: Boolean,
+  showCategoriesFilter: Boolean,
+  showOffersFilter: Boolean,
+  showProductsCount: Boolean,
+  productsPerPage: Number,
+  currencySymbol: String,
+  productsTitleText: String,
+  filtersTitleText: String,
+  resetFiltersText: String,
+  priceRangeLabel: String,
+  priceRangeFilterLabel: String,
 });
 
 const currentPage = ref(1);
