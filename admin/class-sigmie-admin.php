@@ -722,9 +722,8 @@ class Sigmie_Admin
 							:show-price-range-chart="' . (string) ($options['sigmie_show_price_range_chart'] === '1' ? 'true' : 'false') . '"
 							:show-categories-filter="' . (string) ($options['sigmie_show_categories_filter'] === '1' ? 'true' : 'false') . '"
 							:show-offers-filter="' . (string) ($options['sigmie_show_offers_filter'] === '1' ? 'true' : 'false') . '"
-							:show-products-count="' . (string) ($options['sigmie_show_products_count'] === '1' ? 'true' : 'false') . '"
 
-							products-per-page="' . $options['sigmie_products_per_page'] . '"
+							per-page="' . $options['sigmie_products_per_page'] . '"
 							currency-symbol="' . get_woocommerce_currency_symbol() . '"
 							products-title-text="' . $options['sigmie_products_title_text'] . '"
 							products-subtitle-template="' . $options['sigmie_products_subtitle_template'] . '"

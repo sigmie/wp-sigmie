@@ -141,7 +141,7 @@
               </transition>
             </Menu>
 
-            <div :class="onlyOffers ? 'sgm-bg-hover' : null">
+            <div v-if="showOffersFilter" :class="onlyOffers ? 'sgm-bg-hover' : null">
               <Button outlined severity="secondary" @click="onOffersClick">
                 <span> {{ offersFilterText }}</span>
               </Button>
@@ -255,8 +255,7 @@ const props = defineProps({
   showPriceRangeChart: Boolean,
   showCategoriesFilter: Boolean,
   showOffersFilter: Boolean,
-  showProductsCount: Boolean,
-  productsPerPage: Number,
+  perPage: Number,
   currencySymbol: String,
   productsTitleText: String,
   filtersTitleText: String,
@@ -277,7 +276,6 @@ const props = defineProps({
 });
 
 const currentPage = ref(1);
-const perPage = ref(8);
 const sortBy = ref("_score");
 const sortByLabel = ref("");
 const sortOptions = ref([]);

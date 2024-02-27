@@ -133,7 +133,6 @@ class Sigmie_Admin_Page_Filters
 			'filters_title_text' => esc_html__('Filters title text', 'sigmie'),
 			'reset_filters_text' => esc_html__('Reset filters text', 'sigmie'),
 			'price_range_label' => esc_html__('Price range label', 'sigmie'),
-			'show_products_count' => esc_html__('Show products count', 'sigmie'),
 			'price_range_filter_label' => esc_html__('Price range filter label template', 'sigmie'),
 		];
 
@@ -426,33 +425,6 @@ class Sigmie_Admin_Page_Filters
 	{
 		$value = get_option('sigmie_price_range_label', '');
 		echo '<input type="text" name="sigmie_price_range_label" value="' . esc_attr($value) . '" class="regular-text"/>';
-	}
-
-	public function sanitize_show_products_count($value)
-	{
-		return sanitize_text_field($value);
-	}
-
-	public function show_products_count_callback()
-	{
-		$value = get_option('sigmie_show_products_count', false);
-		$value = (string) get_option('sigmie_show_products_count', '0');
-	?>
-		<fieldset class="">
-			<span class="">
-				<input type="radio" id="sigmie_show_products_count_on" name="sigmie_show_products_count" value="1" <?php checked($value, '1'); ?> />
-				<label class="checkbox" for="sigmie_show_products_count_on"><?php _e('Yes'); ?></label>
-			</span>
-			<br>
-			<span class="">
-				<input type="radio" id="sigmie_show_products_count_off" name="sigmie_show_products_count" value="0" <?php checked($value, '0'); ?> />
-				<label class="checkbox" for="sigmie_show_products_count_off"><?php _e('No'); ?></label>
-			</span>
-		</fieldset>
-		<p class="description">
-			<?php esc_html_e('Show the total products count.', 'sigmie'); ?>
-		</p>
-	<?php
 	}
 
 	public function sanitize_price_range_filter_label($value)
