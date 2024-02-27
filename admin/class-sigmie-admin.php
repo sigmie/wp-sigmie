@@ -688,12 +688,25 @@ class Sigmie_Admin
 			'sigmie_currency_symbol',
 			'sigmie_show_offers_filter',
 			'sigmie_products_title_text',
+			'sigmie_products_subtitle_template',
 			'sigmie_filters_title_text',
 			'sigmie_reset_filters_text',
 			'sigmie_price_range_label',
 			'sigmie_show_products_count',
 			'sigmie_price_range_filter_label',
-			'sigmie_offers_filter_text'
+			'sigmie_offers_filter_text',
+
+			//
+			'sigmie_offers_filter_text',
+			'sigmie_no_products_text',
+			'sigmie_no_products_advice_text',
+			'sigmie_products_count_template',
+			'sigmie_show_price_currency',
+			'sigmie_sort_by_relevance_label',
+			'sigmie_sort_by_price_desc_label',
+			'sigmie_sort_by_price_asc_label',
+			'sigmie_sort_by_most_recent_label',
+			'sigmie_sort_by_rating_label',
 		]);
 
 		$attributes = array_map(fn ($value) => "pa_{$value}", json_decode($options['sigmie_filterable_attributes'], true));
@@ -712,13 +725,25 @@ class Sigmie_Admin
 							:show-products-count="' . (string) ($options['sigmie_show_products_count'] === '1' ? 'true' : 'false') . '"
 
 							products-per-page="' . $options['sigmie_products_per_page'] . '"
-							currency-symbol="' . $options['sigmie_currency_symbol'] . '"
+							currency-symbol="' . get_woocommerce_currency_symbol() . '"
 							products-title-text="' . $options['sigmie_products_title_text'] . '"
+							products-subtitle-template="' . $options['sigmie_products_subtitle_template'] . '"
 							filters-title-text="' . $options['sigmie_filters_title_text'] . '"
 							offers-filter-text="' . $options['sigmie_offers_filter_text'] . '"
 							reset-filters-text="' . $options['sigmie_reset_filters_text'] . '"
 							price-range-label="' . $options['sigmie_price_range_label'] . '"
-							price-range-filter-label="' . $options['sigmie_price_range_filter_label'] . '">
+							price-range-filter-label="' . $options['sigmie_price_range_filter_label'] . '"
+
+					offers-filter-text="' . $options['sigmie_offers_filter_text'] . '"
+					no-products-text="' . $options['sigmie_no_products_text'] . '"
+					no-products-advice-text="' . $options['sigmie_no_products_advice_text'] . '"
+					products-count-template="' . $options['sigmie_products_count_template'] . '"
+					:show-price-currency="' . (string) ($options['sigmie_show_price_currency'] === '1' ? 'true' : 'false') . '"
+					sort-by-relevance-label="' . $options['sigmie_sort_by_relevance_label'] . '"
+					sort-by-price-desc-label="' . $options['sigmie_sort_by_price_desc_label'] . '"
+					sort-by-price-asc-label="' . $options['sigmie_sort_by_price_asc_label'] . '"
+					sort-by-most-recent-label="' . $options['sigmie_sort_by_most_recent_label'] . '"
+					sort-by-rating-label="' . $options['sigmie_sort_by_rating_label'] . '">
 					</filters>
 				</div>';
 	}

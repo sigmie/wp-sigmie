@@ -59,7 +59,10 @@
       </TransitionRoot>
 
       <main class="">
-        <section aria-labelledby="products-heading" class="sgm-pb-24 sgm-pt-6 sgm-px-6">
+        <section
+          aria-labelledby="products-heading"
+          class="sgm-pb-24 sgm-pt-6 sgm-px-6"
+        >
           <div
             class="sgm-flex sgm-flex-row lg:sgm-space-x-14 sgm-px-4 lg:sgm-px-0 sgm-mx-auto"
           >
@@ -88,7 +91,7 @@
                   {{ hitsTitle }}
                 </h2>
                 <div class="sgm-text-gray-900 sgm-mt-2">
-                  {{ total }} Products
+                  {{ hitsSubtitle }}
                 </div>
                 <slot name="active-filters"></slot>
               </div>
@@ -151,10 +154,11 @@ import { XMarkIcon } from "@heroicons/vue/24/outline";
 import { FunnelIcon } from "@heroicons/vue/20/solid";
 import Button from "primevue/button";
 
-defineProps({
+const props = defineProps({
   title: String,
   hitsTitle: String,
-  total: String,
+  hitsSubtitle: String,
+  total: Number,
 });
 
 const mobileFiltersOpen = ref(false);

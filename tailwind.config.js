@@ -9,7 +9,8 @@ export default {
     extend: {
       colors: {
         "primary-color": "var(--primary-color)",
-        "secondary-color": "var(--surface-400)"
+        "secondary-color": "var(--surface-400)",
+        "hover": "var(--surface-100)"
       }
     },
   },

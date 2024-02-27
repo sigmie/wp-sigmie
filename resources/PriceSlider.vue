@@ -4,15 +4,22 @@
       {{ label }}
     </span>
     <div
-      class="sgm-flex sgm-flex-row sgm-justify-between sgm-items-center sgm-mt-2 sgm-space-x-4"
+      class="sgm-flex sgm-flex-row sgm-justify-between sgm-items-center sgm-mt-2 sgm-space-x-3"
     >
       <div>
         <div
           class="sgm-relative sgm-mt-2 sgm-rounded-md sgm-shadow-sm sgm-font-normal"
         >
           <InputGroup>
-            <InputGroupAddon>{{ currency }}</InputGroupAddon>
+            <InputGroupAddon
+              v-if="currencySymbolPosition === 'before' && showCurrency"
+              >{{ currency }}</InputGroupAddon
+            >
             <InputNumber input-id="min-price" v-model="range[0]" />
+            <InputGroupAddon
+              v-if="currencySymbolPosition === 'after' && showCurrency"
+              >{{ currency }}</InputGroupAddon
+            >
           </InputGroup>
         </div>
       </div>
@@ -22,8 +29,15 @@
           class="sgm-relative sgm-mt-2 sgm-rounded-md sgm-shadow-sm sgm-font-normal"
         >
           <InputGroup>
-            <InputGroupAddon>{{ currency }}</InputGroupAddon>
+            <InputGroupAddon
+              v-if="currencySymbolPosition === 'before' && showCurrency"
+              >{{ currency }}</InputGroupAddon
+            >
             <InputNumber input-id="max-price" v-model="range[1]" />
+            <InputGroupAddon
+              v-if="currencySymbolPosition === 'after' && showCurrency"
+              >{{ currency }}</InputGroupAddon
+            >
           </InputGroup>
         </div>
       </div>
@@ -55,6 +69,7 @@ import "chartist/dist/index.css";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
 import InputNumber from "primevue/inputnumber";
+import Button from "primevue/button";
 import Slider from "primevue/slider";
 
 const props = defineProps({
@@ -70,8 +85,8 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
-  currencyPosition: {
-    type: String,
+  showCurrency: {
+    type: Boolean,
     required: true,
   },
   histogram: {
@@ -103,6 +118,7 @@ const props = defineProps({
 
 const emit = defineEmits(["update:range", "range:inited"]);
 
+const currencySymbolPosition = ref("before");
 const min = ref(-1);
 const max = ref(-1);
 const chart = ref();
@@ -202,6 +218,28 @@ function createChart() {
 }
 
 onMounted(() => {
+  const currencySymbolsAfter = [
+    "CZK",
+    "JPY",
+    "HUF",
+    "KRW",
+    "SEK",
+    "¥",
+    "₩",
+    "Ft",
+    "Kč",
+    "kr",
+  ];
+  const normalizedCurrency = props.currency
+    .toUpperCase()
+    .replace(/[^A-Z]/g, "");
+
+  currencySymbolPosition.value = currencySymbolsAfter.includes(
+    normalizedCurrency
+  )
+    ? "after"
+    : "before";
+
   const labels = Object.keys(props.histogram);
 
   min.value = props.min;

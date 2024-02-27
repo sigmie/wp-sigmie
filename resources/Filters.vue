@@ -16,6 +16,7 @@
       <Layout
         :title="filtersTitleText"
         :hits-title="productsTitleText"
+        :hits-subtitle="productsSubtitleTemplate.replace('%', total)"
         :total="total"
       >
         <template v-slot:reset>
@@ -69,10 +70,11 @@
               class="sgm-cursor-pointer"
             >
               <div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3">
-                <span
-                  >Price Range: from {{ priceRange[0] }} to
-                  {{ priceRange[1] }}</span
-                >
+                <span>{{
+                  priceRangeFilterLabel
+                    .replace("%", priceRange[0])
+                    .replace("%", priceRange[1])
+                }}</span>
                 <XIcon class="sgm-h-3 sgm-w-3"></XIcon>
               </div>
             </Button>
@@ -103,7 +105,7 @@
                     {{ sortByLabel }}
 
                     <ChevronDownIcon
-                      class="sgm--mr-1 sgm-ml-1 sgm-h-5 sgm-w-5 sgm-flex-shrink-0 sgm-text-secondary-color sgm-group-hover:text-gray-500"
+                      class="sgm--mr-1 sgm-ml-1 sgm-h-4 sgm-w-4 sgm-flex-shrink-0 sgm-text-secondary-color sgm-group-hover:text-gray-500"
                       aria-hidden="true"
                     />
                   </Button>
@@ -139,9 +141,9 @@
               </transition>
             </Menu>
 
-            <div>
+            <div :class="onlyOffers ? 'sgm-bg-hover' : null">
               <Button outlined severity="secondary" @click="onOffersClick">
-                Offers
+                <span> {{ offersFilterText }}</span>
               </Button>
             </div>
           </div>
@@ -183,10 +185,10 @@
             />
           </svg>
           <h3 class="sgm-mt-2 sgm-text-lg sgm-font-semibold sgm-text-gray-900">
-            No products were found
+            {{ noProductsText }}
           </h3>
           <p class="sgm-mt-1 sgm-text-sm sgm-text-gray-500">
-            Try removing the last filter.
+            {{ noProductsAdviceText }}
           </p>
           <div class="sgm-mt-6">
             <Button
@@ -202,7 +204,8 @@
         <template v-slot:filters>
           <div class="sgm-flex sgm-flex-col sgm-space-y-2">
             <PriceSlider
-            :show-chart="showPriceRangeChart"
+              :show-currency="showPriceCurrency"
+              :show-chart="showPriceRangeChart"
               :currency="currencySymbol"
               :label="priceRangeLabel"
               :min="0"
@@ -260,19 +263,24 @@ const props = defineProps({
   resetFiltersText: String,
   priceRangeLabel: String,
   priceRangeFilterLabel: String,
+  offersFilterText: String,
+  noProductsText: String,
+  noProductsAdviceText: String,
+  productsCountTemplate: String,
+  showPriceCurrency: Boolean,
+  sortByRelevanceLabel: String,
+  sortByPriceDescLabel: String,
+  sortByPriceAscLabel: String,
+  sortByMostRecentLabel: String,
+  sortByRatingLabel: String,
+  productsSubtitleTemplate: String,
 });
 
 const currentPage = ref(1);
 const perPage = ref(8);
 const sortBy = ref("_score");
-const sortByLabel = ref("Relevance");
-const sortOptions = ref([
-  { name: "Relevance", value: "_score", current: false },
-  { name: "Price High to Low", value: "price_as_number:desc", current: false },
-  { name: "Price Low to High", value: "price_as_number:asc", current: false },
-  { name: "Most Recent", value: "date_created:desc", current: false },
-  { name: "Rating", value: "average_rating:desc", current: false },
-]);
+const sortByLabel = ref("");
+const sortOptions = ref([]);
 
 const filterLabels = {
   categories: "Categories",
@@ -400,5 +408,30 @@ onMounted(() => {
     acc[key] = [];
     return acc;
   }, {});
+
+  sortByLabel.value = props.sortByRelevanceLabel;
+  sortOptions.value = [
+    { name: props.sortByRelevanceLabel, value: "_score", current: false },
+    {
+      name: props.sortByPriceDescLabel,
+      value: "price_as_number:desc",
+      current: false,
+    },
+    {
+      name: props.sortByPriceAscLabel,
+      value: "price_as_number:asc",
+      current: false,
+    },
+    {
+      name: props.sortByMostRecentLabel,
+      value: "date_created:desc",
+      current: false,
+    },
+    {
+      name: props.sortByRatingLabel,
+      value: "average_rating:desc",
+      current: false,
+    },
+  ];
 });
 </script>
