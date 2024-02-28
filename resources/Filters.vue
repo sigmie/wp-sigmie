@@ -42,7 +42,7 @@
               class="sgm-cursor-pointer"
             >
               <div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3">
-                <span> {{ offersFilterText }}</span>
+                <span class="sgm-text-black"> {{ offersFilterText }}</span>
                 <XIcon class="sgm-h-4 sgm-w-4"></XIcon>
               </div>
             </Button>
@@ -55,7 +55,7 @@
               v-for="[activeFilterkey, activeFilter] in activeFilters"
             >
               <div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3">
-                <span>
+                <span class="sgm-text-black">
                   {{ activeFilter }}
                 </span>
                 <XIcon class="sgm-h-4 sgm-w-4"></XIcon>
@@ -70,7 +70,7 @@
               class="sgm-cursor-pointer"
             >
               <div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3">
-                <span>{{
+                <span class="sgm-text-black">{{
                   priceRangeFilterLabel
                     .replace("%", priceRange[0])
                     .replace("%", priceRange[1])
@@ -102,7 +102,7 @@
                   class="sgm-group sgm-inline-flex sgm-justify-center sgm-text-sm sgm-text-gray-700 sgm-hover:text-gray-900"
                 >
                   <Button severity="secondary" :label="sortByLabel" outlined>
-                    {{ sortByLabel }}
+                    <span class="sgm-text-black">{{ sortByLabel }}</span>
 
                     <ChevronDownIcon
                       class="sgm--mr-1 sgm-ml-1 sgm-h-4 sgm-w-4 sgm-flex-shrink-0 sgm-text-secondary-color sgm-group-hover:text-gray-500"
@@ -132,7 +132,9 @@
                           class="sgm-py-2 sgm-px-3 sgm-cursor-pointer"
                           @click.prevent="onSortChange(item.value, item.name)"
                         >
-                          {{ item.name }}
+                          <span class="sgm-text-black">
+                            {{ item.name }}
+                          </span>
                         </div>
                       </MenuItem>
                     </template>
@@ -141,9 +143,12 @@
               </transition>
             </Menu>
 
-            <div v-if="showOffersFilter" :class="onlyOffers ? 'sgm-bg-hover' : null">
+            <div
+              v-if="showOffersFilter"
+              :class="onlyOffers ? 'sgm-bg-hover' : null"
+            >
               <Button outlined severity="secondary" @click="onOffersClick">
-                <span> {{ offersFilterText }}</span>
+                <span class="sgm-text-black"> {{ offersFilterText }}</span>
               </Button>
             </div>
           </div>
@@ -204,7 +209,6 @@
         <template v-slot:filters>
           <div class="sgm-flex sgm-flex-col sgm-space-y-2">
             <PriceSlider
-              :show-currency="showPriceCurrency"
               :show-chart="showPriceRangeChart"
               :currency="currencySymbol"
               :label="priceRangeLabel"
@@ -265,8 +269,6 @@ const props = defineProps({
   offersFilterText: String,
   noProductsText: String,
   noProductsAdviceText: String,
-  productsCountTemplate: String,
-  showPriceCurrency: Boolean,
   sortByRelevanceLabel: String,
   sortByPriceDescLabel: String,
   sortByPriceAscLabel: String,

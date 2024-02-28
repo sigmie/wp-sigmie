@@ -4,43 +4,35 @@
       {{ label }}
     </span>
     <div
-      class="sgm-flex sgm-flex-row sgm-justify-between sgm-items-center sgm-mt-2 sgm-space-x-3"
+      class="sgm-flex sgm-flex-row sgm-justify-between sgm-items-center sgm-mt-3 sgm-space-x-3"
     >
-      <div>
-        <div
-          class="sgm-relative sgm-mt-2 sgm-rounded-md sgm-shadow-sm sgm-font-normal"
-        >
-          <InputGroup>
-            <InputGroupAddon
-              v-if="currencySymbolPosition === 'before' && showCurrency"
-              >{{ currency }}</InputGroupAddon
-            >
-            <InputNumber input-id="min-price" v-model="range[0]" />
-            <InputGroupAddon
-              v-if="currencySymbolPosition === 'after' && showCurrency"
-              >{{ currency }}</InputGroupAddon
-            >
-          </InputGroup>
-        </div>
-      </div>
+      <InputGroup>
+        <InputGroupAddon v-if="currencySymbolPosition === 'before'">
+          <span class="sgm-text-black sgm-leading-3">
+            {{ currency }}
+          </span>
+        </InputGroupAddon>
+        <InputNumber input-id="min-price" v-model="range[0]" />
+        <InputGroupAddon v-if="currencySymbolPosition === 'after'">
+          <span class="sgm-text-black sgm-leading-3">
+            {{ currency }}
+          </span>
+        </InputGroupAddon>
+      </InputGroup>
 
-      <div>
-        <div
-          class="sgm-relative sgm-mt-2 sgm-rounded-md sgm-shadow-sm sgm-font-normal"
-        >
-          <InputGroup>
-            <InputGroupAddon
-              v-if="currencySymbolPosition === 'before' && showCurrency"
-              >{{ currency }}</InputGroupAddon
-            >
-            <InputNumber input-id="max-price" v-model="range[1]" />
-            <InputGroupAddon
-              v-if="currencySymbolPosition === 'after' && showCurrency"
-              >{{ currency }}</InputGroupAddon
-            >
-          </InputGroup>
-        </div>
-      </div>
+      <InputGroup>
+        <InputGroupAddon v-if="currencySymbolPosition === 'before'">
+          <span class="sgm-text-black sgm-leading-3">
+            {{ currency }}
+          </span>
+        </InputGroupAddon>
+        <InputNumber input-id="max-price" v-model="range[1]" />
+        <InputGroupAddon v-if="currencySymbolPosition === 'after'">
+          <span class="sgm-text-black sgm-leading-3">
+            {{ currency }}
+          </span>
+        </InputGroupAddon>
+      </InputGroup>
     </div>
     <div class="sgm-mt-5">
       <div
@@ -82,10 +74,6 @@ const props = defineProps({
     required: true,
   },
   showChart: {
-    type: Boolean,
-    required: true,
-  },
-  showCurrency: {
     type: Boolean,
     required: true,
   },
@@ -254,8 +242,8 @@ onMounted(() => {
 });
 </script>
 
-<style scoped lang="scss">
-input[type="text"] {
-  @apply sgm-pl-8;
+<style lang="postcss">
+.p-inputtext {
+  @apply sgm-leading-3;
 }
 </style>

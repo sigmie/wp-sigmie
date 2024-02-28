@@ -5,9 +5,10 @@
         as="h3"
         class="sgm-flex sgm-w-full sgm-cursor-pointer sgm-items-center sgm-justify-between sgm-bg-white sgm-py-3 sgm-text-sm sgm-text-gray-400 sgm-hover:text-gray-500"
       >
-        <span class="sgm-block sgm-text-base sgm-font-semibold sgm-text-gray-900">{{
-          label
-        }}</span>
+        <span
+          class="sgm-block sgm-text-base sgm-font-semibold sgm-text-gray-900"
+          >{{ label }}</span
+        >
         <span class="sgm-ml-6 sgm-flex sgm-items-center">
           <svg
             class="sgm-h-5 sgm-w-5 sgm-text-black"
@@ -76,11 +77,10 @@
               @update:model-value="(newVal) => onChange(facet, newVal)"
             ></Checkbox>
 
-            <label :for="`filter-${facet}`" class="sgm-ml-3 sgm-text-base"
-              ><span class="sgm-text-black">{{ facet }}</span> ({{
-                count
-              }})</label
-            >
+            <label :for="`filter-${facet}`" class="sgm-ml-3 sgm-text-sm"
+              ><span class="sgm-text-black">{{ facet }}</span>
+              <span class="sgm-text-gray-500 sgm-ml-1 sgm-tracking-wide"> ({{ count }}) </span>
+            </label>
           </div>
         </div>
       </DisclosurePanel>

@@ -700,8 +700,6 @@ class Sigmie_Admin
 			'sigmie_offers_filter_text',
 			'sigmie_no_products_text',
 			'sigmie_no_products_advice_text',
-			'sigmie_products_count_template',
-			'sigmie_show_price_currency',
 			'sigmie_sort_by_relevance_label',
 			'sigmie_sort_by_price_desc_label',
 			'sigmie_sort_by_price_asc_label',
@@ -736,8 +734,6 @@ class Sigmie_Admin
 					offers-filter-text="' . $options['sigmie_offers_filter_text'] . '"
 					no-products-text="' . $options['sigmie_no_products_text'] . '"
 					no-products-advice-text="' . $options['sigmie_no_products_advice_text'] . '"
-					products-count-template="' . $options['sigmie_products_count_template'] . '"
-					:show-price-currency="' . (string) ($options['sigmie_show_price_currency'] === '1' ? 'true' : 'false') . '"
 					sort-by-relevance-label="' . $options['sigmie_sort_by_relevance_label'] . '"
 					sort-by-price-desc-label="' . $options['sigmie_sort_by_price_desc_label'] . '"
 					sort-by-price-asc-label="' . $options['sigmie_sort_by_price_asc_label'] . '"

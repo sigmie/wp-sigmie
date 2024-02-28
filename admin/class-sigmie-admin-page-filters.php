@@ -112,28 +112,30 @@ class Sigmie_Admin_Page_Filters
 		);
 
 		$fields = [
-			'offers_filter_text' => esc_html__('Offers Filter Text', 'sigmie'),
-			'no_products_text' => esc_html__('No Products Text', 'sigmie'),
-			'no_products_advice_text' => esc_html__('No Products Advice Text', 'sigmie'),
-			'products_count_template' => esc_html__('Products Count Template', 'sigmie'),
-			'show_price_currency' => esc_html__('Show Price Currency', 'sigmie'),
-			'sort_by_relevance_label' => esc_html__('Sort By Relevance Label', 'sigmie'),
-			'sort_by_price_desc_label' => esc_html__('Sort By Price Descending Label', 'sigmie'),
-			'sort_by_price_asc_label' => esc_html__('Sort By Price Ascending Label', 'sigmie'),
-			'sort_by_most_recent_label' => esc_html__('Sort By Most Recent Label', 'sigmie'),
-			'sort_by_rating_label' => esc_html__('Sort By Rating Label', 'sigmie'),
 			'theme' => esc_html__('Theme', 'sigmie'),
 			'filterable_attributes' => esc_html__('Filterable attributes', 'sigmie'),
-			'show_price_range_chart' => esc_html__('Show price chart', 'sigmie'),
-			'show_categories_filter' => esc_html__('Show categories', 'sigmie'),
 			'products_per_page' => esc_html__('Products per page', 'sigmie'),
-			'show_offers_filter' => esc_html__('Show offers filter', 'sigmie'),
+			'filters_title_text' => esc_html__('Filters title text', 'sigmie'),
 			'products_title_text' => esc_html__('Products title text', 'sigmie'),
 			'products_subtitle_template' => esc_html__('Products subtitle template', 'sigmie'),
-			'filters_title_text' => esc_html__('Filters title text', 'sigmie'),
-			'reset_filters_text' => esc_html__('Reset filters text', 'sigmie'),
+
+			'sort_by_relevance_label' => esc_html__('Sort by relevance label', 'sigmie'),
+			'sort_by_price_desc_label' => esc_html__('Sort by price descending label', 'sigmie'),
+			'sort_by_price_asc_label' => esc_html__('Sort by price ascending label', 'sigmie'),
+			'sort_by_most_recent_label' => esc_html__('Sort by most recent label', 'sigmie'),
+			'sort_by_rating_label' => esc_html__('Sort by rating label', 'sigmie'),
+
+			'show_offers_filter' => esc_html__('Show offers filter', 'sigmie'),
+			'offers_filter_text' => esc_html__('Offers filter text', 'sigmie'),
+
 			'price_range_label' => esc_html__('Price range label', 'sigmie'),
 			'price_range_filter_label' => esc_html__('Price range filter label template', 'sigmie'),
+			'show_price_range_chart' => esc_html__('Show price chart', 'sigmie'),
+
+			'no_products_text' => esc_html__('No products text', 'sigmie'),
+			'no_products_advice_text' => esc_html__('No products advice text', 'sigmie'),
+			'show_categories_filter' => esc_html__('Show categories', 'sigmie'),
+			'reset_filters_text' => esc_html__('Reset filters text', 'sigmie'),
 		];
 
 		foreach ($fields as $field_key => $field_label) {
@@ -184,43 +186,6 @@ class Sigmie_Admin_Page_Filters
 	{
 		$value = get_option('sigmie_no_products_advice_text', '');
 		echo '<input type="text" id="sigmie_no_products_advice_text" name="sigmie_no_products_advice_text" value="' . esc_attr($value) . '" />';
-	}
-
-	public function sanitize_products_count_template($value)
-	{
-		return sanitize_text_field($value);
-	}
-
-	public function products_count_template_callback()
-	{
-		$value = get_option('sigmie_products_count_template', '');
-		echo '<input type="text" id="sigmie_products_count_template" name="sigmie_products_count_template" value="' . esc_attr($value) . '" />';
-	}
-
-	public function sanitize_show_price_currency($value)
-	{
-		return sanitize_text_field($value);
-	}
-
-	public function show_price_currency_callback()
-	{
-		$value = (string) get_option('sigmie_show_price_currency', '0');
-?>
-		<fieldset class="">
-			<span class="">
-				<input type="radio" id="sigmie_show_price_currency_on" name="sigmie_show_price_currency" value="1" <?php checked($value, '1'); ?> />
-				<label class="checkbox" for="sigmie_show_price_currency_on"><?php _e('Yes'); ?></label>
-			</span>
-			<br>
-			<span class="">
-				<input type="radio" id="sigmie_show_price_currency_off" name="sigmie_show_price_currency" value="0" <?php checked($value, '0'); ?> />
-				<label class="checkbox" for="sigmie_show_price_currency_off"><?php _e('No'); ?></label>
-			</span>
-		</fieldset>
-		<p class="description">
-			<?php esc_html_e('Show currency symbol with price.', 'sigmie'); ?>
-		</p>
-	<?php
 	}
 
 	public function sanitize_sort_by_relevance_label($value)
