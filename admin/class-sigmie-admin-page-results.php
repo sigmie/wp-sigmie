@@ -87,8 +87,8 @@ class Sigmie_Admin_Page_Results
 	{
 		add_submenu_page(
 			'sigmie',
-			esc_html__('Results', 'sigmie'),
-			esc_html__('Results', 'sigmie'),
+			esc_html__('Search results', 'sigmie'),
+			esc_html__('Search results', 'sigmie'),
 			$this->capability,
 			$this->slug,
 			array($this, 'display_page'),

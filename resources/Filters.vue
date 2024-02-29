@@ -31,7 +31,7 @@
 
         <template v-slot:active-filters>
           <div
-            class="sgm-flex sgm-flex-row sgm-py-6 sgm-space-x-4 sgm-mt-1 sgm-h-20"
+            class="sgm-flex sgm-flex-row sgm-py-6 sgm-space-x-4 sgm-mt-1"
           >
             <Button
               outlined

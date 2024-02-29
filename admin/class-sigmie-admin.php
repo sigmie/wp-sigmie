@@ -649,6 +649,7 @@ class Sigmie_Admin
 			'date_created' => $data['date_created']->date('Y-m-d\TH:i:s.uP'),
 			'short_description' => $data['short_description'],
 			'description' => $data['description'],
+			'stock_status'=> $data['stock_status'],
 			'categories' => array_map(function ($categoryId) {
 
 				$category = get_term($categoryId, 'product_cat');
