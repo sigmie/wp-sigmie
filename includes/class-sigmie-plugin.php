@@ -109,6 +109,8 @@ class Sigmie_Plugin
 		 */
 		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-sigmie-loader.php';
 
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-sigmie-install.php';
+
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
@@ -163,6 +165,8 @@ class Sigmie_Plugin
 	 */
 	private function define_admin_hooks()
 	{
+		register_activation_hook(SIGMIE_PLUGIN_FILE, array(new Sigmie_Install, 'install'));
+
 		$plugin_admin = new Sigmie_Admin(
 			$this->get_plugin_name(),
 			$this->get_version(),
@@ -188,7 +192,7 @@ class Sigmie_Plugin
 
 		add_shortcode('sigmie_search_bar', [$plugin_admin, 'render_sigmie_search_bar']);
 
-		add_shortcode('sigmie_filters', [$plugin_admin, 'render_sigmie_filters']);
+		add_shortcode('sigmie_product_listing', [$plugin_admin, 'render_sigmie_product_listing']);
 
 		$this->loader->add_filter('display_post_states', $plugin_admin, 'add_display_post_states', 10, 2);
 		$this->loader->add_filter('template_include', $plugin_admin, 'sigmie_template_include');

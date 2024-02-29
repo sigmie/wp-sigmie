@@ -30,6 +30,10 @@ if (!defined('WPINC')) {
 	die;
 }
 
+if ( ! defined( 'SIGMIE_PLUGIN_FILE' ) ) {
+	define( 'SIGMIE_PLUGIN_FILE', __FILE__ );
+}
+
 /**
  * Currently plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org

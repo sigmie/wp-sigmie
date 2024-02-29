@@ -113,6 +113,7 @@ class Sigmie_Admin_Page_Products
 
 		$fields = [
 			// 'show_only_instock_products' => esc_html__('Show only instock products', 'sigmie'),
+			// show_gallery_images_on_hover
 		];
 
 		foreach ($fields as $field_key => $field_label) {

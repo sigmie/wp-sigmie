@@ -439,10 +439,7 @@ class Sigmie_Admin
 		$product = wc_get_product($post);
 
 		if (isset($_POST['sigmie_boost'])) {
-			// if (isset($_POST['sigmie_boost']) && check_admin_referer('sigmie_boost_action', 'sigmie_boost_nonce')) {
-			if (isset($_POST['sigmie_boost'])) {
-				$boost = !empty($_POST['sigmie_boost']) ? sanitize_text_field($_POST['sigmie_boost']) : '';
-			}
+			$boost = !empty($_POST['sigmie_boost']) ? sanitize_text_field($_POST['sigmie_boost']) : '1'; // Default value set to '1'
 			$product->update_meta_data('sigmie_boost', (int) $boost);
 		} else {
 			if ($product->meta_exists('sigmie_boost')) {
@@ -633,9 +630,16 @@ class Sigmie_Admin
 		preg_match('/src="([^"]*)"/i', $image_html, $image_array);
 		$image_url = $image_array[1];
 
+		$gallery_image_ids = $product->get_gallery_image_ids();
+		$gallery_images = array_map(function($image_id) {
+			return wp_get_attachment_url($image_id);
+		}, $gallery_image_ids);
+
 		$res = [
 			'thumbnail_html' => $product->get_image(),
 			'image' => $image_url,
+			'gallery_image' => $gallery_images,
+			'gallery_images' => $gallery_images,
 			'link' => $product->get_permalink(),
 			'price_as_number' => $product->get_price(),
 			'price' => $price,
@@ -649,14 +653,27 @@ class Sigmie_Admin
 			'date_created' => $data['date_created']->date('Y-m-d\TH:i:s.uP'),
 			'short_description' => $data['short_description'],
 			'description' => $data['description'],
-			'stock_status'=> $data['stock_status'],
+			'stock_status' => $data['stock_status'],
+			'is_featured' => $data['featured'],
 			'categories' => array_map(function ($categoryId) {
 
 				$category = get_term($categoryId, 'product_cat');
 
 				return $category->name;
 			}, $data['category_ids']),
+			// If featured and no boost set, set to 1.1
+			'boost' => array_reduce($data['meta_data'], function ($carry, WC_Meta_Data $metaData) use ($data) {
+				if ($metaData->get_data()['key'] === 'sigmie_boost') {
+					$carry = (float) $metaData->get_data()['value'];
+					if ($data['featured'] && $carry === 1.0) {
+						$carry = 1.1;
+					}
+				}
+				return $carry;
+			}, 1)
 		];
+
+		ray()->once($res);
 
 		/** @var WC_Product_Attribute|string $attribute  */
 		foreach ($attributes as $name => $attribute) {
@@ -675,7 +692,7 @@ class Sigmie_Admin
 
 		return $res;
 	}
-	function render_sigmie_filters()
+	function render_sigmie_product_listing()
 	{
 		$options = get_options([
 			'sigmie_application_id',
@@ -807,7 +824,7 @@ class Sigmie_Admin
 
 	function sigmie_template_include($template)
 	{
-		if (get_post(get_the_ID())->post_name === 'shop' && get_option('woocommerce_shop_page_id') === '103') {
+		if (get_post(get_the_ID())->post_name === 'shop' && (int) get_option('woocommerce_shop_page_id') === (int)get_option('sigmie_product_listing_page_id')) {
 			$new_template = plugin_dir_path(__FILE__) . 'class-sigmie-filters-template.php';
 			if (file_exists($new_template)) {
 				return $new_template;
@@ -819,8 +836,8 @@ class Sigmie_Admin
 
 	function add_display_post_states($post_states, $post)
 	{
-		if (get_post(get_the_ID())->post_name === 'filters') {
-			$post_states['sigmie_fliter_page'] = __('Sigmie Filters', 'sigmie');
+		if ((int)get_option('sigmie_product_listing_page_id') === $post->ID) {
+			$post_states['sigmie_product_listing_page'] = __('Sigmie product listing', 'sigmie');
 		}
 
 		return $post_states;

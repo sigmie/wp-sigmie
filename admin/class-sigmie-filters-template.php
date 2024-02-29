@@ -10,7 +10,7 @@ get_header('shop'); ?>
     do_action('woocommerce_before_main_content');
     ?>
 
-<?php echo do_shortcode('[sigmie_filters]'); ?>
+<?php echo do_shortcode('[sigmie_product_listing]'); ?>
 
 <?php
 get_footer('shop');
