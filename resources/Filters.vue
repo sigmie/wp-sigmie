@@ -154,6 +154,31 @@
           </div>
         </template>
 
+        <template v-slot:featured>
+          <h2
+            class="sgm-text-xl sgm-font-normal sgm-tracking-tight sgm-text-gray-900 sgm-m-0"
+          >
+            Featured Products
+          </h2>
+
+          <SigmieSearch
+            :debounce-ms="200"
+            :apiKey="props.apiKey"
+            :sort="'_score'"
+            :query="''"
+            :perPage="3"
+            :filters="'is:is_featured'"
+            :facets="props.facets"
+            :search="props.index"
+            :applicationId="props.application"
+            v-slot="{ hits, facets, total, loading, processing_time_ms }"
+          >
+            <div class="sgm-flex sgm-flex-row sgm-space-x-2 sgm-justify-between">
+              <FeaturedHit v-for="hit in hits" :hit="hit"></FeaturedHit>
+            </div>
+          </SigmieSearch>
+        </template>
+
         <template v-slot:hits>
           <div class="sgm-relative sgm-w-full sgm-h-full sgm-mt-10">
             <Curtain
@@ -245,6 +270,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { ChevronDownIcon } from "@heroicons/vue/20/solid";
 import { SigmieSearch } from "@sigmie/vue";
 import FilterHit from "./FilterHit.vue";
+import FeaturedHit from "./FeaturedHit.vue";
 import Facet from "./Facet.vue";
 import Layout from "./FilterLayout.vue";
 import Chip from "primevue/chip";

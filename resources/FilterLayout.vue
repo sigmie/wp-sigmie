@@ -119,6 +119,8 @@
                 </div>
               </div>
 
+              <slot name="featured"></slot>
+
               <div class="" v-if="total > 0">
                 <slot name="hits"></slot>
 
