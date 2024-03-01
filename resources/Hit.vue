@@ -42,9 +42,12 @@ let props = defineProps({
         >
           {{ hit.categories.join(",") }}
         </div>
-        <h3 class="sgm-text-sm sgm-text-gray-700 sgm-text-left sgm-mt-1">
+        <h3 class="sgm-text-sm  sgm-text-left sgm-mt-1">
           <span aria-hidden="true" class="sgm-absolute sgm-inset-0" />
-          {{ hit.name }}
+          <span class="sgm-text-black">
+            {{ hit.name }}
+          </span>
+          
         </h3>
         <p
           v-if="showDescription"

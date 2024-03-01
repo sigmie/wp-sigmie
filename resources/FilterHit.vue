@@ -93,12 +93,10 @@ let props = defineProps({
           {{ hit.categories.join(",") }}
         </div>
 
-        <h3
-          class="sgm-text-base sgm-font-bold sgm-text-gray-900 sgm-mt-1 sgm-mb-0"
-        >
+        <h3 class="sgm-text-base sgm-mt-1 sgm-mb-0">
           <a @mouseover="onHover" @mouseleave="onLeave" :href="hit.link">
             <span aria-hidden="true" class="sgm-absolute sgm-inset-0"></span>
-            {{ hit.name }}
+            <span class="sgm-text-black sgm-font-medium">{{ hit.name }}</span>
           </a>
         </h3>
         <div

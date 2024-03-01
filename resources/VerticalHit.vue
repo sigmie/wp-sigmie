@@ -22,7 +22,7 @@ let props = defineProps({
         />
       </DeferredContent>
     </div>
-    <div class="pt-2 sgm-flex sgm-flex-col sgm-justify-between pb-4">
+    <div class="sgm-h-[80px] sgm-flex sgm-flex-col sgm-justify-between">
       <a class="" :href="hit.link">
         <h3
           class="sgm-text-sm sgm-font-normal sgm-text-gray-900 sgm-mt-1 sgm-mb-0"
@@ -37,7 +37,7 @@ let props = defineProps({
         <div class="sgm-flex sgm-flex-row sgm-items-center">
           <p class="sgm-sr-only">{{ hit.average_rating }} stars</p>
           <Stars :average_rating="hit.average_rating"></Stars>
-          <span class="sgm-text-xs sgm-text-gray-700">(430)</span>
+          <span class="sgm-text-xs sgm-text-gray-700 sgm-ml-2">(430)</span>
         </div>
         <div
           class="sgm-text-sm sgm-font-medium sgm-text-gray-900"
