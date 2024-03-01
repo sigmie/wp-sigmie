@@ -115,6 +115,8 @@ class Sigmie_Admin_Page_Products
 			// 'show_only_instock_products' => esc_html__('Show only instock products', 'sigmie'),
 			// show_gallery_images_on_hover
 			// on top bar show 'featured', 'offers', 'new', 'best sellers', 'nothing'
+			// in the middle bar show 'featured', 'offers', 'new', 'best sellers', 'nothing'
+			// featured products title 
 		];
 
 		foreach ($fields as $field_key => $field_label) {

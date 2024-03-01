@@ -1,6 +1,6 @@
 <template>
   <div class="sgm-relative sgm-w-full">
-    <span class="sgm-block sgm-text-base sgm-font-semibold sgm-text-gray-900">
+    <span class="sgm-text-sm sgm-font-medium sgm-text-black sgm-mt-3">
       {{ label }}
     </span>
     <div

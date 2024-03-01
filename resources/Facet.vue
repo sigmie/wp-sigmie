@@ -1,17 +1,17 @@
 <template>
-  <Disclosure :defaultOpen="true" as="div" class="sgm-py-3" v-slot="{ open }">
+  <Disclosure :defaultOpen="true" as="div" class="" v-slot="{ open }">
     <div class="sgm--my-3 sgm-flow-root">
       <DisclosureButton
         as="h3"
-        class="sgm-flex sgm-w-full sgm-cursor-pointer sgm-items-center sgm-justify-between sgm-bg-white sgm-py-3 sgm-text-sm sgm-text-gray-400 sgm-hover:text-gray-500"
+        class="sgm-flex sgm-flex-row sgm-w-full sgm-cursor-pointer sgm-items-center sgm-justify-between sgm-bg-white sgm-py-3 sgm-text-sm sgm-text-gray-400 sgm-hover:text-gray-500 sgm-m-0"
       >
         <span
-          class="sgm-block sgm-text-base sgm-font-semibold sgm-text-gray-900"
+          class="sgm-text-sm sgm-font-medium sgm-text-black"
           >{{ label }}</span
         >
         <span class="sgm-ml-6 sgm-flex sgm-items-center">
           <svg
-            class="sgm-h-5 sgm-w-5 sgm-text-black"
+            class="sgm-h-4 sgm-w-4 sgm-text-black"
             v-if="!open"
             viewBox="0 0 24 24"
             version="1.1"
@@ -32,7 +32,7 @@
           </svg>
           <svg
             v-else
-            class="sgm-h-5 sgm-w-5"
+            class="sgm-h-4 sgm-w-4 sgm-text-black"
             viewBox="0 0 24 24"
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +62,7 @@
       leave-from-class="sgm-transform sgm-scale-100 sgm-opacity-100"
       leave-to-class="sgm-transform sgm-scale-95 sgm-opacity-0"
     >
-      <DisclosurePanel class="sgm-pt-6">
+      <DisclosurePanel class="sgm-pt-4">
         <div class="sgm-space-y-2">
           <div
             v-for="(count, facet) in options"

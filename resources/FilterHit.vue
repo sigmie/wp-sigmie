@@ -50,11 +50,11 @@ let props = defineProps({
       <div
         class="sgm-aspect-h-1 sgm-aspect-w-1 sgm-overflow-hidden sgm-rounded-lg sgm-bg-gray-200 sgm-group-hover:opacity-75"
       >
-        <DeferredContent v-if="!autoPlay">
+        <DeferredContent class="" v-if="!autoPlay">
           <img
             :src="hit.image"
             :alt="hit.name"
-            class="sgm-h-60 sgm-w-full sgm-object-cover sgm-object-center"
+            class="sgm-h-60 sgm-w-60 sgm-object-cover sgm-object-center"
           />
         </DeferredContent>
         <Galleria
@@ -67,9 +67,9 @@ let props = defineProps({
           :transitionInterval="900"
         >
           <template #item="slotProps">
-            <DeferredContent>
+            <DeferredContent class="">
               <img
-                class="sgm-h-60 sgm-w-full sgm-object-cover sgm-object-center"
+                class="sgm-h-60 sgm-w-60 sgm-object-cover sgm-object-center"
                 :src="slotProps.item.itemImageSrc"
                 :alt="slotProps.item.alt"
               />
