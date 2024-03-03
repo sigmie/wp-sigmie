@@ -175,6 +175,7 @@
               v-slot="{ hits }"
             >
               <VerticalProducts
+                id="featured-vertical-scroller"
                 title="Featured products"
                 :hits="hits"
               ></VerticalProducts>
@@ -211,6 +212,7 @@
                         v-slot="{ hits }"
                       >
                         <VerticalProducts
+                          id="offers-vertical-scroller"
                           title="Featured products"
                           :hits="hits"
                         ></VerticalProducts>
