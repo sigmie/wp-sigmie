@@ -20,15 +20,15 @@
           </TransitionChild>
 
           <div class="sgm-fixed sgm-inset-0 sgm-z-40 sgm-flex">
-            <TransitionChild
-              as="template"
-              enter="sgm-transition sgm-ease-in-out sgm-duration-300 sgm-transform"
-              enter-from="sgm-translate-x-full"
-              enter-to="sgm-translate-x-0"
-              leave="sgm-transition sgm-ease-in-out sgm-duration-300 sgm-transform"
-              leave-from="sgm-translate-x-0"
-              leave-to="sgm-translate-x-full"
-            >
+              <TransitionChild
+                as="template"
+                enter="transform transition ease-in-out duration-200 sm:duration-500"
+                enter-from="translate-x-full"
+                enter-to="translate-x-0"
+                leave="transform transition ease-in-out duration-300 sm:duration-600"
+                leave-from="translate-x-0"
+                leave-to="translate-x-full"
+              >
               <DialogPanel
                 class="sgm-px-4 sgm-relative sgm-ml-auto sgm-flex sgm-h-full sgm-w-full sgm-max-w-xs sgm-flex-col sgm-overflow-y-auto sgm-bg-white sgm-py-4 sgm-pb-12 sgm-shadow-xl"
               >
@@ -105,14 +105,14 @@
                 </div>
                 <div class="lg:sgm-hidden">
                   <Button
-                    class=""
                     outlined
                     severity="secondary"
                     @click="mobileFiltersOpen = true"
+                    class="sgm-flex sgm-flex-row sgm-space-x-3"
                   >
-                    <span class="sgm-sr-only">Filters</span>
-                    <FunnelIcon
-                      class="sgm-h-5 sgm-w-5 sgm-fill-secondary-color"
+                    <span class="sgm-text-black">All filters</span>
+                    <FilterIcon
+                      class="sgm-h-6 sgm-w-6 sgm-text-black"
                       aria-hidden="true"
                     />
                   </Button>
@@ -152,8 +152,8 @@ import {
   TransitionChild,
   TransitionRoot,
 } from "@headlessui/vue";
-import { XMarkIcon } from "@heroicons/vue/24/outline";
-import { FunnelIcon } from "@heroicons/vue/20/solid";
+import XMarkIcon from "./XIcon.vue";
+import FilterIcon from "./FilterIcon.vue";
 import Button from "primevue/button";
 
 const props = defineProps({
