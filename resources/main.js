@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import Search from "@/Search.vue";
-import Filters from "@/Filters.vue";
+import Filters from "@/ProductListing.vue";
 
 import './main.css'
 
@@ -15,6 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const filters = createApp({})
     filters.use(PrimeVue);
-    filters.component('filters', Filters);
+    filters.component('product-listing', Filters);
     filters.mount('#sigmie-filters')
 });

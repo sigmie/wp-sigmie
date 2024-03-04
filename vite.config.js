@@ -62,7 +62,7 @@ export default defineConfig({
     outDir: 'public',
     rollupOptions: {
       input: {
-        main: 'resources/' + process.env.SIGMIE_THEME + '-main.js',
+        main: 'resources/themes/' + process.env.SIGMIE_THEME + '-main.js',
       },
       output: {
         entryFileNames: 'assets/sigmie-' + process.env.SIGMIE_THEME + '.js',
