@@ -1,6 +1,7 @@
 <script setup>
 import VirtualScroller from "primevue/virtualscroller";
 import VerticalHit from "./VerticalHit.vue";
+import { computed, ref } from "vue";
 
 const props = defineProps({
   title: String,
@@ -8,17 +9,28 @@ const props = defineProps({
   id: String,
 });
 
+const canScrollLeft = ref(false);
+const canScrollRight = ref(true);
+
 const scrollToRight = () => {
   const scroller = document.querySelector(`.${props.id}`);
   if (scroller) {
-    scroller.scrollBy({ left: -480, behavior: "smooth" });
+    scroller.scrollBy({ left: 480, behavior: "smooth" });
+    canScrollLeft.value = true;
+    if (scroller.scrollWidth - scroller.scrollLeft <= scroller.clientWidth + 480) {
+      canScrollRight.value = false;
+    }
   }
 };
 
 const scrollToLeft = () => {
   const scroller = document.querySelector(`.${props.id}`);
   if (scroller) {
-    scroller.scrollBy({ left: 480, behavior: "smooth" });
+    scroller.scrollBy({ left: -480, behavior: "smooth" });
+    canScrollRight.value = true;
+    if (scroller.scrollLeft <= 480) {
+      canScrollLeft.value = false;
+    }
   }
 };
 </script>
@@ -30,7 +42,8 @@ const scrollToLeft = () => {
   <div class="sgm-relative">
     <button
       class="sgm-z-20 sgm-absolute sgm-border-0 sgm-border-gray-400 sgm-shadow-xl -sgm-right-4 sgm-top-4 sgm-rounded-full sgm-bg-white sgm-p-1 sgm-text-black hover:sgm-bg-gray-50 focus-visible:sgm-outline focus-visible:sgm-outline-2 focus-visible:sgm-outline-offset-2 focus-visible:sgm-outline-black"
-      @click="scrollToLeft"
+      v-if="canScrollRight"
+      @click="scrollToRight"
     >
       <svg
         viewBox="0 0 24 24"
@@ -50,7 +63,8 @@ const scrollToLeft = () => {
 
     <button
       class="sgm-z-20 sgm-absolute sgm-border-0 sgm-border-gray-400 sgm-shadow-xl -sgm-left-4 sgm-top-4 sgm-rounded-full sgm-bg-white sgm-p-1 sgm-text-black hover:sgm-bg-gray-50 focus-visible:sgm-outline focus-visible:sgm-outline-2 focus-visible:sgm-outline-offset-2 focus-visible:sgm-outline-black"
-      @click="scrollToRight"
+      v-if="canScrollLeft"
+      @click="scrollToLeft"
     >
       <svg
         class="sgm-h-6 sgm-w-6"
