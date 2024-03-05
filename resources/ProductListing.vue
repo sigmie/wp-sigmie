@@ -40,7 +40,10 @@
             <span class="sgm-text-black">
               {{ filterValue }}
             </span>
-            <XIcon class="sgm-h-4 sgm-w-4"></XIcon>
+            <XIcon
+              v-if="filterKey !== 'reset_filters'"
+              class="sgm-h-4 sgm-w-4"
+            ></XIcon>
           </div>
         </Button>
       </template>
@@ -287,6 +290,10 @@ const activeFilters = computed(() => {
     result.push(["price_range", computedPriceRangeFilterLabel.value]);
   }
 
+  if (result.length > 0) {
+    result.push(["reset_filters", props.resetFiltersText]);
+  }
+
   return result;
 });
 
@@ -324,6 +331,11 @@ function onRemoveActiveFilter(key, value) {
 
   if (key === "price_range") {
     priceRange.value = initialPriceRange.value;
+  }
+
+  if (key === "reset_filters") {
+    onResetFilters();
+    return;
   }
 
   updateFitlerString();
