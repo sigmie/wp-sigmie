@@ -151,15 +151,50 @@
             @range:inited="onRangeInit"
             :histogram="facets.price_as_number?.histogram"
           ></PriceSlider>
-          <template v-for="(index, key) in filterVals">
-            <Facet
-              v-if="key !== 'categories' && key !== 'price_as_number'"
-              :label="filterLabels[key] ?? key"
-              :facets="facets[key] ?? []"
-              :modelValue="filterVals[key]"
-              @update:model-value="(value) => onTermChange(key, value)"
-            ></Facet>
-          </template>
+          <Accordion
+            :pt="{ root: { class: 'sgm-flex sgm-flex-col sgm-space-y-6' } }"
+            :unstyled="true"
+            :multiple="true"
+            :activeIndex="
+              Object.keys(Object.keys(filterVals)).map((d) => parseInt(d))
+            "
+          >
+            <template v-slot:collapseicon>
+              <ChevronUpIcon
+                class="sgm-h-4 sgm-w-4 sgm-text-black"
+              ></ChevronUpIcon>
+            </template>
+
+            <template v-slot:expandicon>
+              <ChevronDownIcon
+                class="sgm-h-4 sgm-w-4 sgm-text-black"
+              ></ChevronDownIcon>
+            </template>
+            <template v-for="(index, key) in filterVals">
+              <AccordionTab
+                :pt="{
+                  headeraction: {
+                    class:
+                      'sgm-flex sgm-flex-row-reverse sgm-items-center sgm-justify-between',
+                  },
+                }"
+              >
+                <template v-slot:header>
+                  <div class="sgm-text-sm sgm-font-medium sgm-text-black">
+                    {{ filterLabels[key] ?? key }}
+                  </div>
+                </template>
+
+                <Facet
+                  v-if="key !== 'categories' && key !== 'price_as_number'"
+                  :label="filterLabels[key] ?? key"
+                  :facets="facets[key] ?? []"
+                  :modelValue="filterVals[key]"
+                  @update:model-value="(value) => onTermChange(key, value)"
+                ></Facet>
+              </AccordionTab>
+            </template>
+          </Accordion>
         </div>
       </template>
     </Layout>
@@ -172,8 +207,12 @@ import { ref, onMounted, computed } from "vue";
 import { SigmieSearch } from "@sigmie/vue";
 
 import Button from "primevue/button";
+import Accordion from "primevue/accordion";
+import AccordionTab from "primevue/accordiontab";
 
 import XIcon from "./XIcon.vue";
+import ChevronUpIcon from "./ChevronUpIcon.vue";
+import ChevronDownIcon from "./ChevronDownIcon.vue";
 
 import SortMenu from "./SortMenu.vue";
 import PriceSlider from "./PriceSlider.vue";
@@ -390,3 +429,5 @@ onMounted(() => {
   ];
 });
 </script>
+
+<style></style>
