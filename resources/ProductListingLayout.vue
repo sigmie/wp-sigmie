@@ -41,9 +41,6 @@
                 >
                   {{ title }}
                 </h2>
-                <div>
-                  <slot name="reset-action"></slot>
-                </div>
               </div>
               <div class="sgm-mt-6">
                 <slot name="filters"></slot>

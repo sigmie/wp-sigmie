@@ -23,12 +23,6 @@
       :active-filters="activeFilters"
       :total="total"
     >
-      <template v-slot:reset-action>
-        <Button link v-if="filtersAreDirty" @click.prevent="onResetFilters">
-          {{ resetFiltersText }}
-        </Button>
-      </template>
-
       <template v-slot:active-filter="{ filterKey, filterValue }">
         <Button
           outlined
@@ -230,6 +224,7 @@ const props = defineProps({
   apiKey: String,
   index: String,
   facets: String,
+  filters: String,
   showPriceRangeChart: Boolean,
   showCategoriesFilter: Boolean,
   showOffersFilter: Boolean,
@@ -395,7 +390,7 @@ const updateFitlerString = () => {
 
   let onlyOffersFilter = onlyOffers.value ? "is:on_sale" : "";
 
-  let result = [onlyOffersFilter, priceFilter, valueFilter]
+  let result = [props.filters, onlyOffersFilter, priceFilter, valueFilter]
     .filter((part) => part !== "")
     .join(" AND ");
 
@@ -404,6 +399,8 @@ const updateFitlerString = () => {
 };
 
 onMounted(() => {
+  filterString.value = props.filters;
+
   filterVals.value = props.facets.split(" ").reduce((acc, key) => {
     [key] = key.split(":");
     acc[key] = [];

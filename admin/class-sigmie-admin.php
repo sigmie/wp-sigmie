@@ -676,7 +676,7 @@ class Sigmie_Admin
 			'description' => $data['description'],
 			'stock_status' => $data['stock_status'],
 			'is_featured' => $data['featured'],
-			'total_sales'=> $product->get_total_sales(),
+			'total_sales' => $product->get_total_sales(),
 			'categories' => array_map(function ($categoryId) {
 
 				$category = get_term($categoryId, 'product_cat');
@@ -712,8 +712,17 @@ class Sigmie_Admin
 
 		return $res;
 	}
-	function render_sigmie_product_listing()
+	function render_sigmie_product_listing($args)
 	{
+		$woo_categories = implode(',', get_terms('product_cat', [
+			'hide_empty' => false,
+			'fields' => 'names',
+		]));
+
+		$args = shortcode_atts(array(
+			'categories' => $woo_categories,
+		), $args);
+
 		$options = get_options([
 			'sigmie_application_id',
 			'sigmie_search_api_key',
@@ -750,8 +759,12 @@ class Sigmie_Admin
 
 		$facets = implode(' ', $attributes) . ' ' . 'categories:20 price_as_number:5';
 
+		$categories = explode(',', $args['categories'],);
+		$categories = array_map(fn ($category) => "'{$category}'", $categories);
+
 		return '<div class="sgm-w-full sgm-mx-auto sgm-max-w-7xl" id="sigmie-filters">
 					<product-listing
+							filters="categories:[' . implode(',', $categories) . ']"
 							facets="' . $facets . '"
 							application="' . $options['sigmie_application_id'] . '" 
 							api-key="' . $options['sigmie_search_api_key'] . '" 
