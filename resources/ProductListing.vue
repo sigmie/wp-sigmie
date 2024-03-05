@@ -199,6 +199,7 @@ const props = defineProps({
   sortByPriceAscLabel: String,
   sortByMostRecentLabel: String,
   sortByRatingLabel: String,
+  sortByProductSalesLabel: String,
   productsSubtitleTemplate: String,
 });
 
@@ -372,6 +373,11 @@ onMounted(() => {
     {
       name: props.sortByRatingLabel,
       value: "average_rating:desc",
+      current: false,
+    },
+    {
+      name: props.sortByProductSalesLabel,
+      value: "total_sales:desc",
       current: false,
     },
   ];

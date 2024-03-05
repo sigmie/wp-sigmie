@@ -185,6 +185,8 @@ class Sigmie_Plugin
 		$this->loader->add_action('woocommerce_product_data_panels', $plugin_admin, 'product_tab_content', 10, 3);
 		$this->loader->add_action('woocommerce_process_product_meta', $plugin_admin, 'product_tab_fields', 10, 2);
 
+		$this->loader->add_action('woocommerce_order_status_completed', $plugin_admin, 'order_completed', 10, 1);
+
 		$this->loader->add_action('woocommerce_new_product', $plugin_admin, 'product_created', 10, 2);
 		$this->loader->add_action('woocommerce_update_product', $plugin_admin, 'product_updated', 10, 2);
 		$this->loader->add_action('wp_trash_post', $plugin_admin, 'post_trashed', 10, 2);

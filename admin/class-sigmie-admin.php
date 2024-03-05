@@ -510,6 +510,25 @@ class Sigmie_Admin
 		$this->sigmie->batchWrite($this->index, $body);
 	}
 
+	/**
+	 * @param  int $order_id Order ID.
+	 */
+	function order_completed($order_id)
+	{
+		$order = wc_get_order($order_id);
+
+		$items = $order->get_items();
+
+		foreach ($items as $item_id => $item) {
+
+			$product_id = $item->get_product_id();
+
+			$product = wc_get_product($product_id);
+
+			$this->product_updated($product_id, $product);
+		}
+	}
+
 	function product_updated($product_id, $product)
 	{
 		if (!$product->is_type('variable')) {
@@ -635,6 +654,8 @@ class Sigmie_Admin
 			return wp_get_attachment_url($image_id);
 		}, $gallery_image_ids);
 
+		$sells_count = get_post_meta($product->get_id(), 'total_sales', true);
+
 		$res = [
 			'thumbnail_html' => $product->get_image(),
 			'image' => $image_url,
@@ -655,6 +676,7 @@ class Sigmie_Admin
 			'description' => $data['description'],
 			'stock_status' => $data['stock_status'],
 			'is_featured' => $data['featured'],
+			'total_sales'=> $product->get_total_sales(),
 			'categories' => array_map(function ($categoryId) {
 
 				$category = get_term($categoryId, 'product_cat');
@@ -672,8 +694,6 @@ class Sigmie_Admin
 				return $carry;
 			}, 1)
 		];
-
-		ray()->once($res);
 
 		/** @var WC_Product_Attribute|string $attribute  */
 		foreach ($attributes as $name => $attribute) {
@@ -723,6 +743,7 @@ class Sigmie_Admin
 			'sigmie_sort_by_price_asc_label',
 			'sigmie_sort_by_most_recent_label',
 			'sigmie_sort_by_rating_label',
+			'sigmie_sort_by_product_sales_label'
 		]);
 
 		$attributes = array_map(fn ($value) => "pa_{$value}", json_decode($options['sigmie_filterable_attributes'], true));
@@ -754,6 +775,7 @@ class Sigmie_Admin
 							sort-by-price-desc-label="' . $options['sigmie_sort_by_price_desc_label'] . '"
 							sort-by-price-asc-label="' . $options['sigmie_sort_by_price_asc_label'] . '"
 							sort-by-most-recent-label="' . $options['sigmie_sort_by_most_recent_label'] . '"
+							sort-by-product-sales-label="' . $options['sigmie_sort_by_product_sales_label'] . '"
 							sort-by-rating-label="' . $options['sigmie_sort_by_rating_label'] . '">
 					</product-listing>
 				</div>';

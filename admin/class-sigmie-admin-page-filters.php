@@ -119,6 +119,7 @@ class Sigmie_Admin_Page_Filters
 			'products_title_text' => esc_html__('Products title text', 'sigmie'),
 			'products_subtitle_template' => esc_html__('Products subtitle template', 'sigmie'),
 
+			'sort_by_product_sales_label'=>esc_html__('Sort by product sales label', 'sigmie'),
 			'sort_by_relevance_label' => esc_html__('Sort by relevance label', 'sigmie'),
 			'sort_by_price_desc_label' => esc_html__('Sort by price descending label', 'sigmie'),
 			'sort_by_price_asc_label' => esc_html__('Sort by price ascending label', 'sigmie'),
@@ -186,6 +187,17 @@ class Sigmie_Admin_Page_Filters
 	{
 		$value = get_option('sigmie_no_products_advice_text', '');
 		echo '<input type="text" id="sigmie_no_products_advice_text" name="sigmie_no_products_advice_text" value="' . esc_attr($value) . '" />';
+	}
+
+	public function sanitize_sort_product_sales_label($value)
+	{
+		return sanitize_text_field($value);
+	}
+
+	public function sort_by_product_sales_label_callback()
+	{
+		$value = get_option('sigmie_sort_by_product_sales_label', '');
+		echo '<input type="text" id="sigmie_sort_by_product_sales_label" name="sigmie_sort_by_product_sales_label" value="' . esc_attr($value) . '" />';
 	}
 
 	public function sanitize_sort_by_relevance_label($value)
