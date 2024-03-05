@@ -5,52 +5,18 @@
         as="h3"
         class="sgm-flex sgm-flex-row sgm-w-full sgm-cursor-pointer sgm-items-center sgm-justify-between sgm-bg-white sgm-py-3 sgm-text-sm sgm-text-gray-400 sgm-hover:text-gray-500 sgm-m-0"
       >
-        <span
-          class="sgm-text-sm sgm-font-medium sgm-text-black"
-          >{{ label }}</span
-        >
+        <span class="sgm-text-sm sgm-font-medium sgm-text-black">{{
+          label
+        }}</span>
         <span class="sgm-ml-6 sgm-flex sgm-items-center">
-          <svg
-            class="sgm-h-4 sgm-w-4 sgm-text-black"
+          <ChevronDownIcon
             v-if="!open"
-            viewBox="0 0 24 24"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-          >
-            <g stroke="none" stroke-width="2" fill="none" fill-rule="evenodd">
-              <g
-                transform="translate(4.000000, 7.500000)"
-                fill="currentColor"
-                fill-rule="nonzero"
-              >
-                <path
-                  d="M0.469669914,0.469669914 C0.735936477,0.203403352 1.15260016,0.1791973 1.44621165,0.397051761 L1.53033009,0.469669914 L8,6.939 L14.4696699,0.469669914 C14.7359365,0.203403352 15.1526002,0.1791973 15.4462117,0.397051761 L15.5303301,0.469669914 C15.7965966,0.735936477 15.8208027,1.15260016 15.6029482,1.44621165 L15.5303301,1.53033009 L8.53033009,8.53033009 C8.26406352,8.79659665 7.84739984,8.8208027 7.55378835,8.60294824 L7.46966991,8.53033009 L0.469669914,1.53033009 C0.176776695,1.23743687 0.176776695,0.762563133 0.469669914,0.469669914 Z"
-                ></path>
-              </g>
-            </g>
-          </svg>
-          <svg
+            class="sgm-h-4 sgm-w-4 sgm-text-black"
+          ></ChevronDownIcon>
+          <ChevronUpIcon
             v-else
             class="sgm-h-4 sgm-w-4 sgm-text-black"
-            viewBox="0 0 24 24"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-          >
-            <g stroke="none" stroke-width="2" fill="none" fill-rule="evenodd">
-              <g
-                transform="translate(12.000000, 12.000000) rotate(-180.000000) translate(-12.000000, -12.000000) translate(4.000000, 7.500000)"
-                fill="currentColor"
-                fill-rule="nonzero"
-              >
-                <path
-                  d="M0.469669914,0.469669914 C0.735936477,0.203403352 1.15260016,0.1791973 1.44621165,0.397051761 L1.53033009,0.469669914 L8,6.939 L14.4696699,0.469669914 C14.7359365,0.203403352 15.1526002,0.1791973 15.4462117,0.397051761 L15.5303301,0.469669914 C15.7965966,0.735936477 15.8208027,1.15260016 15.6029482,1.44621165 L15.5303301,1.53033009 L8.53033009,8.53033009 C8.26406352,8.79659665 7.84739984,8.8208027 7.55378835,8.60294824 L7.46966991,8.53033009 L0.469669914,1.53033009 C0.176776695,1.23743687 0.176776695,0.762563133 0.469669914,0.469669914 Z"
-                  id="Stroke-1"
-                ></path>
-              </g>
-            </g>
-          </svg>
+          ></ChevronUpIcon>
         </span>
       </DisclosureButton>
     </div>
@@ -79,7 +45,9 @@
 
             <label :for="`filter-${facet}`" class="sgm-ml-3 sgm-text-sm"
               ><span class="sgm-text-black">{{ facet }}</span>
-              <span class="sgm-text-gray-500 sgm-ml-1 sgm-tracking-wide"> ({{ count }}) </span>
+              <span class="sgm-text-gray-500 sgm-ml-1 sgm-tracking-wide">
+                ({{ count }})
+              </span>
             </label>
           </div>
         </div>
@@ -105,20 +73,8 @@
 import { ref, watch, onMounted } from "vue";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
 import Checkbox from "primevue/checkbox";
-
-// green
-// import "primevue/resources/themes/aura-light-green/theme.css";
-
-// black
-// import "primevue/resources/themes/aura-light-noir/theme.css";
-
-// blue
-// import "primevue/resources/themes/aura-light-blue/theme.css";
-
-// yellow
-//
-// lime
-// import "primevue/resources/themes/aura-light-lime/theme.css";
+import ChevronDownIcon from './ChevronDownIcon.vue'
+import ChevronUpIcon from './ChevronUpIcon.vue'
 
 const emit = defineEmits(["update:modelValue"]);
 

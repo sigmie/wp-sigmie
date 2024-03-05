@@ -1,62 +1,29 @@
 <template>
   <div class="sgm-max-w-[1500px] sgm-mx-auto">
     <div>
-      <TransitionRoot as="template" :show="mobileFiltersOpen">
-        <Dialog
-          as="div"
-          class="sgm-relative sgm-z-40 lg:sgm-hidden"
-          @close="mobileFiltersOpen = false"
-        >
-          <TransitionChild
-            as="template"
-            enter="sgm-transition-opacity sgm-ease-linear sgm-duration-300"
-            enter-from="sgm-opacity-0"
-            enter-to="sgm-opacity-100"
-            leave="sgm-transition-opacity sgm-ease-linear sgm-duration-300"
-            leave-from="sgm-opacity-100"
-            leave-to="sgm-opacity-0"
+      <MobileFiltersDrawer
+        class="lg:sgm-hidden"
+        :show="mobileFiltersOpen"
+        @close="mobileFiltersOpen = false"
+      >
+        <slot name="filters"></slot>
+
+        <template v-slot:actions>
+          <div
+            class="sgm-flex sgm-flex-row sgm-items-center sgm-justify-between"
           >
-            <div class="sgm-fixed sgm-inset-0 sgm-bg-black sgm-bg-opacity-25" />
-          </TransitionChild>
-
-          <div class="sgm-fixed sgm-inset-0 sgm-z-40 sgm-flex">
-            <TransitionChild
-              as="template"
-              enter="transform transition ease-in-out duration-200 sm:duration-500"
-              enter-from="translate-x-full"
-              enter-to="translate-x-0"
-              leave="transform transition ease-in-out duration-300 sm:duration-600"
-              leave-from="translate-x-0"
-              leave-to="translate-x-full"
+            <Button
+            class="sgm-w-[48%] sgm-h-full"
+              outlined
+              severity="secondary"
+              @click="mobileFiltersOpen = false"
             >
-              <DialogPanel
-                class="sgm-px-4 sgm-relative sgm-ml-auto sgm-flex sgm-h-full sgm-w-full sgm-max-w-xs sgm-flex-col sgm-overflow-y-auto sgm-bg-white sgm-py-4 sgm-pb-12 sgm-shadow-xl"
-              >
-                <div
-                  class="sgm-flex sgm-items-center sgm-justify-between sgm-px-4"
-                >
-                  <h2 class="sgm-text-lg sgm-font-medium sgm-text-gray-900">
-                    Filters
-                  </h2>
-                  <button
-                    type="button"
-                    class="sgm--mr-2 sgm-flex sgm-h-10 sgm-w-10 sgm-items-center sgm-justify-center sgm-rounded-md sgm-bg-white sgm-p-2 sgm-text-gray-400"
-                    @click="mobileFiltersOpen = false"
-                  >
-                    <span class="sgm-sr-only">Close menu</span>
-                    <XMarkIcon class="sgm-h-6 sgm-w-6" aria-hidden="true" />
-                  </button>
-                </div>
-
-                <!-- Filters -->
-                <form class="sgm-mt-4 sgm-border-t sgm-border-gray-200 px-4">
-                  <slot name="filters"></slot>
-                </form>
-              </DialogPanel>
-            </TransitionChild>
+              <span class="sgm-text-black sgm-w-full sgm-text-center">View</span>
+            </Button>
+            <slot name="mobile-reset-action"></slot>
           </div>
-        </Dialog>
-      </TransitionRoot>
+        </template>
+      </MobileFiltersDrawer>
 
       <main class="">
         <section
@@ -197,14 +164,8 @@
 <script setup>
 import Curtain from "./Curtain.vue";
 import NoHitsIcon from "./NoHitsIcon.vue";
+import MobileFiltersDrawer from "./MobileFiltersDrawer.vue";
 import { ref } from "vue";
-import {
-  Dialog,
-  DialogPanel,
-  TransitionChild,
-  TransitionRoot,
-} from "@headlessui/vue";
-import XMarkIcon from "./XIcon.vue";
 import FilterIcon from "./FilterIcon.vue";
 import Button from "primevue/button";
 

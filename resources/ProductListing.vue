@@ -130,6 +130,14 @@
         <Button :label="resetFiltersText" @click.prevent="onResetFilters" />
       </template>
 
+      <template v-slot:mobile-reset-action>
+        <Button
+          class="sgm-w-[48%] sgm-text-center"
+          :label="resetFiltersText"
+          @click.prevent="onResetFilters"
+        />
+      </template>
+
       <template v-slot:filters>
         <div class="sgm-flex sgm-flex-col sgm-space-y-6">
           <PriceSlider
@@ -160,7 +168,6 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 
 import { SigmieSearch } from "@sigmie/vue";
 
