@@ -29,6 +29,7 @@
           severity="secondary"
           rounded
           @click="onRemoveActiveFilter(filterKey, filterValue)"
+          class="mt-2"
         >
           <div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3">
             <span class="sgm-text-black">
@@ -184,11 +185,25 @@
               >
                 <template v-slot:header>
                   <div
-                    class="sgm-text-md xl:sgm-text-sm sgm-font-medium sgm-text-black sgm-no-underline"
+                    class="sgm-flex sgm-flex-col sgm-border-b sgm-border-gray-300"
                   >
-                    <span>
-                      {{ filterLabels[key] ?? key }}
-                    </span>
+                    <div
+                      class="sgm-text-md xl:sgm-text-sm sgm-font-medium sgm-text-black sgm-no-underline"
+                    >
+                      <span>
+                        {{ filterLabels[key] ?? key }}
+                      </span>
+                    </div>
+                    <div
+                      :class="[
+                        filterVals[key].length === 0 ? 'sgm-hidden' : '',
+                      ]"
+                      class="sgm-text-sm sgm-font-medium sgm-text-gray-600 sgm-h-6 lg:sgm-hidden"
+                    >
+                      <span>
+                        {{ filterVals[key].join(", ") ?? "" }}
+                      </span>
+                    </div>
                   </div>
                 </template>
 
