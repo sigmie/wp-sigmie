@@ -71,12 +71,12 @@
                     </div>
                     <!-- Main -->
                     <div
-                      class="sgm-w-[432px] sgm-h-full px-4 sgm-flex sgm-flex-col sgm-justify-between"
+                      class="sgm-w-[350px] sgm-h-full sgm-flex sgm-flex-col sgm-justify-between"
                     >
                       <div>
                         <slot></slot>
                       </div>
-                      <div class="sgm-pb-12">
+                      <div class="sgm-pb-12 px-4">
                         <slot name="actions"></slot>
                       </div>
                     </div>

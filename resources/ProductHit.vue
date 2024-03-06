@@ -47,13 +47,13 @@ let props = defineProps({
       class="sgm-group sgm-relative sgm-border-b sgm-border-r sgm-border-gray-200"
     >
       <div
-        class="sgm-aspect-h-1 sgm-aspect-w-1 sgm-overflow-hidden sgm-rounded-lg sgm-bg-gray-200 sgm-group-hover:opacity-75"
+        class="sgm-aspect-h-1 sgm-aspect-w-1 sgm-overflow-hidden sgm-rounded-lg sgm-group-hover:opacity-75"
       >
-        <DeferredContent class="" v-if="!autoPlay">
+        <DeferredContent v-if="!autoPlay" class="">
           <img
             :src="hit.image"
             :alt="hit.name"
-            class="sgm-h-60 sgm-w-60 sgm-object-cover sgm-object-center"
+            class="sgm-h-60 sgm-w-60 sgm-object-cover sgm-object-center sgm-mx-auto sgm-block"
           />
         </DeferredContent>
         <Galleria
@@ -79,7 +79,6 @@ let props = defineProps({
               <img
                 :src="slotProps.item.thumbnailImageSrc"
                 :alt="slotProps.item.alt"
-                style="display: block"
               />
             </DeferredContent>
           </template>

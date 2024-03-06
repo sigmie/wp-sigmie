@@ -149,7 +149,12 @@
             :histogram="facets.price_as_number?.histogram"
           ></PriceSlider>
           <Accordion
-            :pt="{ root: { class: 'sgm-flex sgm-flex-col sgm-space-y-6' } }"
+            :pt="{
+              root: {
+                class:
+                  'sgm-flex sgm-flex-col sgm-space-y-6 sgm-px-4 lg:sgm-px-0',
+              },
+            }"
             :unstyled="true"
             :multiple="true"
             :activeIndex="
@@ -170,6 +175,7 @@
             <template v-for="(index, key) in filterVals">
               <AccordionTab
                 :pt="{
+                  root: { class: 'sgm-border' },
                   headeraction: {
                     class:
                       'sgm-flex sgm-flex-row-reverse sgm-items-center sgm-justify-between',
@@ -177,8 +183,12 @@
                 }"
               >
                 <template v-slot:header>
-                  <div class="sgm-text-sm sgm-font-medium sgm-text-black">
-                    {{ filterLabels[key] ?? key }}
+                  <div
+                    class="sgm-text-md xl:sgm-text-sm sgm-font-medium sgm-text-black sgm-no-underline"
+                  >
+                    <span>
+                      {{ filterLabels[key] ?? key }}
+                    </span>
                   </div>
                 </template>
 
@@ -189,6 +199,14 @@
                   :modelValue="filterVals[key]"
                   @update:model-value="(value) => onTermChange(key, value)"
                 ></Facet>
+
+                <MobileFacet
+                  v-if="key !== 'categories' && key !== 'price_as_number'"
+                  :label="filterLabels[key] ?? key"
+                  :facets="facets[key] ?? []"
+                  :modelValue="filterVals[key]"
+                  @update:model-value="(value) => onTermChange(key, value)"
+                ></MobileFacet>
               </AccordionTab>
             </template>
           </Accordion>
@@ -218,6 +236,7 @@ import HorizontalProducts from "./HorizontalProducts.vue";
 import ProductHit from "./ProductHit.vue";
 import Facet from "./Facet.vue";
 import Layout from "./ProductListingLayout.vue";
+import MobileFacet from "./MobileFacet.vue";
 
 const props = defineProps({
   application: String,

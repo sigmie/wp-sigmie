@@ -1,11 +1,19 @@
 <template>
-  <div class="sgm-pt-4 sgm-hidden xl:sgm-block">
+  <div class="sgm-pt-4 block xl:sgm-hidden">
     <div class="sgm-space-y-2">
       <div
         v-for="(count, facet) in options"
         :key="facet"
-        class="sgm-flex sgm-flex-row sgm-items-center"
+        class="sgm-flex sgm-flex-row sgm-justify-between sgm-items-center"
       >
+
+        <label :for="`filter-${facet}`" class="sgm-text-sm"
+          ><span class="sgm-text-black">{{ facet }}</span>
+          <span class="sgm-text-gray-500 sgm-ml-1 sgm-tracking-wide">
+            ({{ count }})
+          </span>
+        </label>
+
         <Checkbox
           :input-id="`filter-${facet}`"
           :name="facet"
@@ -13,13 +21,6 @@
           :modelValue="values.includes(facet)"
           @update:model-value="(newVal) => onChange(facet, newVal)"
         ></Checkbox>
-
-        <label :for="`filter-${facet}`" class="sgm-ml-3 sgm-text-sm"
-          ><span class="sgm-text-black">{{ facet }}</span>
-          <span class="sgm-text-gray-500 sgm-ml-1 sgm-tracking-wide">
-            ({{ count }})
-          </span>
-        </label>
       </div>
     </div>
   </div>

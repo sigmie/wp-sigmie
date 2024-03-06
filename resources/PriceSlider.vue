@@ -1,5 +1,5 @@
 <template>
-  <div class="sgm-relative sgm-w-full">
+  <div class="sgm-relative sgm-w-full sgm-px-4 lg:sgm-px-0">
     <span class="sgm-text-sm sgm-font-medium sgm-text-black sgm-mt-3">
       {{ label }}
     </span>
@@ -37,7 +37,7 @@
     <div class="sgm-mt-5">
       <div
         v-if="showChart"
-        class="sgm-h-12 ct-chart sgm-ct-chart-pie sgm-ct-perfect-fourth"
+        class="sgm-hidden lg:sgm-block sgm-h-12 ct-chart sgm-ct-chart-pie sgm-ct-perfect-fourth"
       ></div>
       <div class="sgm-px-2">
         <Slider
