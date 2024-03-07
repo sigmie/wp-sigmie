@@ -87,11 +87,10 @@ class Sigmie_Admin_Page_Filters
 	{
 		add_submenu_page(
 			'sigmie',
-			esc_html__('Product listing', 'sigmie'),
-			esc_html__('Product listing', 'sigmie'),
+			esc_html__('Filters', 'sigmie'),
+			esc_html__('Filters', 'sigmie'),
 			$this->capability,
-			$this->slug,
-			array($this, 'display_page'),
+			$this->slug, array($this, 'display_page'),
 		);
 	}
 

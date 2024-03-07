@@ -127,6 +127,7 @@ class Sigmie_Plugin
 
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-search.php';
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-results.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-listing.php';
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-filters.php';
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-products.php';
 
@@ -206,6 +207,7 @@ class Sigmie_Plugin
 			new Sigmie_Admin_Page_Search();
 			new Sigmie_Admin_Page_Results();
 			new Sigmie_Admin_Page_Filters();
+			new Sigmie_Admin_Page_Listing();
 			new Sigmie_Admin_Page_Products();
 
 			add_action('wp_ajax_sigmie_re_index', array($plugin_admin, 're_index'), 10, 2);
