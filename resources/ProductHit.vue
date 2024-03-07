@@ -47,13 +47,13 @@ let props = defineProps({
       class="sgm-group sgm-relative sgm-border-b sgm-border-r sgm-border-gray-200"
     >
       <div
-        class="sgm-aspect-h-1 sgm-aspect-w-1 sgm-overflow-hidden sgm-rounded-lg sgm-group-hover:opacity-75"
+        class=""
       >
-        <DeferredContent v-if="!autoPlay" class="">
+        <DeferredContent v-if="!autoPlay" class="sgm-aspect-h-1 sgm-aspect-w-1 sgm-w-full sgm-overflow-hidden sgm-rounded-md sgm-bg-gray-200 sgm-lg:aspect-none sgm-group-hover:opacity-75 sgm-h-60">
           <img
             :src="hit.image"
             :alt="hit.name"
-            class="sgm-h-60 sgm-w-60 sgm-object-cover sgm-object-center sgm-mx-auto sgm-block"
+            class="sgm-h-full sgm-w-full sgm-object-cover sgm-object-center lg:sgm-h-full lg:sgm-w-full"
           />
         </DeferredContent>
         <Galleria
@@ -66,9 +66,9 @@ let props = defineProps({
           :transitionInterval="900"
         >
           <template #item="slotProps">
-            <DeferredContent class="">
+            <DeferredContent class="sgm-aspect-h-1 sgm-aspect-w-1 sgm-w-full sgm-overflow-hidden sgm-rounded-md sgm-bg-gray-200 sgm-lg:aspect-none sgm-group-hover:opacity-75 sgm-h-60">
               <img
-                class="sgm-h-60 sgm-w-60 sgm-object-cover sgm-object-center"
+                class="sgm-h-full sgm-w-full sgm-object-cover sgm-object-center lg:sgm-h-full lg:sgm-w-full"
                 :src="slotProps.item.itemImageSrc"
                 :alt="slotProps.item.alt"
               />
