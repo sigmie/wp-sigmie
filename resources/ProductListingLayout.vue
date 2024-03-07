@@ -6,6 +6,8 @@
         :show="mobileFiltersOpen"
         @close="mobileFiltersOpen = false"
       >
+        <slot name="mobile-sort"></slot>
+
         <slot name="filters"></slot>
 
         <template v-slot:actions>

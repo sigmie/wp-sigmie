@@ -69,6 +69,23 @@
         </SortMenu>
       </template>
 
+      <template v-slot:mobile-sort>
+        <MobileSortAccordion
+          :label="sortByLabel"
+          :options="sortOptions"
+          v-slot="item"
+        >
+          <div
+            class="sgm-py-2 sgm-px-3 sgm-cursor-pointer"
+            @click.prevent="onSortChange(item.value, item.name)"
+          >
+            <span class="sgm-text-black">
+              {{ item.name }}
+            </span>
+          </div>
+        </MobileSortAccordion>
+      </template>
+
       <template v-slot:offers>
         <Button
           v-if="showOffersFilter"
@@ -243,6 +260,7 @@ import XIcon from "./XIcon.vue";
 import ChevronUpIcon from "./ChevronUpIcon.vue";
 import ChevronDownIcon from "./ChevronDownIcon.vue";
 
+import MobileSortAccordion from "./MobileSortAccordion.vue";
 import SortMenu from "./SortMenu.vue";
 import PriceSlider from "./PriceSlider.vue";
 import Pagination from "./Pagination.vue";

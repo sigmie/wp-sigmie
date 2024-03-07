@@ -714,15 +714,6 @@ class Sigmie_Admin
 	}
 	function render_sigmie_product_listing($args)
 	{
-		$woo_categories = implode(',', get_terms('product_cat', [
-			'hide_empty' => false,
-			'fields' => 'names',
-		]));
-
-		$args = shortcode_atts(array(
-			'categories' => $woo_categories,
-		), $args);
-
 		$options = get_options([
 			'sigmie_application_id',
 			'sigmie_search_api_key',
@@ -761,12 +752,18 @@ class Sigmie_Admin
 
 		$facets = implode(' ', $attributes) . ' ' . 'categories:20 price_as_number:5';
 
-		$categories = explode(',', $args['categories'],);
-		$categories = array_map(fn ($category) => "'{$category}'", $categories);
+		$predefinedFilters = '';
+
+		if ($args['categories'] ?? false) {
+			$categories = explode(',', $args['categories'] ?? '');
+			$categories = array_map(fn ($category) => "'{$category}'", $categories);
+
+			$predefinedFilters = "filters=\"categories:[" . implode(',', $categories) . "]\"";
+		}
 
 		return '<div class="sgm-w-full sgm-mx-auto sgm-max-w-7xl" id="sigmie-filters">
 					<product-listing
-							filters="categories:[' . implode(',', $categories) . ']"
+							' . $predefinedFilters . '
 							facets="' . $facets . '"
 							application="' . $options['sigmie_application_id'] . '" 
 							api-key="' . $options['sigmie_search_api_key'] . '" 
