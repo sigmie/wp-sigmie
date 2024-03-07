@@ -159,9 +159,7 @@
             }"
             :unstyled="true"
             :multiple="true"
-            :activeIndex="
-              Object.keys(Object.keys(filterVals)).map((d) => parseInt(d))
-            "
+            :activeIndex="accordionActiveKeys"
           >
             <template v-slot:collapseicon>
               <ChevronUpIcon
@@ -433,7 +431,13 @@ const updateFitlerString = () => {
   filterString.value = result;
 };
 
+const accordionActiveKeys = ref([]);
+
 onMounted(() => {
+  accordionActiveKeys.value = Object.keys(Object.keys(filterVals)).map((d) =>
+    parseInt(d)
+  );
+
   filterString.value = props.filters;
 
   filterVals.value = props.facets.split(" ").reduce((acc, key) => {
