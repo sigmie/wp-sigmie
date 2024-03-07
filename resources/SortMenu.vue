@@ -2,7 +2,7 @@
   <div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3">
     <Menu
       as="div"
-      class="sgm-relative sgm-inline-block sgm-text-left sgm-rounded-full sgm-py-1 sgm-border sgm-border-gray-950"
+      class="sgm-relative sgm-inline-block sgm-text-left sgm-rounded-full sgm-border sgm-border-gray-950"
     >
       <div>
         <MenuButton

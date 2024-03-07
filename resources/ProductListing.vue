@@ -70,14 +70,15 @@
       </template>
 
       <template v-slot:offers>
-        <div
+        <Button
           v-if="showOffersFilter"
           :class="onlyOffers ? 'sgm-bg-hover' : null"
+          outlined
+          severity="secondary"
+          @click="onOffersClick"
         >
-          <Button outlined severity="secondary" @click="onOffersClick">
-            <span class="sgm-text-black"> {{ offersFilterText }}</span>
-          </Button>
-        </div>
+          <span class="sgm-text-black"> {{ offersFilterText }}</span>
+        </Button>
       </template>
 
       <template v-slot:horizontal-one>

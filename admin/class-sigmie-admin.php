@@ -752,10 +752,12 @@ class Sigmie_Admin
 			'sigmie_sort_by_price_asc_label',
 			'sigmie_sort_by_most_recent_label',
 			'sigmie_sort_by_rating_label',
-			'sigmie_sort_by_product_sales_label'
+			'sigmie_sort_by_product_sales_label',
+
+			'sigmie_filters_order'
 		]);
 
-		$attributes = array_map(fn ($value) => "pa_{$value}", json_decode($options['sigmie_filterable_attributes'], true));
+		$attributes = array_map(fn ($value) => "pa_{$value}", json_decode($options['sigmie_filters_order']));
 
 		$facets = implode(' ', $attributes) . ' ' . 'categories:20 price_as_number:5';
 
