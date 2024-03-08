@@ -31,17 +31,18 @@
             <div
               class="sgm-text-md xl:sgm-text-sm sgm-font-medium sgm-text-black sgm-no-underline"
             >
+              <span> Sorting </span>
+            </div>
+            <div
+              class="sgm-text-sm sgm-font-medium sgm-text-gray-600 sgm-h-6 lg:sgm-hidden"
+            >
               <span>
                 {{ label }}
               </span>
             </div>
-            <div
-              class="sgm-text-sm sgm-font-medium sgm-text-gray-600 sgm-h-6 lg:sgm-hidden"
-            ></div>
           </div>
         </template>
-
-        <div class="sgm-pt-10 sgm-w-full">
+        <div class="sgm-pt-2 sgm-w-full">
           <template v-for="option in options">
             <slot v-bind="option"></slot>
           </template>

@@ -76,12 +76,18 @@
           v-slot="item"
         >
           <div
-            class="sgm-py-2 sgm-px-3 sgm-cursor-pointer"
+            class="sgm-py-2 sgm-cursor-pointer sgm-flex sgm-flex-row sgm-justify-between"
             @click.prevent="onSortChange(item.value, item.name)"
           >
             <span class="sgm-text-black">
               {{ item.name }}
             </span>
+
+            <RadioButton
+              :name="item.value"
+              :value="item.name"
+              :modelValue="sortByLabel"
+            />
           </div>
         </MobileSortAccordion>
       </template>
@@ -255,6 +261,7 @@ import { SigmieSearch } from "@sigmie/vue";
 import Button from "primevue/button";
 import Accordion from "primevue/accordion";
 import AccordionTab from "primevue/accordiontab";
+import RadioButton from "primevue/radiobutton";
 
 import XIcon from "./XIcon.vue";
 import ChevronUpIcon from "./ChevronUpIcon.vue";
