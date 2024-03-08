@@ -44,16 +44,17 @@
                   <div
                     class="sgm-flex sgm-h-full sgm-flex-col sgm-justify-start sgm-rounded-md sgm-overflow-y-scroll sgm-bg-white sgm-shadow-xl"
                   >
-                    <div class="sgm-px-4 sgm-py-3 sm:sgm-px-6 sgm-border-b">
+                    <div
+                      class="sgm-px-4 sgm-py-3 sm:sgm-px-6 sgm-border-b"
+                    >
                       <div
                         class="sgm-flex sgm-flex-row sgm-items-center sgm-justify-center sgm-relative"
                       >
-                        <h2
-                          id="slide-over-heading"
-                          class="sgm-text-md sgm-self-center sgm-font-normal sgm-text-zinc-600"
+                        <span
+                          class="sgm-text-black text-base font-semibold leading-7 text-gray-900"
                         >
                           {{ title }}
-                        </h2>
+                        </span>
                         <div class="sgm-absolute sgm-top-1 sgm-right-0">
                           <button
                             type="button"
@@ -100,6 +101,6 @@ import {
 } from "@headlessui/vue";
 import XMarkIcon from "./XIcon.vue";
 
-const props = defineProps(["open"]);
+const props = defineProps(["open", "title"]);
 const emit = defineEmits(["close"]);
 </script>

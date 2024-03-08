@@ -2,6 +2,7 @@
   <div class="sgm-max-w-[1500px] sgm-mx-auto">
     <div>
       <MobileFiltersDrawer
+        :title="title"
         class="lg:sgm-hidden"
         :show="mobileFiltersOpen"
         @close="mobileFiltersOpen = false"
@@ -15,12 +16,14 @@
             class="sgm-flex sgm-flex-row sgm-items-center sgm-justify-between"
           >
             <Button
-            class="sgm-w-[48%] sgm-h-full"
+              class="sgm-w-[48%] sgm-h-full"
               outlined
               severity="secondary"
               @click="mobileFiltersOpen = false"
             >
-              <span class="sgm-text-black sgm-w-full sgm-text-center">View</span>
+              <span class="sgm-text-black sgm-w-full sgm-text-center"
+                >View</span
+              >
             </Button>
             <slot name="mobile-reset-action"></slot>
           </div>
@@ -39,10 +42,11 @@
             <form class="sgm-hidden lg:sgm-block sgm-w-[275px]">
               <div class="sgm-flex sgm-flex-row sgm-space-x-3 sgm-items-center">
                 <h2
-                  class="sgm-text-xl sgm-font-normal sgm-tracking-tight sgm-text-gray-900 sgm-m-0"
+                  class="sgm-text-md sgm-font-normal sgm-tracking-tight sgm-text-gray-900 sgm-m-0"
                 >
                   {{ title }}
                 </h2>
+    <h3 class="text-base font-semibold leading-7 text-gray-900">{{ title  }}</h3>
               </div>
               <div class="sgm-mt-6">
                 <slot name="filters"></slot>
