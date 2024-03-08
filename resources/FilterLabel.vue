@@ -6,7 +6,7 @@
       <span>{{ title }}</span>
     </div>
     <div
-      v-if="subtitle !== ''"
+      v-if="subtitle"
       class="sgm-text-sm sgm-font-medium sgm-text-gray-600 sgm-h-6 lg:sgm-hidden"
     >
       <span>

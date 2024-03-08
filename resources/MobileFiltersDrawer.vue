@@ -77,6 +77,7 @@
                       <div>
                         <slot></slot>
                       </div>
+
                       <div class="sgm-pb-12 px-4">
                         <slot name="actions"></slot>
                       </div>

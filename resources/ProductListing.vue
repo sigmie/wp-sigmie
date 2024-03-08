@@ -69,29 +69,6 @@
         </SortMenu>
       </template>
 
-      <template v-slot:mobile-sort>
-        <MobileSortAccordion
-          :label="sortByLabel"
-          :options="sortOptions"
-          v-slot="item"
-        >
-          <div
-            class="sgm-py-2 sgm-cursor-pointer sgm-flex sgm-flex-row sgm-justify-between"
-            @click.prevent="onSortChange(item.value, item.name)"
-          >
-            <span class="sgm-text-black">
-              {{ item.name }}
-            </span>
-
-            <RadioButton
-              :name="item.value"
-              :value="item.value"
-              :modelValue="sortBy"
-            />
-          </div>
-        </MobileSortAccordion>
-      </template>
-
       <template v-slot:offers>
         <Button
           v-if="showOffersFilter"
@@ -151,6 +128,59 @@
         <Button :label="resetFiltersText" @click.prevent="onResetFilters" />
       </template>
 
+      <template v-slot:mobile-sort>
+        <MobileSortAccordion
+          :label="sortByLabel"
+          :options="sortOptions"
+          v-slot="item"
+        >
+          <div
+            class="sgm-py-2 sgm-cursor-pointer sgm-flex sgm-flex-row sgm-justify-between"
+            @click.prevent="onSortChange(item.value, item.name)"
+          >
+            <span class="sgm-text-black">
+              {{ item.name }}
+            </span>
+
+            <RadioButton
+              :name="item.value"
+              :value="item.value"
+              :modelValue="sortBy"
+            />
+          </div>
+        </MobileSortAccordion>
+      </template>
+
+      <template v-slot:mobile-filters>
+        <Accordion :open="false" :items="filterVals">
+          <template v-for="(item, key) in items">
+            <AccordionTab
+              :pt="{
+                headeraction: {
+                  class:
+                    'sgm-flex sgm-flex-row-reverse sgm-items-center sgm-justify-between',
+                },
+              }"
+            >
+              <template v-slot:header>
+                <FilterLabel
+                  :title="filterLabels[key] ?? key"
+                  :subtitle="filterVals[key].join(', ') ?? null"
+                >
+                </FilterLabel>
+              </template>
+              <MobileFacet
+                v-if="key !== 'categories' && key !== 'price_as_number'"
+                :label="filterLabels[key] ?? key"
+                :facets="facets[key] ?? []"
+                :modelValue="filterVals[key]"
+                @update:model-value="(value) => onTermChange(key, value)"
+              ></MobileFacet>
+            </AccordionTab>
+          </template>
+        </Accordion>
+      </template>
+
       <template v-slot:mobile-reset-action>
         <Button
           class="sgm-w-[48%] sgm-text-center"
@@ -160,77 +190,37 @@
       </template>
 
       <template v-slot:filters>
-        <div class="sgm-flex sgm-flex-col sgm-space-y-6">
-          <PriceSlider
-            :show-chart="showPriceRangeChart"
-            :currency="currencySymbol"
-            :label="priceRangeLabel"
-            :min="0"
-            :max="facets.price_as_number?.max"
-            :range="priceRange"
-            @update:range="onRangeChange"
-            @range:inited="onRangeInit"
-            :histogram="facets.price_as_number?.histogram"
-          ></PriceSlider>
-          <Accordion
-            :pt="{
-              root: {
-                class:
-                  'sgm-flex sgm-flex-col sgm-space-y-6 sgm-px-4 lg:sgm-px-0',
-              },
-            }"
-            :unstyled="true"
-            :multiple="true"
-            :activeIndex="accordionActiveKeys"
-          >
-            <template v-slot:collapseicon>
-              <ChevronUpIcon
-                class="sgm-h-4 sgm-w-4 sgm-text-black"
-              ></ChevronUpIcon>
-            </template>
+        <PriceSlider
+          :show-chart="showPriceRangeChart"
+          :currency="currencySymbol"
+          :label="priceRangeLabel"
+          :min="0"
+          :max="facets.price_as_number?.max"
+          :range="priceRange"
+          @update:range="onRangeChange"
+          @range:inited="onRangeInit"
+          :histogram="facets.price_as_number?.histogram"
+        ></PriceSlider>
 
-            <template v-slot:expandicon>
-              <ChevronDownIcon
-                class="sgm-h-4 sgm-w-4 sgm-text-black"
-              ></ChevronDownIcon>
-            </template>
-            <template v-for="(index, key) in filterVals">
-              <AccordionTab
-                :pt="{
-                  root: { class: 'sgm-border' },
-                  headeraction: {
-                    class:
-                      'sgm-flex sgm-flex-row-reverse sgm-items-center sgm-justify-between',
-                  },
-                }"
-              >
-                <template v-slot:header>
-                  <FilterLabel
-                    :title="filterLabels[key] ?? key"
-                    :subtitle="filterVals[key].join(', ') ?? null"
-                  >
-                  </FilterLabel>
-                </template>
+        <Accordion :open="true" :items="filterVals">
+          <template v-slot:header="{ key }">
+            <FilterLabel
+              :title="filterLabels[key] ?? key"
+              :subtitle="filterVals[key].join(', ') ?? null"
+            >
+            </FilterLabel>
+          </template>
 
-                <Facet
-                  v-if="key !== 'categories' && key !== 'price_as_number'"
-                  :label="filterLabels[key] ?? key"
-                  :facets="facets[key] ?? []"
-                  :modelValue="filterVals[key]"
-                  @update:model-value="(value) => onTermChange(key, value)"
-                ></Facet>
-
-                <MobileFacet
-                  v-if="key !== 'categories' && key !== 'price_as_number'"
-                  :label="filterLabels[key] ?? key"
-                  :facets="facets[key] ?? []"
-                  :modelValue="filterVals[key]"
-                  @update:model-value="(value) => onTermChange(key, value)"
-                ></MobileFacet>
-              </AccordionTab>
-            </template>
-          </Accordion>
-        </div>
+          <template v-slot:tab="{ key }">
+            <Facet
+              v-if="key !== 'categories' && key !== 'price_as_number'"
+              :label="filterLabels[key] ?? key"
+              :facets="facets[key] ?? []"
+              :modelValue="filterVals[key]"
+              @update:model-value="(value) => onTermChange(key, value)"
+            ></Facet>
+          </template>
+        </Accordion>
       </template>
     </Layout>
   </SigmieSearch>
@@ -242,13 +232,14 @@ import { ref, onMounted, computed } from "vue";
 import { SigmieSearch } from "@sigmie/vue";
 
 import Button from "primevue/button";
-import Accordion from "primevue/accordion";
-import AccordionTab from "primevue/accordiontab";
 import RadioButton from "primevue/radiobutton";
 
 import XIcon from "./XIcon.vue";
 import ChevronUpIcon from "./ChevronUpIcon.vue";
 import ChevronDownIcon from "./ChevronDownIcon.vue";
+
+import Accordion from "./Accordion.vue";
+import AccordionTab from "primevue/accordiontab";
 
 import FilterLabel from "./FilterLabel.vue";
 import MobileSortAccordion from "./MobileSortAccordion.vue";

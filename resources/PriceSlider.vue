@@ -1,8 +1,6 @@
 <template>
   <div class="sgm-relative sgm-w-full sgm-px-4 lg:sgm-px-0">
-    <span class="sgm-text-sm sgm-font-medium sgm-text-black sgm-mt-3">
-      {{ label }}
-    </span>
+    <FilterLabel :title="label"> </FilterLabel>
     <div
       class="sgm-flex sgm-flex-row sgm-justify-between sgm-items-center sgm-mt-3 sgm-space-x-3"
     >
@@ -63,6 +61,7 @@ import InputGroupAddon from "primevue/inputgroupaddon";
 import InputNumber from "primevue/inputnumber";
 import Button from "primevue/button";
 import Slider from "primevue/slider";
+import FilterLabel from "./FilterLabel.vue";
 
 const props = defineProps({
   label: {

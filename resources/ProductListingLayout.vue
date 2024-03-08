@@ -7,9 +7,11 @@
         :show="mobileFiltersOpen"
         @close="mobileFiltersOpen = false"
       >
-        <slot name="mobile-sort"></slot>
+        <div class="sgm-flex sgm-flex-col sgm-space-y-4">
+          <slot name="mobile-sort"></slot>
 
-        <slot name="filters"></slot>
+          <slot name="filters"></slot>
+        </div>
 
         <template v-slot:actions>
           <div
@@ -46,7 +48,9 @@
                 >
                   {{ title }}
                 </h2>
-    <h3 class="text-base font-semibold leading-7 text-gray-900">{{ title  }}</h3>
+                <h3 class="text-base font-semibold leading-7 text-gray-900">
+                  {{ title }}
+                </h3>
               </div>
               <div class="sgm-mt-6">
                 <slot name="filters"></slot>
