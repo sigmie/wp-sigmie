@@ -19,7 +19,7 @@ const totalPages = computed(() => Math.ceil(props.total / props.perPage));
 
 <template>
   <div
-    class="sgm-flex sgm-flex-row sgm-w-full sgm-justify-end sgm-pb-4 sgm-max-w-7xl sgm-mx-auto"
+    class="sgm-flex sgm-flex-row sgm-w-full sgm-justify-end sgm-max-w-7xl sgm-mx-auto"
   >
     <div
       class="sgm-flex sgm-flex-row sgm-justify-between sgm-w-full sgm-items-center sgm-bg-white"

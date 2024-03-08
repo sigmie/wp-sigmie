@@ -27,20 +27,7 @@
         }"
       >
         <template v-slot:header>
-          <div class="sgm-flex sgm-flex-col sgm-border-b sgm-border-gray-300">
-            <div
-              class="sgm-text-md xl:sgm-text-sm sgm-font-medium sgm-text-black sgm-no-underline"
-            >
-              <span> Sorting </span>
-            </div>
-            <div
-              class="sgm-text-sm sgm-font-medium sgm-text-gray-600 sgm-h-6 lg:sgm-hidden"
-            >
-              <span>
-                {{ label }}
-              </span>
-            </div>
-          </div>
+          <FilterLabel title="Sorting" :subtitle="label"> </FilterLabel>
         </template>
         <div class="sgm-pt-2 sgm-w-full">
           <template v-for="option in options">
@@ -62,6 +49,7 @@ import ChevronDownIcon from "./ChevronDownIcon.vue";
 import ChevronUpIcon from "./ChevronUpIcon.vue";
 import Accordion from "primevue/accordion";
 import AccordionTab from "primevue/accordiontab";
+import FilterLabel from "./FilterLabel.vue";
 
 const props = defineProps({
   label: String,

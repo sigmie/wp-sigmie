@@ -85,8 +85,8 @@
 
             <RadioButton
               :name="item.value"
-              :value="item.name"
-              :modelValue="sortByLabel"
+              :value="item.value"
+              :modelValue="sortBy"
             />
           </div>
         </MobileSortAccordion>
@@ -95,7 +95,6 @@
       <template v-slot:offers>
         <Button
           v-if="showOffersFilter"
-          :class="onlyOffers ? 'sgm-bg-hover' : null"
           outlined
           severity="secondary"
           @click="onOffersClick"
@@ -206,27 +205,11 @@
                 }"
               >
                 <template v-slot:header>
-                  <div
-                    class="sgm-flex sgm-flex-col sgm-border-b sgm-border-gray-300"
+                  <FilterLabel
+                    :title="filterLabels[key] ?? key"
+                    :subtitle="filterVals[key].join(', ') ?? null"
                   >
-                    <div
-                      class="sgm-text-md xl:sgm-text-sm sgm-font-medium sgm-text-black sgm-no-underline"
-                    >
-                      <span>
-                        {{ filterLabels[key] ?? key }}
-                      </span>
-                    </div>
-                    <div
-                      :class="[
-                        filterVals[key].length === 0 ? 'sgm-hidden' : '',
-                      ]"
-                      class="sgm-text-sm sgm-font-medium sgm-text-gray-600 sgm-h-6 lg:sgm-hidden"
-                    >
-                      <span>
-                        {{ filterVals[key].join(", ") ?? "" }}
-                      </span>
-                    </div>
-                  </div>
+                  </FilterLabel>
                 </template>
 
                 <Facet
@@ -267,6 +250,7 @@ import XIcon from "./XIcon.vue";
 import ChevronUpIcon from "./ChevronUpIcon.vue";
 import ChevronDownIcon from "./ChevronDownIcon.vue";
 
+import FilterLabel from "./FilterLabel.vue";
 import MobileSortAccordion from "./MobileSortAccordion.vue";
 import SortMenu from "./SortMenu.vue";
 import PriceSlider from "./PriceSlider.vue";

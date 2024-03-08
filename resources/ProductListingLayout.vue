@@ -77,7 +77,7 @@
                 </div>
               </div>
               <div
-                class="sgm-flex sgm-items-baseline sgm-justify-between sgm-w-full"
+                class="sgm-flex sgm-items-center sgm-justify-between sgm-w-full"
               >
                 <div class="sgm-flex sgm-flex-row sgm-space-x-4">
                   <slot name="sort"></slot>
@@ -97,7 +97,7 @@
                   >
                     <span class="sgm-text-black">All filters</span>
                     <FilterIcon
-                      class="sgm-h-6 sgm-w-6 sgm-text-black"
+                      class="sgm-h-[18.4px] sgm-w-[18.4px] sgm-text-black"
                       aria-hidden="true"
                     />
                   </Button>
