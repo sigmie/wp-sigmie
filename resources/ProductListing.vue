@@ -152,7 +152,16 @@
       </template>
 
       <template v-slot:mobile-filters>
-        <Accordion :open="false" :items="filterVals">
+        <Accordion
+          :active-index="accordionActiveKeys"
+          :pt="{
+            root: {
+              class: 'sgm-flex sgm-flex-col sgm-space-y-6 sgm-px-4 lg:sgm-px-0',
+            },
+          }"
+          :unstyled="true"
+          :multiple="true"
+        >
           <template v-for="(item, key) in items">
             <AccordionTab
               :pt="{
@@ -202,16 +211,44 @@
           :histogram="facets.price_as_number?.histogram"
         ></PriceSlider>
 
-        <Accordion :open="true" :items="filterVals">
-          <template v-slot:header="{ key }">
-            <FilterLabel
-              :title="filterLabels[key] ?? key"
-              :subtitle="filterVals[key].join(', ') ?? null"
-            >
-            </FilterLabel>
+        <Accordion
+          :active-index="accordionActiveKeys"
+          :pt="{
+            root: {
+              class: 'sgm-flex sgm-flex-col sgm-space-y-6 sgm-px-4 lg:sgm-px-0',
+            },
+          }"
+          :unstyled="true"
+          :multiple="true"
+        >
+          <template v-slot:collapseicon>
+            <ChevronUpIcon
+              class="sgm-h-4 sgm-w-4 sgm-text-black"
+            ></ChevronUpIcon>
           </template>
+          <template v-slot:expandicon>
+            <ChevronDownIcon
+              class="sgm-h-4 sgm-w-4 sgm-text-black"
+            ></ChevronDownIcon>
+          </template>
+          <AccordionTab
+            v-for="(item, key) in filterVals"
+            :pt="{
+              root: { class: '' },
+              headeraction: {
+                class:
+                  'sgm-flex sgm-flex-row-reverse sgm-items-center sgm-justify-between',
+              },
+            }"
+          >
+            <template v-slot:header>
+              <FilterLabel
+                :title="filterLabels[key] ?? key"
+                :subtitle="filterVals[key].join(', ') ?? null"
+              >
+              </FilterLabel>
+            </template>
 
-          <template v-slot:tab="{ key }">
             <Facet
               v-if="key !== 'categories' && key !== 'price_as_number'"
               :label="filterLabels[key] ?? key"
@@ -219,7 +256,7 @@
               :modelValue="filterVals[key]"
               @update:model-value="(value) => onTermChange(key, value)"
             ></Facet>
-          </template>
+          </AccordionTab>
         </Accordion>
       </template>
     </Layout>
@@ -238,7 +275,7 @@ import XIcon from "./XIcon.vue";
 import ChevronUpIcon from "./ChevronUpIcon.vue";
 import ChevronDownIcon from "./ChevronDownIcon.vue";
 
-import Accordion from "./Accordion.vue";
+import Accordion from "primevue/accordion";
 import AccordionTab from "primevue/accordiontab";
 
 import FilterLabel from "./FilterLabel.vue";
