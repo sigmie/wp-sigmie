@@ -156,13 +156,50 @@
           :active-index="accordionActiveKeys"
           :pt="{
             root: {
-              class: 'sgm-flex sgm-flex-col sgm-space-y-6 sgm-px-4 lg:sgm-px-0',
+              class: 'sgm-flex sgm-flex-col sgm-space-y-4 sgm-px-4 lg:sgm-px-0',
             },
           }"
           :unstyled="true"
           :multiple="true"
         >
-          <template v-for="(item, key) in items">
+          <template v-slot:collapseicon>
+            <ChevronUpIcon
+              class="sgm-h-4 sgm-w-4 sgm-text-black"
+            ></ChevronUpIcon>
+          </template>
+          <template v-slot:expandicon>
+            <ChevronDownIcon
+              class="sgm-h-4 sgm-w-4 sgm-text-black"
+            ></ChevronDownIcon>
+          </template>
+
+          <AccordionTab
+            :pt="{
+              headeraction: {
+                class:
+                  'sgm-flex sgm-flex-row-reverse sgm-items-center sgm-justify-between',
+              },
+            }"
+          >
+            <template v-slot:header>
+              <FilterLabel :title="priceRangeLabel" subtitle="Price label">
+              </FilterLabel>
+            </template>
+
+            <PriceSlider
+              :show-chart="showPriceRangeChart"
+              :currency="currencySymbol"
+              :label="priceRangeLabel"
+              :min="0"
+              :max="facets.price_as_number?.max"
+              :range="priceRange"
+              @update:range="onRangeChange"
+              @range:inited="onRangeInit"
+              :histogram="facets.price_as_number?.histogram"
+            ></PriceSlider>
+          </AccordionTab>
+
+          <template v-for="(item, key) in filterVals">
             <AccordionTab
               :pt="{
                 headeraction: {
@@ -199,6 +236,9 @@
       </template>
 
       <template v-slot:filters>
+        <FilterLabel :title="priceRangeLabel" subtitle="Price label">
+        </FilterLabel>
+
         <PriceSlider
           :show-chart="showPriceRangeChart"
           :currency="currencySymbol"

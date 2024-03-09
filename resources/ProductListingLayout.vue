@@ -10,7 +10,7 @@
         <div class="sgm-flex sgm-flex-col sgm-space-y-4">
           <slot name="mobile-sort"></slot>
 
-          <slot name="filters"></slot>
+          <slot name="mobile-filters"></slot>
         </div>
 
         <template v-slot:actions>

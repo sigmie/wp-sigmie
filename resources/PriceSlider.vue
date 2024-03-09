@@ -1,6 +1,5 @@
 <template>
-  <div class="sgm-relative sgm-w-full sgm-px-4 lg:sgm-px-0">
-    <FilterLabel :title="label"> </FilterLabel>
+  <div class="sgm-relative sgm-w-full">
     <div
       class="sgm-flex sgm-flex-row sgm-justify-between sgm-items-center sgm-mt-3 sgm-space-x-3"
     >
