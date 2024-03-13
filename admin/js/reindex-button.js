@@ -61,7 +61,7 @@
 				updateIndexingPourcentage( $clickedButton, progress );
 
 				if (response.finished !== true) {
-					reIndex( $clickedButton, index, ++currentPage );
+					reIndex( $clickedButton, ++currentPage );
 				} else {
 					$clickedButton.parents( '.error' ).fadeOut();
 					resetButton( $clickedButton );

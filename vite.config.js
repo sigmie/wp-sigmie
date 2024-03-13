@@ -58,6 +58,7 @@ export default defineConfig({
     host: '127.0.0.1'
   },
   build: {
+    minify: false,
     emptyOutDir: false,
     outDir: 'public',
     rollupOptions: {

@@ -118,7 +118,9 @@ const data = ref({
 watch(
   () => props.range,
   (newRange, oldRange) => {
-    chart.value.update(data.value);
+    if (props.showChart) {
+      chart.value.update(data.value);
+    }
   }
 );
 
@@ -127,7 +129,9 @@ async function onSliderChange(value) {
 
   await nextTick();
 
-  chart.value.update(data.value);
+  if (props.showChart) {
+    chart.value.update(data.value);
+  }
 }
 
 function createChart() {

@@ -1,5 +1,5 @@
 <template>
-  <div class="sgm-max-w-[1500px] sgm-mx-auto">
+  <div class="sgm-max-w-[1400px] sgm-w-full sgm-mx-auto">
     <div>
       <MobileFiltersDrawer
         :title="title"

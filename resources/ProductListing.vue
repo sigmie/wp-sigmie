@@ -501,7 +501,7 @@ const updateFitlerString = () => {
   let onlyOffersFilter = onlyOffers.value ? "is:on_sale" : "";
 
   let result = [props.filters, onlyOffersFilter, priceFilter, valueFilter]
-    .filter((part) => part !== "")
+    .filter((part) => part.trim() !== "")
     .join(" AND ");
 
   currentPage.value = 1;

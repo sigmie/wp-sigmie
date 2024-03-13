@@ -641,6 +641,7 @@ class Sigmie_Admin
 	function map_product($product)
 	{
 		$data = $product->get_data();
+
 		$attributes = $product->get_attributes();
 
 		$price = wc_price($data['price']);
@@ -654,10 +655,29 @@ class Sigmie_Admin
 			return wp_get_attachment_url($image_id);
 		}, $gallery_image_ids);
 
-		$sells_count = get_post_meta($product->get_id(), 'total_sales', true);
+		$sold_times = get_post_meta($product->get_id(), 'total_sales', true);
+
+		$brands = [];
+
+		$brandTerms = get_the_terms($product->get_id(), 'brand');
+
+		if ($brandTerms) {
+			$brands = array_map(fn ($brand) => $brand->name, $brandTerms);
+		}
+
+		$tags = [];
+
+		$tagTerms = get_the_terms($product->get_id(), 'post_tag');
+
+		if ($tags) {
+			$tags = array_map(fn ($tag) => $tag->name, $tagTerms);
+		}
 
 		$res = [
 			'thumbnail_html' => $product->get_image(),
+			'times_sold' => $sold_times,
+			'brands' => $brands,
+			'tags' => $tags,
 			'image' => $image_url,
 			'gallery_image' => $gallery_images,
 			'gallery_images' => $gallery_images,
@@ -701,6 +721,7 @@ class Sigmie_Admin
 			if ($attribute instanceof WC_Product_Attribute) {
 				$options = $attribute->get_options();
 				$options_text = array_map(function ($option_id) use ($attribute) {
+					ray()->once($attribute->get_taxonomy())->red();
 					return get_term_by('id', $option_id, $attribute->get_taxonomy())->name;
 				}, $options);
 
@@ -709,6 +730,8 @@ class Sigmie_Admin
 
 			$res[$name] = $attribute;
 		}
+
+		ray()->once($res);
 
 		return $res;
 	}
@@ -748,9 +771,12 @@ class Sigmie_Admin
 			'sigmie_filters_order'
 		]);
 
-		$attributes = array_map(fn ($value) => "pa_{$value}", json_decode($options['sigmie_filters_order']));
+		$attributes = [];
+		if ($options['sigmie_filters_order']) {
+			$attributes = array_map(fn ($value) => "pa_{$value}", json_decode($options['sigmie_filters_order']));
+		}
 
-		$facets = implode(' ', $attributes) . ' ' . 'categories:20 price_as_number:5';
+		$facets = implode(' ', $attributes) . ' ' . 'categories:20 price_as_number:5 brands tags';
 
 		$predefinedFilters = '';
 
@@ -758,12 +784,12 @@ class Sigmie_Admin
 			$categories = explode(',', $args['categories'] ?? '');
 			$categories = array_map(fn ($category) => "'{$category}'", $categories);
 
-			$predefinedFilters = "filters=\"categories:[" . implode(',', $categories) . "]\"";
+			$predefinedFilters = "categories:[" . implode(',', $categories) . "]";
 		}
 
-		return '<div class="sgm-w-full sgm-mx-auto sgm-max-w-7xl" id="sigmie-filters">
+		return '<div class="" id="sigmie-filters">
 					<product-listing
-							' . $predefinedFilters . '
+							filters="' . $predefinedFilters . '"
 							facets="' . $facets . '"
 							application="' . $options['sigmie_application_id'] . '" 
 							api-key="' . $options['sigmie_search_api_key'] . '" 
