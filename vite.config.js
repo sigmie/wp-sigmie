@@ -6,6 +6,7 @@ import autoprefixer from 'autoprefixer';
 import safeImportant from 'postcss-safe-important';
 
 
+
 // https://vitejs.dev/config/
 export default defineConfig({
   css: {
@@ -50,7 +51,11 @@ export default defineConfig({
     }),
     {
       config() {
-        return { define: { __VUE_PROD_DEVTOOLS__: process.env.NODE_ENV === 'production' } }
+        return {
+          define: {
+            // __VUE_PROD_DEVTOOLS__: process.env.NODE_ENV === 'production'
+          }
+        }
       },
     },
   ],
@@ -58,7 +63,8 @@ export default defineConfig({
     host: '127.0.0.1'
   },
   build: {
-    minify: false,
+    // minify: false,
+    // minify: true,
     emptyOutDir: false,
     outDir: 'public',
     rollupOptions: {

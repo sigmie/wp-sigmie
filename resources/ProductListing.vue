@@ -4,7 +4,7 @@
     :facets="props.facets"
     :apiKey="props.apiKey"
     :sort="sortBy"
-    :query="query"
+    :query="''"
     :page="currentPage"
     :perPage="perPage"
     :filters="filterString"

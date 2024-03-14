@@ -3,7 +3,7 @@ import EmptyStart from "./EmptyStart.vue";
 import FullStart from "./FullStart.vue";
 import HalfStart from "./HalfStart.vue";
 let props = defineProps({
-  average_rating: Number,
+  average_rating: String,
   // active: Boolean,
   // selected: Boolean,
   // maxDescriptionLength: Number,
@@ -19,7 +19,6 @@ let props = defineProps({
 
 <template>
   <div class="sgm-flex sgm-flex-row">
-    
     <FullStart
       v-for="n in Math.floor(average_rating || 0)"
       :key="`full-${n}`"

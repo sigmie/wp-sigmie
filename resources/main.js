@@ -8,10 +8,10 @@ import PrimeVue from "primevue/config";
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    // const search = createApp({})
-    // search.use(PrimeVue);
-    // search.component('search', Search);
-    // search.mount('#sigmie-search')
+    const search = createApp({})
+    search.use(PrimeVue);
+    search.component('search', Search);
+    search.mount('#sigmie-search')
 
     const filters = createApp({})
     filters.use(PrimeVue);
