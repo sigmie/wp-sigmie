@@ -135,6 +135,10 @@ async function onSliderChange(value) {
 }
 
 function createChart() {
+  if (!props.showChart.value) {
+    return;
+  }
+
   let options = {
     showPoint: false,
     showLine: false,
