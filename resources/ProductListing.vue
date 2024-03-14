@@ -29,7 +29,7 @@
           severity="secondary"
           rounded
           @click="onRemoveActiveFilter(filterKey, filterValue)"
-          class="mt-2"
+          class="sgm-mt-3"
         >
           <div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3">
             <span class="sgm-text-black">
@@ -190,7 +190,7 @@
                 </FilterLabel>
               </template>
               <component
-                v-if="checkboxFacets.includes(key)"
+                v-if="checkboxFacets.split(',').includes(key)"
                 :is="facetTypes.mobileCheckbox"
                 :label="filterLabels[key] ?? key"
                 :facets="facets[key] ?? []"
@@ -199,7 +199,7 @@
               >
               </component>
               <component
-                v-if="rangeFacets.includes(key)"
+                v-if="rangeFacets.split(',').includes(key)"
                 :is="facetTypes.range"
                 :show-chart="showPriceRangeChart"
                 :currency="currencySymbol"
@@ -264,29 +264,29 @@
               </FilterLabel>
             </template>
 
-              <component
-                v-if="checkboxFacets.includes(key)"
-                :is="facetTypes.checkbox"
-                :label="filterLabels[key] ?? key"
-                :facets="facets[key] ?? []"
-                :modelValue="filterVals[key]"
-                @update:model-value="(value) => onTermChange(key, value)"
-              >
-              </component>
-              <component
-                v-if="rangeFacets.includes(key)"
-                :is="facetTypes.range"
-                :show-chart="showPriceRangeChart"
-                :currency="currencySymbol"
-                :label="priceRangeLabel"
-                :min="0"
-                :max="facets.price_as_number?.max"
-                :range="priceRange"
-                @update:range="onRangeChange"
-                @range:inited="onRangeInit"
-                :histogram="facets.price_as_number?.histogram"
-              >
-              </component>
+            <component
+              v-if="checkboxFacets.split(',').includes(key)"
+              :is="facetTypes.checkbox"
+              :label="filterLabels[key] ?? key"
+              :facets="facets[key] ?? []"
+              :modelValue="filterVals[key]"
+              @update:model-value="(value) => onTermChange(key, value)"
+            >
+            </component>
+            <component
+              v-if="rangeFacets.split(',').includes(key)"
+              :is="facetTypes.range"
+              :show-chart="showPriceRangeChart"
+              :currency="currencySymbol"
+              :label="priceRangeLabel"
+              :min="0"
+              :max="facets.price_as_number?.max"
+              :range="priceRange"
+              @update:range="onRangeChange"
+              @range:inited="onRangeInit"
+              :histogram="facets.price_as_number?.histogram"
+            >
+            </component>
           </AccordionTab>
         </Accordion>
       </template>
@@ -332,8 +332,8 @@ const props = defineProps({
   index: String,
   facets: String,
   filters: String,
-  rangeFacets: Array,
-  checkboxFacets: Array,
+  rangeFacets: String,
+  checkboxFacets: String,
   showPriceRangeChart: Boolean,
   showCategoriesFilter: Boolean,
   showOffersFilter: Boolean,

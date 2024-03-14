@@ -667,7 +667,7 @@ class Sigmie_Admin
 
 		$tags = [];
 
-		$tagTerms = get_the_terms($product->get_id(), 'post_tag');
+		$tagTerms = get_the_terms($product->get_id(), 'product_tag');
 
 		if ($tags) {
 			$tags = array_map(fn ($tag) => $tag->name, $tagTerms);
@@ -768,15 +768,18 @@ class Sigmie_Admin
 			'sigmie_sort_by_rating_label',
 			'sigmie_sort_by_product_sales_label',
 
-			'sigmie_filters_order'
+			'sigmie_filters_order',
+			'sigmie_range_attributes',
+			'sigmie_checkbox_attributes'
 		]);
 
 		$attributes = [];
+
 		if ($options['sigmie_filters_order']) {
-			$attributes = array_map(fn ($value) => "pa_{$value}", json_decode($options['sigmie_filters_order']));
+			$attributes = json_decode($options['sigmie_filters_order']);
 		}
 
-		$facets = implode(' ', $attributes) . ' ' . 'categories:20 price_as_number:5 brands tags';
+		$facets = implode(' ', $attributes);
 
 		$predefinedFilters = '';
 
@@ -787,10 +790,13 @@ class Sigmie_Admin
 			$predefinedFilters = "categories:[" . implode(',', $categories) . "]";
 		}
 
+		$rangeFacets = ['price_as_number', ...json_decode($options['sigmie_range_attributes'], true)];
+		$checkboxFacets = ['categories', 'brands', ...json_decode($options['sigmie_checkbox_attributes'], true)];
+
 		return '<div class="" id="sigmie-filters">
 					<product-listing
-							:range-facets="[\'price_as_number\']"
-							:checkbox-facets="[\'categories\', \'brands\']"
+							range-facets="' . implode(',', $rangeFacets) . '"
+							checkbox-facets="' . implode(',', $checkboxFacets) . '"
 							filters="' . $predefinedFilters . '"
 							facets="' . $facets . '"
 							application="' . $options['sigmie_application_id'] . '" 

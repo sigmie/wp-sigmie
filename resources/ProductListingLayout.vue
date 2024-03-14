@@ -48,9 +48,6 @@
                 >
                   {{ title }}
                 </h2>
-                <h3 class="text-base font-semibold leading-7 text-gray-900">
-                  {{ title }}
-                </h3>
               </div>
               <div class="sgm-mt-6">
                 <slot name="filters"></slot>

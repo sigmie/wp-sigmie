@@ -113,6 +113,8 @@ class Sigmie_Admin_Page_Listing
 
 		$fields = [
 			'filters_order' => esc_html__('Filter order', 'sigmie'),
+			'range_attributes' => esc_html__('Range attributes', 'sigmie'),
+			'checkbox_attributes' => esc_html__('Checkbox attributes', 'sigmie'),
 		];
 
 		foreach ($fields as $field_key => $field_label) {
@@ -132,6 +134,72 @@ class Sigmie_Admin_Page_Listing
 		}
 	}
 
+	public function sanitize_checkbox_attributes($value)
+	{
+		if (is_null($value)) {
+			return '[]';
+		}
+
+		return sanitize_text_field(json_encode($value));
+	}
+
+	public function sanitize_range_attributes($value)
+	{
+		if (is_null($value)) {
+			return '[]';
+		}
+
+		return sanitize_text_field(json_encode($value));
+	}
+
+	public function checkbox_attributes_callback()
+	{
+		$attributesJson = (string) get_option('sigmie_checkbox_attributes', '[]');
+
+		$existingAttributes = json_decode($attributesJson, true);
+
+		if (is_null($existingAttributes)) {
+			$existingAttributes = [];
+		}
+
+		$attributes = wc_get_attribute_taxonomies();
+
+		$attributes = array_map(function ($attribute) {
+			return (object) array('attribute_name' => 'pa_' . $attribute->attribute_name, 'attribute_label' => $attribute->attribute_label);
+		}, $attributes);
+
+		echo '<ul>';
+		foreach ($attributes as $attribute) {
+			$selected = in_array($attribute->attribute_name, $existingAttributes) ? ' checked="checked"' : '';
+			echo '<li class="ui-state-default"><input type="checkbox" name="sigmie_checkbox_attributes[]" value="' . esc_attr($attribute->attribute_name) . '"' . $selected . '>' . esc_html($attribute->attribute_label) . '</li>';
+		}
+		echo '</ul>';
+	}
+
+	public function range_attributes_callback()
+	{
+		$attributesJson = (string) get_option('sigmie_range_attributes', '[]');
+
+		$existingAttributes = json_decode($attributesJson, true) ?? [];
+
+		$attributes = wc_get_attribute_taxonomies();
+
+		if (is_null($existingAttributes)) {
+			$existingAttributes = [];
+		}
+
+		$attributes = array_map(function ($attribute) {
+			return (object) array('attribute_name' => 'pa_' . $attribute->attribute_name, 'attribute_label' => $attribute->attribute_label);
+		}, $attributes);
+
+		echo '<ul>';
+		foreach ($attributes as $attribute) {
+			$selected = in_array($attribute->attribute_name, $existingAttributes) ? ' checked="checked"' : '';
+			echo '<li class="ui-state-default"><input type="checkbox" name="sigmie_range_attributes[]" value="' . esc_attr($attribute->attribute_name) . '"' . $selected . '>' . esc_html($attribute->attribute_label) . '</li>';
+		}
+		echo '</ul>';
+	}
+
 	public function sanitize_filters_order($value)
 	{
 		return sanitize_text_field($value);
@@ -144,6 +212,15 @@ class Sigmie_Admin_Page_Listing
 		$existingAttributes = json_decode($attributesJson, true);
 
 		$attributes = wc_get_attribute_taxonomies();
+
+		$attributes = array_map(function ($attribute) {
+			return (object) array('attribute_name' => 'pa_' . $attribute->attribute_name, 'attribute_label' => $attribute->attribute_label);
+		}, $attributes);
+
+		$attributes[] = (object) array('attribute_name' => 'price_as_number', 'attribute_label' => 'Price');
+		$attributes[] = (object) array('attribute_name' => 'categories', 'attribute_label' => 'Categories');
+		$attributes[] = (object) array('attribute_name' => 'brands', 'attribute_label' => 'Brand');
+		$attributes[] = (object) array('attribute_name' => 'tags', 'attribute_label' => 'Tags');
 
 		usort($attributes, function ($a, $b) use ($existingAttributes) {
 			$pos_a = array_search($a->attribute_name, $existingAttributes);
