@@ -7882,22 +7882,22 @@ function initCustomFormatter() {
     return;
   }
 }
-function withMemo(memo2, render2, cache, index2) {
+function withMemo(memo, render2, cache, index2) {
   const cached = cache[index2];
-  if (cached && isMemoSame(cached, memo2)) {
+  if (cached && isMemoSame(cached, memo)) {
     return cached;
   }
   const ret = render2();
-  ret.memo = memo2.slice();
+  ret.memo = memo.slice();
   return cache[index2] = ret;
 }
-function isMemoSame(cached, memo2) {
+function isMemoSame(cached, memo) {
   const prev2 = cached.memo;
-  if (prev2.length != memo2.length) {
+  if (prev2.length != memo.length) {
     return false;
   }
   for (let i2 = 0; i2 < prev2.length; i2++) {
-    if (hasChanged(prev2[i2], memo2[i2])) {
+    if (hasChanged(prev2[i2], memo[i2])) {
       return false;
     }
   }
@@ -12758,7 +12758,7 @@ const transformFor = createStructuralDirectiveTransform(
         forNode.source
       ]);
       const isTemplate = isTemplateNode(node);
-      const memo2 = findDir(node, "memo");
+      const memo = findDir(node, "memo");
       const keyProp = findProp(node, `key`);
       const keyExp = keyProp && (keyProp.type === 6 ? createSimpleExpression(keyProp.value.content, true) : keyProp.exp);
       const keyProperty = keyProp ? createObjectProperty(`key`, keyExp) : null;
@@ -12825,14 +12825,14 @@ const transformFor = createStructuralDirectiveTransform(
             helper(getVNodeHelper(context.inSSR, childBlock.isComponent));
           }
         }
-        if (memo2) {
+        if (memo) {
           const loop = createFunctionExpression(
             createForLoopParams(forNode.parseResult, [
               createSimpleExpression(`_cached`)
             ])
           );
           loop.body = createBlockStatement([
-            createCompoundExpression([`const _memo = (`, memo2.exp, `)`]),
+            createCompoundExpression([`const _memo = (`, memo.exp, `)`]),
             createCompoundExpression([
               `if (_cached`,
               ...keyExp ? [` && _cached.key === `, keyExp] : [],
@@ -14865,2470 +14865,6 @@ const vue_esmBundler = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defi
   withModifiers,
   withScopeId
 }, Symbol.toStringTag, { value: "Module" }));
-/**
- * vue-virtual
- *
- * Copyright (c) TanStack
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.md file in the root directory of this source tree.
- *
- * @license MIT
- */
-function _extends$1() {
-  _extends$1 = Object.assign ? Object.assign.bind() : function(target) {
-    for (var i2 = 1; i2 < arguments.length; i2++) {
-      var source = arguments[i2];
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  };
-  return _extends$1.apply(this, arguments);
-}
-/**
- * virtual-core
- *
- * Copyright (c) TanStack
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.md file in the root directory of this source tree.
- *
- * @license MIT
- */
-function _extends() {
-  _extends = Object.assign ? Object.assign.bind() : function(target) {
-    for (var i2 = 1; i2 < arguments.length; i2++) {
-      var source = arguments[i2];
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  };
-  return _extends.apply(this, arguments);
-}
-/**
- * virtual-core
- *
- * Copyright (c) TanStack
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.md file in the root directory of this source tree.
- *
- * @license MIT
- */
-function memo(getDeps, fn, opts) {
-  var _opts$initialDeps;
-  var deps = (_opts$initialDeps = opts.initialDeps) != null ? _opts$initialDeps : [];
-  var result;
-  return function() {
-    var depTime;
-    if (opts.key && opts.debug != null && opts.debug())
-      depTime = Date.now();
-    var newDeps = getDeps();
-    var depsChanged = newDeps.length !== deps.length || newDeps.some(function(dep, index2) {
-      return deps[index2] !== dep;
-    });
-    if (!depsChanged) {
-      return result;
-    }
-    deps = newDeps;
-    var resultTime;
-    if (opts.key && opts.debug != null && opts.debug())
-      resultTime = Date.now();
-    result = fn.apply(void 0, newDeps);
-    if (opts.key && opts.debug != null && opts.debug()) {
-      var depEndTime = Math.round((Date.now() - depTime) * 100) / 100;
-      var resultEndTime = Math.round((Date.now() - resultTime) * 100) / 100;
-      var resultFpsPercentage = resultEndTime / 16;
-      var pad = function pad2(str, num) {
-        str = String(str);
-        while (str.length < num) {
-          str = " " + str;
-        }
-        return str;
-      };
-      console.info("%c⏱ " + pad(resultEndTime, 5) + " /" + pad(depEndTime, 5) + " ms", "\n            font-size: .6rem;\n            font-weight: bold;\n            color: hsl(" + Math.max(0, Math.min(120 - 120 * resultFpsPercentage, 120)) + "deg 100% 31%);", opts == null ? void 0 : opts.key);
-    }
-    opts == null || opts.onChange == null || opts.onChange(result);
-    return result;
-  };
-}
-function notUndefined(value2, msg) {
-  if (value2 === void 0) {
-    throw new Error("Unexpected undefined" + (msg ? ": " + msg : ""));
-  } else {
-    return value2;
-  }
-}
-var approxEqual = function approxEqual2(a2, b2) {
-  return Math.abs(a2 - b2) < 1;
-};
-/**
- * virtual-core
- *
- * Copyright (c) TanStack
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.md file in the root directory of this source tree.
- *
- * @license MIT
- */
-var defaultKeyExtractor = function defaultKeyExtractor2(index2) {
-  return index2;
-};
-var defaultRangeExtractor = function defaultRangeExtractor2(range) {
-  var start = Math.max(range.startIndex - range.overscan, 0);
-  var end = Math.min(range.endIndex + range.overscan, range.count - 1);
-  var arr = [];
-  for (var _i = start; _i <= end; _i++) {
-    arr.push(_i);
-  }
-  return arr;
-};
-var observeElementRect = function observeElementRect2(instance, cb) {
-  var element = instance.scrollElement;
-  if (!element) {
-    return;
-  }
-  var handler3 = function handler22(rect) {
-    var width2 = rect.width, height = rect.height;
-    cb({
-      width: Math.round(width2),
-      height: Math.round(height)
-    });
-  };
-  handler3(element.getBoundingClientRect());
-  var observer = new ResizeObserver(function(entries) {
-    var entry = entries[0];
-    if (entry != null && entry.borderBoxSize) {
-      var box = entry.borderBoxSize[0];
-      if (box) {
-        handler3({
-          width: box.inlineSize,
-          height: box.blockSize
-        });
-        return;
-      }
-    }
-    handler3(element.getBoundingClientRect());
-  });
-  observer.observe(element, {
-    box: "border-box"
-  });
-  return function() {
-    observer.unobserve(element);
-  };
-};
-var observeElementOffset = function observeElementOffset2(instance, cb) {
-  var element = instance.scrollElement;
-  if (!element) {
-    return;
-  }
-  var handler3 = function handler22() {
-    cb(element[instance.options.horizontal ? "scrollLeft" : "scrollTop"]);
-  };
-  handler3();
-  element.addEventListener("scroll", handler3, {
-    passive: true
-  });
-  return function() {
-    element.removeEventListener("scroll", handler3);
-  };
-};
-var measureElement = function measureElement2(element, entry, instance) {
-  if (entry != null && entry.borderBoxSize) {
-    var box = entry.borderBoxSize[0];
-    if (box) {
-      var size2 = Math.round(box[instance.options.horizontal ? "inlineSize" : "blockSize"]);
-      return size2;
-    }
-  }
-  return Math.round(element.getBoundingClientRect()[instance.options.horizontal ? "width" : "height"]);
-};
-var elementScroll = function elementScroll2(offset, _ref2, instance) {
-  var _instance$scrollEleme3, _instance$scrollEleme4;
-  var _ref2$adjustments = _ref2.adjustments, adjustments = _ref2$adjustments === void 0 ? 0 : _ref2$adjustments, behavior = _ref2.behavior;
-  var toOffset = offset + adjustments;
-  (_instance$scrollEleme3 = instance.scrollElement) == null || _instance$scrollEleme3.scrollTo == null || _instance$scrollEleme3.scrollTo((_instance$scrollEleme4 = {}, _instance$scrollEleme4[instance.options.horizontal ? "left" : "top"] = toOffset, _instance$scrollEleme4.behavior = behavior, _instance$scrollEleme4));
-};
-var Virtualizer = function Virtualizer2(_opts) {
-  var _this = this;
-  this.unsubs = [];
-  this.scrollElement = null;
-  this.isScrolling = false;
-  this.isScrollingTimeoutId = null;
-  this.scrollToIndexTimeoutId = null;
-  this.measurementsCache = [];
-  this.itemSizeCache = /* @__PURE__ */ new Map();
-  this.pendingMeasuredCacheIndexes = [];
-  this.scrollDirection = null;
-  this.scrollAdjustments = 0;
-  this.measureElementCache = /* @__PURE__ */ new Map();
-  this.observer = /* @__PURE__ */ function() {
-    var _ro = null;
-    var get2 = function get22() {
-      if (_ro) {
-        return _ro;
-      } else if (typeof ResizeObserver !== "undefined") {
-        return _ro = new ResizeObserver(function(entries) {
-          entries.forEach(function(entry) {
-            _this._measureElement(entry.target, entry);
-          });
-        });
-      } else {
-        return null;
-      }
-    };
-    return {
-      disconnect: function disconnect() {
-        var _get;
-        return (_get = get2()) == null ? void 0 : _get.disconnect();
-      },
-      observe: function observe(target) {
-        var _get2;
-        return (_get2 = get2()) == null ? void 0 : _get2.observe(target, {
-          box: "border-box"
-        });
-      },
-      unobserve: function unobserve(target) {
-        var _get3;
-        return (_get3 = get2()) == null ? void 0 : _get3.unobserve(target);
-      }
-    };
-  }();
-  this.range = null;
-  this.setOptions = function(opts) {
-    Object.entries(opts).forEach(function(_ref3) {
-      var key = _ref3[0], value2 = _ref3[1];
-      if (typeof value2 === "undefined")
-        delete opts[key];
-    });
-    _this.options = _extends({
-      debug: false,
-      initialOffset: 0,
-      overscan: 1,
-      paddingStart: 0,
-      paddingEnd: 0,
-      scrollPaddingStart: 0,
-      scrollPaddingEnd: 0,
-      horizontal: false,
-      getItemKey: defaultKeyExtractor,
-      rangeExtractor: defaultRangeExtractor,
-      onChange: function onChange3() {
-      },
-      measureElement,
-      initialRect: {
-        width: 0,
-        height: 0
-      },
-      scrollMargin: 0,
-      scrollingDelay: 150,
-      indexAttribute: "data-index",
-      initialMeasurementsCache: [],
-      lanes: 1
-    }, opts);
-  };
-  this.notify = function(sync) {
-    _this.options.onChange == null || _this.options.onChange(_this, sync);
-  };
-  this.maybeNotify = memo(function() {
-    _this.calculateRange();
-    return [_this.isScrolling, _this.range ? _this.range.startIndex : null, _this.range ? _this.range.endIndex : null];
-  }, function(isScrolling) {
-    _this.notify(isScrolling);
-  }, {
-    key: false,
-    debug: function debug() {
-      return _this.options.debug;
-    },
-    initialDeps: [this.isScrolling, this.range ? this.range.startIndex : null, this.range ? this.range.endIndex : null]
-  });
-  this.cleanup = function() {
-    _this.unsubs.filter(Boolean).forEach(function(d2) {
-      return d2();
-    });
-    _this.unsubs = [];
-    _this.scrollElement = null;
-  };
-  this._didMount = function() {
-    _this.measureElementCache.forEach(_this.observer.observe);
-    return function() {
-      _this.observer.disconnect();
-      _this.cleanup();
-    };
-  };
-  this._willUpdate = function() {
-    var scrollElement = _this.options.getScrollElement();
-    if (_this.scrollElement !== scrollElement) {
-      _this.cleanup();
-      _this.scrollElement = scrollElement;
-      _this._scrollToOffset(_this.scrollOffset, {
-        adjustments: void 0,
-        behavior: void 0
-      });
-      _this.unsubs.push(_this.options.observeElementRect(_this, function(rect) {
-        _this.scrollRect = rect;
-        _this.maybeNotify();
-      }));
-      _this.unsubs.push(_this.options.observeElementOffset(_this, function(offset) {
-        _this.scrollAdjustments = 0;
-        if (_this.scrollOffset === offset) {
-          return;
-        }
-        if (_this.isScrollingTimeoutId !== null) {
-          clearTimeout(_this.isScrollingTimeoutId);
-          _this.isScrollingTimeoutId = null;
-        }
-        _this.isScrolling = true;
-        _this.scrollDirection = _this.scrollOffset < offset ? "forward" : "backward";
-        _this.scrollOffset = offset;
-        _this.maybeNotify();
-        _this.isScrollingTimeoutId = setTimeout(function() {
-          _this.isScrollingTimeoutId = null;
-          _this.isScrolling = false;
-          _this.scrollDirection = null;
-          _this.maybeNotify();
-        }, _this.options.scrollingDelay);
-      }));
-    }
-  };
-  this.getSize = function() {
-    return _this.scrollRect[_this.options.horizontal ? "width" : "height"];
-  };
-  this.memoOptions = memo(function() {
-    return [_this.options.count, _this.options.paddingStart, _this.options.scrollMargin, _this.options.getItemKey];
-  }, function(count, paddingStart, scrollMargin, getItemKey) {
-    _this.pendingMeasuredCacheIndexes = [];
-    return {
-      count,
-      paddingStart,
-      scrollMargin,
-      getItemKey
-    };
-  }, {
-    key: false
-  });
-  this.getFurthestMeasurement = function(measurements, index2) {
-    var furthestMeasurementsFound = /* @__PURE__ */ new Map();
-    var furthestMeasurements = /* @__PURE__ */ new Map();
-    for (var m2 = index2 - 1; m2 >= 0; m2--) {
-      var measurement = measurements[m2];
-      if (furthestMeasurementsFound.has(measurement.lane)) {
-        continue;
-      }
-      var previousFurthestMeasurement = furthestMeasurements.get(measurement.lane);
-      if (previousFurthestMeasurement == null || measurement.end > previousFurthestMeasurement.end) {
-        furthestMeasurements.set(measurement.lane, measurement);
-      } else if (measurement.end < previousFurthestMeasurement.end) {
-        furthestMeasurementsFound.set(measurement.lane, true);
-      }
-      if (furthestMeasurementsFound.size === _this.options.lanes) {
-        break;
-      }
-    }
-    return furthestMeasurements.size === _this.options.lanes ? Array.from(furthestMeasurements.values()).sort(function(a2, b2) {
-      return a2.end - b2.end;
-    })[0] : void 0;
-  };
-  this.getMeasurements = memo(function() {
-    return [_this.memoOptions(), _this.itemSizeCache];
-  }, function(_ref4, itemSizeCache) {
-    var count = _ref4.count, paddingStart = _ref4.paddingStart, scrollMargin = _ref4.scrollMargin, getItemKey = _ref4.getItemKey;
-    var min = _this.pendingMeasuredCacheIndexes.length > 0 ? Math.min.apply(Math, _this.pendingMeasuredCacheIndexes) : 0;
-    _this.pendingMeasuredCacheIndexes = [];
-    var measurements = _this.measurementsCache.slice(0, min);
-    for (var _i2 = min; _i2 < count; _i2++) {
-      var key = getItemKey(_i2);
-      var furthestMeasurement = _this.options.lanes === 1 ? measurements[_i2 - 1] : _this.getFurthestMeasurement(measurements, _i2);
-      var start = furthestMeasurement ? furthestMeasurement.end : paddingStart + scrollMargin;
-      var measuredSize = itemSizeCache.get(key);
-      var size2 = typeof measuredSize === "number" ? measuredSize : _this.options.estimateSize(_i2);
-      var end = start + size2;
-      var lane = furthestMeasurement ? furthestMeasurement.lane : _i2 % _this.options.lanes;
-      measurements[_i2] = {
-        index: _i2,
-        start,
-        size: size2,
-        end,
-        key,
-        lane
-      };
-    }
-    _this.measurementsCache = measurements;
-    return measurements;
-  }, {
-    key: false,
-    debug: function debug() {
-      return _this.options.debug;
-    }
-  });
-  this.calculateRange = memo(function() {
-    return [_this.getMeasurements(), _this.getSize(), _this.scrollOffset];
-  }, function(measurements, outerSize, scrollOffset) {
-    return _this.range = measurements.length > 0 && outerSize > 0 ? calculateRange({
-      measurements,
-      outerSize,
-      scrollOffset
-    }) : null;
-  }, {
-    key: false,
-    debug: function debug() {
-      return _this.options.debug;
-    }
-  });
-  this.getIndexes = memo(function() {
-    return [_this.options.rangeExtractor, _this.calculateRange(), _this.options.overscan, _this.options.count];
-  }, function(rangeExtractor, range, overscan, count) {
-    return range === null ? [] : rangeExtractor(_extends({}, range, {
-      overscan,
-      count
-    }));
-  }, {
-    key: false,
-    debug: function debug() {
-      return _this.options.debug;
-    }
-  });
-  this.indexFromElement = function(node) {
-    var attributeName = _this.options.indexAttribute;
-    var indexStr = node.getAttribute(attributeName);
-    if (!indexStr) {
-      console.warn("Missing attribute name '" + attributeName + "={index}' on measured element.");
-      return -1;
-    }
-    return parseInt(indexStr, 10);
-  };
-  this._measureElement = function(node, entry) {
-    var item = _this.measurementsCache[_this.indexFromElement(node)];
-    if (!item || !node.isConnected) {
-      _this.measureElementCache.forEach(function(cached, key) {
-        if (cached === node) {
-          _this.observer.unobserve(node);
-          _this.measureElementCache["delete"](key);
-        }
-      });
-      return;
-    }
-    var prevNode = _this.measureElementCache.get(item.key);
-    if (prevNode !== node) {
-      if (prevNode) {
-        _this.observer.unobserve(prevNode);
-      }
-      _this.observer.observe(node);
-      _this.measureElementCache.set(item.key, node);
-    }
-    var measuredItemSize = _this.options.measureElement(node, entry, _this);
-    _this.resizeItem(item, measuredItemSize);
-  };
-  this.resizeItem = function(item, size2) {
-    var _this$itemSizeCache$g;
-    var itemSize2 = (_this$itemSizeCache$g = _this.itemSizeCache.get(item.key)) != null ? _this$itemSizeCache$g : item.size;
-    var delta = size2 - itemSize2;
-    if (delta !== 0) {
-      if (item.start < _this.scrollOffset) {
-        _this._scrollToOffset(_this.scrollOffset, {
-          adjustments: _this.scrollAdjustments += delta,
-          behavior: void 0
-        });
-      }
-      _this.pendingMeasuredCacheIndexes.push(item.index);
-      _this.itemSizeCache = new Map(_this.itemSizeCache.set(item.key, size2));
-      _this.notify(false);
-    }
-  };
-  this.measureElement = function(node) {
-    if (!node) {
-      return;
-    }
-    _this._measureElement(node, void 0);
-  };
-  this.getVirtualItems = memo(function() {
-    return [_this.getIndexes(), _this.getMeasurements()];
-  }, function(indexes, measurements) {
-    var virtualItems = [];
-    for (var k = 0, len = indexes.length; k < len; k++) {
-      var _i3 = indexes[k];
-      var measurement = measurements[_i3];
-      virtualItems.push(measurement);
-    }
-    return virtualItems;
-  }, {
-    key: false,
-    debug: function debug() {
-      return _this.options.debug;
-    }
-  });
-  this.getVirtualItemForOffset = function(offset) {
-    var measurements = _this.getMeasurements();
-    return notUndefined(measurements[findNearestBinarySearch(0, measurements.length - 1, function(index2) {
-      return notUndefined(measurements[index2]).start;
-    }, offset)]);
-  };
-  this.getOffsetForAlignment = function(toOffset, align) {
-    var size2 = _this.getSize();
-    if (align === "auto") {
-      if (toOffset <= _this.scrollOffset) {
-        align = "start";
-      } else if (toOffset >= _this.scrollOffset + size2) {
-        align = "end";
-      } else {
-        align = "start";
-      }
-    }
-    if (align === "start") {
-      toOffset = toOffset;
-    } else if (align === "end") {
-      toOffset = toOffset - size2;
-    } else if (align === "center") {
-      toOffset = toOffset - size2 / 2;
-    }
-    var scrollSizeProp = _this.options.horizontal ? "scrollWidth" : "scrollHeight";
-    var scrollSize = _this.scrollElement ? "document" in _this.scrollElement ? _this.scrollElement.document.documentElement[scrollSizeProp] : _this.scrollElement[scrollSizeProp] : 0;
-    var maxOffset = scrollSize - _this.getSize();
-    return Math.max(Math.min(maxOffset, toOffset), 0);
-  };
-  this.getOffsetForIndex = function(index2, align) {
-    if (align === void 0) {
-      align = "auto";
-    }
-    index2 = Math.max(0, Math.min(index2, _this.options.count - 1));
-    var measurement = notUndefined(_this.getMeasurements()[index2]);
-    if (align === "auto") {
-      if (measurement.end >= _this.scrollOffset + _this.getSize() - _this.options.scrollPaddingEnd) {
-        align = "end";
-      } else if (measurement.start <= _this.scrollOffset + _this.options.scrollPaddingStart) {
-        align = "start";
-      } else {
-        return [_this.scrollOffset, align];
-      }
-    }
-    var toOffset = align === "end" ? measurement.end + _this.options.scrollPaddingEnd : measurement.start - _this.options.scrollPaddingStart;
-    return [_this.getOffsetForAlignment(toOffset, align), align];
-  };
-  this.isDynamicMode = function() {
-    return _this.measureElementCache.size > 0;
-  };
-  this.cancelScrollToIndex = function() {
-    if (_this.scrollToIndexTimeoutId !== null) {
-      clearTimeout(_this.scrollToIndexTimeoutId);
-      _this.scrollToIndexTimeoutId = null;
-    }
-  };
-  this.scrollToOffset = function(toOffset, _temp) {
-    var _ref5 = _temp === void 0 ? {} : _temp, _ref5$align = _ref5.align, align = _ref5$align === void 0 ? "start" : _ref5$align, behavior = _ref5.behavior;
-    _this.cancelScrollToIndex();
-    if (behavior === "smooth" && _this.isDynamicMode()) {
-      console.warn("The `smooth` scroll behavior is not fully supported with dynamic size.");
-    }
-    _this._scrollToOffset(_this.getOffsetForAlignment(toOffset, align), {
-      adjustments: void 0,
-      behavior
-    });
-  };
-  this.scrollToIndex = function(index2, _temp2) {
-    var _ref6 = _temp2 === void 0 ? {} : _temp2, _ref6$align = _ref6.align, initialAlign = _ref6$align === void 0 ? "auto" : _ref6$align, behavior = _ref6.behavior;
-    index2 = Math.max(0, Math.min(index2, _this.options.count - 1));
-    _this.cancelScrollToIndex();
-    if (behavior === "smooth" && _this.isDynamicMode()) {
-      console.warn("The `smooth` scroll behavior is not fully supported with dynamic size.");
-    }
-    var _this$getOffsetForInd = _this.getOffsetForIndex(index2, initialAlign), toOffset = _this$getOffsetForInd[0], align = _this$getOffsetForInd[1];
-    _this._scrollToOffset(toOffset, {
-      adjustments: void 0,
-      behavior
-    });
-    if (behavior !== "smooth" && _this.isDynamicMode()) {
-      _this.scrollToIndexTimeoutId = setTimeout(function() {
-        _this.scrollToIndexTimeoutId = null;
-        var elementInDOM = _this.measureElementCache.has(_this.options.getItemKey(index2));
-        if (elementInDOM) {
-          var _this$getOffsetForInd2 = _this.getOffsetForIndex(index2, align), _toOffset = _this$getOffsetForInd2[0];
-          if (!approxEqual(_toOffset, _this.scrollOffset)) {
-            _this.scrollToIndex(index2, {
-              align,
-              behavior
-            });
-          }
-        } else {
-          _this.scrollToIndex(index2, {
-            align,
-            behavior
-          });
-        }
-      });
-    }
-  };
-  this.scrollBy = function(delta, _temp3) {
-    var _ref7 = _temp3 === void 0 ? {} : _temp3, behavior = _ref7.behavior;
-    _this.cancelScrollToIndex();
-    if (behavior === "smooth" && _this.isDynamicMode()) {
-      console.warn("The `smooth` scroll behavior is not fully supported with dynamic size.");
-    }
-    _this._scrollToOffset(_this.scrollOffset + delta, {
-      adjustments: void 0,
-      behavior
-    });
-  };
-  this.getTotalSize = function() {
-    var _this$getMeasurements;
-    return (((_this$getMeasurements = _this.getMeasurements()[_this.options.count - 1]) == null ? void 0 : _this$getMeasurements.end) || _this.options.paddingStart) - _this.options.scrollMargin + _this.options.paddingEnd;
-  };
-  this._scrollToOffset = function(offset, _ref8) {
-    var adjustments = _ref8.adjustments, behavior = _ref8.behavior;
-    _this.options.scrollToFn(offset, {
-      behavior,
-      adjustments
-    }, _this);
-  };
-  this.measure = function() {
-    _this.itemSizeCache = /* @__PURE__ */ new Map();
-    _this.notify(false);
-  };
-  this.setOptions(_opts);
-  this.scrollRect = this.options.initialRect;
-  this.scrollOffset = this.options.initialOffset;
-  this.measurementsCache = this.options.initialMeasurementsCache;
-  this.measurementsCache.forEach(function(item) {
-    _this.itemSizeCache.set(item.key, item.size);
-  });
-  this.maybeNotify();
-};
-var findNearestBinarySearch = function findNearestBinarySearch2(low, high, getCurrentValue, value2) {
-  while (low <= high) {
-    var middle = (low + high) / 2 | 0;
-    var currentValue = getCurrentValue(middle);
-    if (currentValue < value2) {
-      low = middle + 1;
-    } else if (currentValue > value2) {
-      high = middle - 1;
-    } else {
-      return middle;
-    }
-  }
-  if (low > 0) {
-    return low - 1;
-  } else {
-    return 0;
-  }
-};
-function calculateRange(_ref9) {
-  var measurements = _ref9.measurements, outerSize = _ref9.outerSize, scrollOffset = _ref9.scrollOffset;
-  var count = measurements.length - 1;
-  var getOffset2 = function getOffset22(index2) {
-    return measurements[index2].start;
-  };
-  var startIndex = findNearestBinarySearch(0, count, getOffset2, scrollOffset);
-  var endIndex = startIndex;
-  while (endIndex < count && measurements[endIndex].end < scrollOffset + outerSize) {
-    endIndex++;
-  }
-  return {
-    startIndex,
-    endIndex
-  };
-}
-/**
- * vue-virtual
- *
- * Copyright (c) TanStack
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.md file in the root directory of this source tree.
- *
- * @license MIT
- */
-function useVirtualizerBase(options) {
-  var virtualizer = new Virtualizer(unref(options));
-  var state = shallowRef(virtualizer);
-  var cleanup = virtualizer._didMount();
-  watch(function() {
-    return unref(options).getScrollElement();
-  }, function(el) {
-    if (el) {
-      virtualizer._willUpdate();
-    }
-  }, {
-    immediate: true
-  });
-  watch(function() {
-    return unref(options);
-  }, function(options2) {
-    virtualizer.setOptions(_extends$1({}, options2, {
-      onChange: function onChange3(instance, sync) {
-        triggerRef(state);
-        options2.onChange == null || options2.onChange(instance, sync);
-      }
-    }));
-    virtualizer._willUpdate();
-    triggerRef(state);
-  }, {
-    immediate: true
-  });
-  onScopeDispose(cleanup);
-  return state;
-}
-function useVirtualizer(options) {
-  return useVirtualizerBase(computed(function() {
-    return _extends$1({
-      observeElementRect,
-      observeElementOffset,
-      scrollToFn: elementScroll
-    }, unref(options));
-  }));
-}
-function d$4(u2, e2, r2) {
-  let i2 = ref(r2 == null ? void 0 : r2.value), f2 = computed(() => u2.value !== void 0);
-  return [computed(() => f2.value ? u2.value : i2.value), function(t2) {
-    return f2.value || (i2.value = t2), e2 == null ? void 0 : e2(t2);
-  }];
-}
-let e$2 = 0;
-function n$4() {
-  return ++e$2;
-}
-function t$6() {
-  return n$4();
-}
-function o$4(e2) {
-  var l2;
-  if (e2 == null || e2.value == null)
-    return null;
-  let n2 = (l2 = e2.value.$el) != null ? l2 : e2.value;
-  return n2 instanceof Node ? n2 : null;
-}
-function u$6(r2, n2, ...a2) {
-  if (r2 in n2) {
-    let e2 = n2[r2];
-    return typeof e2 == "function" ? e2(...a2) : e2;
-  }
-  let t2 = new Error(`Tried to handle "${r2}" but there is no handler defined. Only defined handlers are: ${Object.keys(n2).map((e2) => `"${e2}"`).join(", ")}.`);
-  throw Error.captureStackTrace && Error.captureStackTrace(t2, u$6), t2;
-}
-var i$5 = Object.defineProperty;
-var d$3 = (t2, e2, r2) => e2 in t2 ? i$5(t2, e2, { enumerable: true, configurable: true, writable: true, value: r2 }) : t2[e2] = r2;
-var n$3 = (t2, e2, r2) => (d$3(t2, typeof e2 != "symbol" ? e2 + "" : e2, r2), r2);
-let s$5 = class s {
-  constructor() {
-    n$3(this, "current", this.detect());
-    n$3(this, "currentId", 0);
-  }
-  set(e2) {
-    this.current !== e2 && (this.currentId = 0, this.current = e2);
-  }
-  reset() {
-    this.set(this.detect());
-  }
-  nextId() {
-    return ++this.currentId;
-  }
-  get isServer() {
-    return this.current === "server";
-  }
-  get isClient() {
-    return this.current === "client";
-  }
-  detect() {
-    return typeof window == "undefined" || typeof document == "undefined" ? "server" : "client";
-  }
-};
-let c$3 = new s$5();
-function i$4(r2) {
-  if (c$3.isServer)
-    return null;
-  if (r2 instanceof Node)
-    return r2.ownerDocument;
-  if (r2 != null && r2.hasOwnProperty("value")) {
-    let n2 = o$4(r2);
-    if (n2)
-      return n2.ownerDocument;
-  }
-  return document;
-}
-let c$2 = ["[contentEditable=true]", "[tabindex]", "a[href]", "area[href]", "button:not([disabled])", "iframe", "input:not([disabled])", "select:not([disabled])", "textarea:not([disabled])"].map((e2) => `${e2}:not([tabindex='-1'])`).join(",");
-var N$6 = ((n2) => (n2[n2.First = 1] = "First", n2[n2.Previous = 2] = "Previous", n2[n2.Next = 4] = "Next", n2[n2.Last = 8] = "Last", n2[n2.WrapAround = 16] = "WrapAround", n2[n2.NoScroll = 32] = "NoScroll", n2))(N$6 || {}), T$2 = ((o2) => (o2[o2.Error = 0] = "Error", o2[o2.Overflow = 1] = "Overflow", o2[o2.Success = 2] = "Success", o2[o2.Underflow = 3] = "Underflow", o2))(T$2 || {}), F$1 = ((t2) => (t2[t2.Previous = -1] = "Previous", t2[t2.Next = 1] = "Next", t2))(F$1 || {});
-function E$3(e2 = document.body) {
-  return e2 == null ? [] : Array.from(e2.querySelectorAll(c$2)).sort((r2, t2) => Math.sign((r2.tabIndex || Number.MAX_SAFE_INTEGER) - (t2.tabIndex || Number.MAX_SAFE_INTEGER)));
-}
-var h = ((t2) => (t2[t2.Strict = 0] = "Strict", t2[t2.Loose = 1] = "Loose", t2))(h || {});
-function w$3(e2, r2 = 0) {
-  var t2;
-  return e2 === ((t2 = i$4(e2)) == null ? void 0 : t2.body) ? false : u$6(r2, { [0]() {
-    return e2.matches(c$2);
-  }, [1]() {
-    let l2 = e2;
-    for (; l2 !== null; ) {
-      if (l2.matches(c$2))
-        return true;
-      l2 = l2.parentElement;
-    }
-    return false;
-  } });
-}
-function _$1(e2) {
-  let r2 = i$4(e2);
-  nextTick(() => {
-    r2 && !w$3(r2.activeElement, 0) && S$2(e2);
-  });
-}
-var y$2 = ((t2) => (t2[t2.Keyboard = 0] = "Keyboard", t2[t2.Mouse = 1] = "Mouse", t2))(y$2 || {});
-typeof window != "undefined" && typeof document != "undefined" && (document.addEventListener("keydown", (e2) => {
-  e2.metaKey || e2.altKey || e2.ctrlKey || (document.documentElement.dataset.headlessuiFocusVisible = "");
-}, true), document.addEventListener("click", (e2) => {
-  e2.detail === 1 ? delete document.documentElement.dataset.headlessuiFocusVisible : e2.detail === 0 && (document.documentElement.dataset.headlessuiFocusVisible = "");
-}, true));
-function S$2(e2) {
-  e2 == null || e2.focus({ preventScroll: true });
-}
-let H = ["textarea", "input"].join(",");
-function I$1(e2) {
-  var r2, t2;
-  return (t2 = (r2 = e2 == null ? void 0 : e2.matches) == null ? void 0 : r2.call(e2, H)) != null ? t2 : false;
-}
-function O$1(e2, r2 = (t2) => t2) {
-  return e2.slice().sort((t2, l2) => {
-    let o2 = r2(t2), i2 = r2(l2);
-    if (o2 === null || i2 === null)
-      return 0;
-    let n2 = o2.compareDocumentPosition(i2);
-    return n2 & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : n2 & Node.DOCUMENT_POSITION_PRECEDING ? 1 : 0;
-  });
-}
-function v$1(e2, r2) {
-  return P(E$3(), r2, { relativeTo: e2 });
-}
-function P(e2, r2, { sorted: t2 = true, relativeTo: l2 = null, skipElements: o2 = [] } = {}) {
-  var m2;
-  let i2 = (m2 = Array.isArray(e2) ? e2.length > 0 ? e2[0].ownerDocument : document : e2 == null ? void 0 : e2.ownerDocument) != null ? m2 : document, n2 = Array.isArray(e2) ? t2 ? O$1(e2) : e2 : E$3(e2);
-  o2.length > 0 && n2.length > 1 && (n2 = n2.filter((s3) => !o2.includes(s3))), l2 = l2 != null ? l2 : i2.activeElement;
-  let x2 = (() => {
-    if (r2 & 5)
-      return 1;
-    if (r2 & 10)
-      return -1;
-    throw new Error("Missing Focus.First, Focus.Previous, Focus.Next or Focus.Last");
-  })(), p2 = (() => {
-    if (r2 & 1)
-      return 0;
-    if (r2 & 2)
-      return Math.max(0, n2.indexOf(l2)) - 1;
-    if (r2 & 4)
-      return Math.max(0, n2.indexOf(l2)) + 1;
-    if (r2 & 8)
-      return n2.length - 1;
-    throw new Error("Missing Focus.First, Focus.Previous, Focus.Next or Focus.Last");
-  })(), L2 = r2 & 32 ? { preventScroll: true } : {}, a2 = 0, d2 = n2.length, u2;
-  do {
-    if (a2 >= d2 || a2 + d2 <= 0)
-      return 0;
-    let s3 = p2 + a2;
-    if (r2 & 16)
-      s3 = (s3 + d2) % d2;
-    else {
-      if (s3 < 0)
-        return 3;
-      if (s3 >= d2)
-        return 1;
-    }
-    u2 = n2[s3], u2 == null || u2.focus(L2), a2 += x2;
-  } while (u2 !== i2.activeElement);
-  return r2 & 6 && I$1(u2) && u2.select(), 2;
-}
-function t$5() {
-  return /iPhone/gi.test(window.navigator.platform) || /Mac/gi.test(window.navigator.platform) && window.navigator.maxTouchPoints > 0;
-}
-function i$3() {
-  return /Android/gi.test(window.navigator.userAgent);
-}
-function n$2() {
-  return t$5() || i$3();
-}
-function u$5(e2, t2, n2) {
-  c$3.isServer || watchEffect((o2) => {
-    document.addEventListener(e2, t2, n2), o2(() => document.removeEventListener(e2, t2, n2));
-  });
-}
-function w$2(e2, n2, t2) {
-  c$3.isServer || watchEffect((o2) => {
-    window.addEventListener(e2, n2, t2), o2(() => window.removeEventListener(e2, n2, t2));
-  });
-}
-function w$1(f2, m2, l2 = computed(() => true)) {
-  function a2(e2, r2) {
-    if (!l2.value || e2.defaultPrevented)
-      return;
-    let t2 = r2(e2);
-    if (t2 === null || !t2.getRootNode().contains(t2))
-      return;
-    let c2 = function o2(n2) {
-      return typeof n2 == "function" ? o2(n2()) : Array.isArray(n2) || n2 instanceof Set ? n2 : [n2];
-    }(f2);
-    for (let o2 of c2) {
-      if (o2 === null)
-        continue;
-      let n2 = o2 instanceof HTMLElement ? o2 : o$4(o2);
-      if (n2 != null && n2.contains(t2) || e2.composed && e2.composedPath().includes(n2))
-        return;
-    }
-    return !w$3(t2, h.Loose) && t2.tabIndex !== -1 && e2.preventDefault(), m2(e2, t2);
-  }
-  let u2 = ref(null);
-  u$5("pointerdown", (e2) => {
-    var r2, t2;
-    l2.value && (u2.value = ((t2 = (r2 = e2.composedPath) == null ? void 0 : r2.call(e2)) == null ? void 0 : t2[0]) || e2.target);
-  }, true), u$5("mousedown", (e2) => {
-    var r2, t2;
-    l2.value && (u2.value = ((t2 = (r2 = e2.composedPath) == null ? void 0 : r2.call(e2)) == null ? void 0 : t2[0]) || e2.target);
-  }, true), u$5("click", (e2) => {
-    n$2() || u2.value && (a2(e2, () => u2.value), u2.value = null);
-  }, true), u$5("touchend", (e2) => a2(e2, () => e2.target instanceof HTMLElement ? e2.target : null), true), w$2("blur", (e2) => a2(e2, () => window.document.activeElement instanceof HTMLIFrameElement ? window.document.activeElement : null), true);
-}
-function r$1(t2, e2) {
-  if (t2)
-    return t2;
-  let n2 = e2 != null ? e2 : "button";
-  if (typeof n2 == "string" && n2.toLowerCase() === "button")
-    return "button";
-}
-function s$4(t2, e2) {
-  let n2 = ref(r$1(t2.value.type, t2.value.as));
-  return onMounted(() => {
-    n2.value = r$1(t2.value.type, t2.value.as);
-  }), watchEffect(() => {
-    var u2;
-    n2.value || o$4(e2) && o$4(e2) instanceof HTMLButtonElement && !((u2 = o$4(e2)) != null && u2.hasAttribute("type")) && (n2.value = "button");
-  }), n2;
-}
-function r(e2) {
-  return [e2.screenX, e2.screenY];
-}
-function u$4() {
-  let e2 = ref([-1, -1]);
-  return { wasMoved(n2) {
-    let t2 = r(n2);
-    return e2.value[0] === t2[0] && e2.value[1] === t2[1] ? false : (e2.value = t2, true);
-  }, update(n2) {
-    e2.value = r(n2);
-  } };
-}
-function i$2({ container: e2, accept: t2, walk: d2, enabled: o2 }) {
-  watchEffect(() => {
-    let r2 = e2.value;
-    if (!r2 || o2 !== void 0 && !o2.value)
-      return;
-    let l2 = i$4(e2);
-    if (!l2)
-      return;
-    let c2 = Object.assign((f2) => t2(f2), { acceptNode: t2 }), n2 = l2.createTreeWalker(r2, NodeFilter.SHOW_ELEMENT, c2, false);
-    for (; n2.nextNode(); )
-      d2(n2.currentNode);
-  });
-}
-var N$5 = ((o2) => (o2[o2.None = 0] = "None", o2[o2.RenderStrategy = 1] = "RenderStrategy", o2[o2.Static = 2] = "Static", o2))(N$5 || {}), S$1 = ((e2) => (e2[e2.Unmount = 0] = "Unmount", e2[e2.Hidden = 1] = "Hidden", e2))(S$1 || {});
-function A$3({ visible: r2 = true, features: t2 = 0, ourProps: e2, theirProps: o2, ...i2 }) {
-  var a2;
-  let n2 = j$1(o2, e2), l2 = Object.assign(i2, { props: n2 });
-  if (r2 || t2 & 2 && n2.static)
-    return y$1(l2);
-  if (t2 & 1) {
-    let d2 = (a2 = n2.unmount) == null || a2 ? 0 : 1;
-    return u$6(d2, { [0]() {
-      return null;
-    }, [1]() {
-      return y$1({ ...i2, props: { ...n2, hidden: true, style: { display: "none" } } });
-    } });
-  }
-  return y$1(l2);
-}
-function y$1({ props: r2, attrs: t2, slots: e2, slot: o2, name: i2 }) {
-  var m2, h2;
-  let { as: n2, ...l2 } = T$1(r2, ["unmount", "static"]), a2 = (m2 = e2.default) == null ? void 0 : m2.call(e2, o2), d2 = {};
-  if (o2) {
-    let u2 = false, c2 = [];
-    for (let [p2, f2] of Object.entries(o2))
-      typeof f2 == "boolean" && (u2 = true), f2 === true && c2.push(p2);
-    u2 && (d2["data-headlessui-state"] = c2.join(" "));
-  }
-  if (n2 === "template") {
-    if (a2 = b(a2 != null ? a2 : []), Object.keys(l2).length > 0 || Object.keys(t2).length > 0) {
-      let [u2, ...c2] = a2 != null ? a2 : [];
-      if (!v(u2) || c2.length > 0)
-        throw new Error(['Passing props on "template"!', "", `The current component <${i2} /> is rendering a "template".`, "However we need to passthrough the following props:", Object.keys(l2).concat(Object.keys(t2)).map((s3) => s3.trim()).filter((s3, g2, R2) => R2.indexOf(s3) === g2).sort((s3, g2) => s3.localeCompare(g2)).map((s3) => `  - ${s3}`).join(`
-`), "", "You can apply a few solutions:", ['Add an `as="..."` prop, to ensure that we render an actual element instead of a "template".', "Render a single element as the child so that we can forward the props onto that element."].map((s3) => `  - ${s3}`).join(`
-`)].join(`
-`));
-      let p2 = j$1((h2 = u2.props) != null ? h2 : {}, l2, d2), f2 = cloneVNode(u2, p2, true);
-      for (let s3 in p2)
-        s3.startsWith("on") && (f2.props || (f2.props = {}), f2.props[s3] = p2[s3]);
-      return f2;
-    }
-    return Array.isArray(a2) && a2.length === 1 ? a2[0] : a2;
-  }
-  return h$1(n2, Object.assign({}, l2, d2), { default: () => a2 });
-}
-function b(r2) {
-  return r2.flatMap((t2) => t2.type === Fragment ? b(t2.children) : [t2]);
-}
-function j$1(...r2) {
-  if (r2.length === 0)
-    return {};
-  if (r2.length === 1)
-    return r2[0];
-  let t2 = {}, e2 = {};
-  for (let i2 of r2)
-    for (let n2 in i2)
-      n2.startsWith("on") && typeof i2[n2] == "function" ? (e2[n2] != null || (e2[n2] = []), e2[n2].push(i2[n2])) : t2[n2] = i2[n2];
-  if (t2.disabled || t2["aria-disabled"])
-    return Object.assign(t2, Object.fromEntries(Object.keys(e2).map((i2) => [i2, void 0])));
-  for (let i2 in e2)
-    Object.assign(t2, { [i2](n2, ...l2) {
-      let a2 = e2[i2];
-      for (let d2 of a2) {
-        if (n2 instanceof Event && n2.defaultPrevented)
-          return;
-        d2(n2, ...l2);
-      }
-    } });
-  return t2;
-}
-function E$2(r2) {
-  let t2 = Object.assign({}, r2);
-  for (let e2 in t2)
-    t2[e2] === void 0 && delete t2[e2];
-  return t2;
-}
-function T$1(r2, t2 = []) {
-  let e2 = Object.assign({}, r2);
-  for (let o2 of t2)
-    o2 in e2 && delete e2[o2];
-  return e2;
-}
-function v(r2) {
-  return r2 == null ? false : typeof r2.type == "string" || typeof r2.type == "object" || typeof r2.type == "function";
-}
-var s$3 = ((e2) => (e2[e2.None = 1] = "None", e2[e2.Focusable = 2] = "Focusable", e2[e2.Hidden = 4] = "Hidden", e2))(s$3 || {});
-let f$2 = /* @__PURE__ */ defineComponent({ name: "Hidden", props: { as: { type: [Object, String], default: "div" }, features: { type: Number, default: 1 } }, setup(d2, { slots: o2, attrs: i2 }) {
-  return () => {
-    var t2;
-    let { features: e2, ...r2 } = d2, n2 = { "aria-hidden": (e2 & 2) === 2 ? true : (t2 = r2["aria-hidden"]) != null ? t2 : void 0, style: { position: "fixed", top: 1, left: 1, width: 1, height: 0, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", borderWidth: "0", ...(e2 & 4) === 4 && (e2 & 2) !== 2 && { display: "none" } } };
-    return A$3({ ourProps: n2, theirProps: r2, slot: {}, attrs: i2, slots: o2, name: "Hidden" });
-  };
-} });
-let n$1 = Symbol("Context");
-var i$1 = ((e2) => (e2[e2.Open = 1] = "Open", e2[e2.Closed = 2] = "Closed", e2[e2.Closing = 4] = "Closing", e2[e2.Opening = 8] = "Opening", e2))(i$1 || {});
-function s$2() {
-  return l$2() !== null;
-}
-function l$2() {
-  return inject(n$1, null);
-}
-function t$4(o2) {
-  provide(n$1, o2);
-}
-var o$3 = ((r2) => (r2.Space = " ", r2.Enter = "Enter", r2.Escape = "Escape", r2.Backspace = "Backspace", r2.Delete = "Delete", r2.ArrowLeft = "ArrowLeft", r2.ArrowUp = "ArrowUp", r2.ArrowRight = "ArrowRight", r2.ArrowDown = "ArrowDown", r2.Home = "Home", r2.End = "End", r2.PageUp = "PageUp", r2.PageDown = "PageDown", r2.Tab = "Tab", r2))(o$3 || {});
-function t$3(n2) {
-  function e2() {
-    document.readyState !== "loading" && (n2(), document.removeEventListener("DOMContentLoaded", e2));
-  }
-  typeof window != "undefined" && typeof document != "undefined" && (document.addEventListener("DOMContentLoaded", e2), e2());
-}
-let t$2 = [];
-t$3(() => {
-  function e2(n2) {
-    n2.target instanceof HTMLElement && n2.target !== document.body && t$2[0] !== n2.target && (t$2.unshift(n2.target), t$2 = t$2.filter((r2) => r2 != null && r2.isConnected), t$2.splice(10));
-  }
-  window.addEventListener("click", e2, { capture: true }), window.addEventListener("mousedown", e2, { capture: true }), window.addEventListener("focus", e2, { capture: true }), document.body.addEventListener("click", e2, { capture: true }), document.body.addEventListener("mousedown", e2, { capture: true }), document.body.addEventListener("focus", e2, { capture: true });
-});
-function u$3(l2) {
-  throw new Error("Unexpected object: " + l2);
-}
-var c$1 = ((i2) => (i2[i2.First = 0] = "First", i2[i2.Previous = 1] = "Previous", i2[i2.Next = 2] = "Next", i2[i2.Last = 3] = "Last", i2[i2.Specific = 4] = "Specific", i2[i2.Nothing = 5] = "Nothing", i2))(c$1 || {});
-function f$1(l2, n2) {
-  let t2 = n2.resolveItems();
-  if (t2.length <= 0)
-    return null;
-  let r2 = n2.resolveActiveIndex(), s3 = r2 != null ? r2 : -1;
-  switch (l2.focus) {
-    case 0: {
-      for (let e2 = 0; e2 < t2.length; ++e2)
-        if (!n2.resolveDisabled(t2[e2], e2, t2))
-          return e2;
-      return r2;
-    }
-    case 1: {
-      s3 === -1 && (s3 = t2.length);
-      for (let e2 = s3 - 1; e2 >= 0; --e2)
-        if (!n2.resolveDisabled(t2[e2], e2, t2))
-          return e2;
-      return r2;
-    }
-    case 2: {
-      for (let e2 = s3 + 1; e2 < t2.length; ++e2)
-        if (!n2.resolveDisabled(t2[e2], e2, t2))
-          return e2;
-      return r2;
-    }
-    case 3: {
-      for (let e2 = t2.length - 1; e2 >= 0; --e2)
-        if (!n2.resolveDisabled(t2[e2], e2, t2))
-          return e2;
-      return r2;
-    }
-    case 4: {
-      for (let e2 = 0; e2 < t2.length; ++e2)
-        if (n2.resolveId(t2[e2], e2, t2) === l2.id)
-          return e2;
-      return r2;
-    }
-    case 5:
-      return null;
-    default:
-      u$3(l2);
-  }
-}
-function t$1(e2) {
-  typeof queueMicrotask == "function" ? queueMicrotask(e2) : Promise.resolve().then(e2).catch((o2) => setTimeout(() => {
-    throw o2;
-  }));
-}
-function o$2() {
-  let a2 = [], s3 = { addEventListener(e2, t2, r2, i2) {
-    return e2.addEventListener(t2, r2, i2), s3.add(() => e2.removeEventListener(t2, r2, i2));
-  }, requestAnimationFrame(...e2) {
-    let t2 = requestAnimationFrame(...e2);
-    s3.add(() => cancelAnimationFrame(t2));
-  }, nextFrame(...e2) {
-    s3.requestAnimationFrame(() => {
-      s3.requestAnimationFrame(...e2);
-    });
-  }, setTimeout(...e2) {
-    let t2 = setTimeout(...e2);
-    s3.add(() => clearTimeout(t2));
-  }, microTask(...e2) {
-    let t2 = { current: true };
-    return t$1(() => {
-      t2.current && e2[0]();
-    }), s3.add(() => {
-      t2.current = false;
-    });
-  }, style(e2, t2, r2) {
-    let i2 = e2.style.getPropertyValue(t2);
-    return Object.assign(e2.style, { [t2]: r2 }), this.add(() => {
-      Object.assign(e2.style, { [t2]: i2 });
-    });
-  }, group(e2) {
-    let t2 = o$2();
-    return e2(t2), this.add(() => t2.dispose());
-  }, add(e2) {
-    return a2.push(e2), () => {
-      let t2 = a2.indexOf(e2);
-      if (t2 >= 0)
-        for (let r2 of a2.splice(t2, 1))
-          r2();
-    };
-  }, dispose() {
-    for (let e2 of a2.splice(0))
-      e2();
-  } };
-  return s3;
-}
-function e$1(i2 = {}, s3 = null, t2 = []) {
-  for (let [r2, n2] of Object.entries(i2))
-    o$1(t2, f(s3, r2), n2);
-  return t2;
-}
-function f(i2, s3) {
-  return i2 ? i2 + "[" + s3 + "]" : s3;
-}
-function o$1(i2, s3, t2) {
-  if (Array.isArray(t2))
-    for (let [r2, n2] of t2.entries())
-      o$1(i2, f(s3, r2.toString()), n2);
-  else
-    t2 instanceof Date ? i2.push([s3, t2.toISOString()]) : typeof t2 == "boolean" ? i2.push([s3, t2 ? "1" : "0"]) : typeof t2 == "string" ? i2.push([s3, t2]) : typeof t2 == "number" ? i2.push([s3, `${t2}`]) : t2 == null ? i2.push([s3, ""]) : e$1(t2, s3, i2);
-}
-var define_process_env_default = {};
-function Pe(a2, I2) {
-  return a2 === I2;
-}
-var we = ((r2) => (r2[r2.Open = 0] = "Open", r2[r2.Closed = 1] = "Closed", r2))(we || {}), Ee = ((r2) => (r2[r2.Single = 0] = "Single", r2[r2.Multi = 1] = "Multi", r2))(Ee || {}), Ve = ((O2) => (O2[O2.Pointer = 0] = "Pointer", O2[O2.Focus = 1] = "Focus", O2[O2.Other = 2] = "Other", O2))(Ve || {});
-let ne = Symbol("ComboboxContext");
-function N$4(a2) {
-  let I2 = inject(ne, null);
-  if (I2 === null) {
-    let r2 = new Error(`<${a2} /> is missing a parent <Combobox /> component.`);
-    throw Error.captureStackTrace && Error.captureStackTrace(r2, N$4), r2;
-  }
-  return I2;
-}
-let ie = Symbol("VirtualContext"), ke = /* @__PURE__ */ defineComponent({ name: "VirtualProvider", setup(a2, { slots: I2 }) {
-  let r2 = N$4("VirtualProvider"), O2 = computed(() => {
-    let u2 = o$4(r2.optionsRef);
-    if (!u2)
-      return { start: 0, end: 0 };
-    let d2 = window.getComputedStyle(u2);
-    return { start: parseFloat(d2.paddingBlockStart || d2.paddingTop), end: parseFloat(d2.paddingBlockEnd || d2.paddingBottom) };
-  }), t2 = useVirtualizer(computed(() => ({ scrollPaddingStart: O2.value.start, scrollPaddingEnd: O2.value.end, count: r2.virtual.value.options.length, estimateSize() {
-    return 40;
-  }, getScrollElement() {
-    return o$4(r2.optionsRef);
-  }, overscan: 12 }))), e2 = computed(() => {
-    var u2;
-    return (u2 = r2.virtual.value) == null ? void 0 : u2.options;
-  }), R2 = ref(0);
-  return watch([e2], () => {
-    R2.value += 1;
-  }), provide(ie, r2.virtual.value ? t2 : null), () => [h$1("div", { style: { position: "relative", width: "100%", height: `${t2.value.getTotalSize()}px` }, ref: (u2) => {
-    if (u2) {
-      if (typeof process != "undefined" && define_process_env_default.JEST_WORKER_ID !== void 0 || r2.activationTrigger.value === 0)
-        return;
-      r2.activeOptionIndex.value !== null && r2.virtual.value.options.length > r2.activeOptionIndex.value && t2.value.scrollToIndex(r2.activeOptionIndex.value);
-    }
-  } }, t2.value.getVirtualItems().map((u2) => cloneVNode(I2.default({ option: r2.virtual.value.options[u2.index], open: r2.comboboxState.value === 0 })[0], { key: `${R2.value}-${u2.index}`, "data-index": u2.index, "aria-setsize": r2.virtual.value.options.length, "aria-posinset": u2.index + 1, style: { position: "absolute", top: 0, left: 0, transform: `translateY(${u2.start}px)`, overflowAnchor: "none" } })))];
-} }), Ze = /* @__PURE__ */ defineComponent({ name: "Combobox", emits: { "update:modelValue": (a2) => true }, props: { as: { type: [Object, String], default: "template" }, disabled: { type: [Boolean], default: false }, by: { type: [String, Function], nullable: true, default: null }, modelValue: { type: [Object, String, Number, Boolean], default: void 0 }, defaultValue: { type: [Object, String, Number, Boolean], default: void 0 }, form: { type: String, optional: true }, name: { type: String, optional: true }, nullable: { type: Boolean, default: false }, multiple: { type: [Boolean], default: false }, immediate: { type: [Boolean], default: false }, virtual: { type: Object, default: null } }, inheritAttrs: false, setup(a2, { slots: I2, attrs: r2, emit: O2 }) {
-  let t2 = ref(1), e2 = ref(null), R2 = ref(null), u2 = ref(null), d2 = ref(null), g2 = ref({ static: false, hold: false }), S2 = ref([]), m2 = ref(null), w2 = ref(2), h2 = ref(false);
-  function F2(l2 = (i2) => i2) {
-    let i2 = m2.value !== null ? S2.value[m2.value] : null, s3 = l2(S2.value.slice()), f2 = s3.length > 0 && s3[0].dataRef.order.value !== null ? s3.sort((T2, L2) => T2.dataRef.order.value - L2.dataRef.order.value) : O$1(s3, (T2) => o$4(T2.dataRef.domRef)), y2 = i2 ? f2.indexOf(i2) : null;
-    return y2 === -1 && (y2 = null), { options: f2, activeOptionIndex: y2 };
-  }
-  let M = computed(() => a2.multiple ? 1 : 0), K = computed(() => a2.nullable), [p2, o2] = d$4(computed(() => a2.modelValue), (l2) => O2("update:modelValue", l2), computed(() => a2.defaultValue)), v2 = computed(() => p2.value === void 0 ? u$6(M.value, { [1]: [], [0]: void 0 }) : p2.value), c2 = null, P2 = null;
-  function C2(l2) {
-    return u$6(M.value, { [0]() {
-      return o2 == null ? void 0 : o2(l2);
-    }, [1]: () => {
-      let i2 = toRaw(n2.value.value).slice(), s3 = toRaw(l2), f2 = i2.findIndex((y2) => n2.compare(s3, toRaw(y2)));
-      return f2 === -1 ? i2.push(s3) : i2.splice(f2, 1), o2 == null ? void 0 : o2(i2);
-    } });
-  }
-  let V = computed(() => {
-  });
-  watch([V], ([l2], [i2]) => {
-    if (n2.virtual.value && l2 && i2 && m2.value !== null) {
-      let s3 = l2.indexOf(i2[m2.value]);
-      s3 !== -1 ? m2.value = s3 : m2.value = null;
-    }
-  });
-  let n2 = { comboboxState: t2, value: v2, mode: M, compare(l2, i2) {
-    if (typeof a2.by == "string") {
-      let s3 = a2.by;
-      return (l2 == null ? void 0 : l2[s3]) === (i2 == null ? void 0 : i2[s3]);
-    }
-    return a2.by === null ? Pe(l2, i2) : a2.by(l2, i2);
-  }, calculateIndex(l2) {
-    return n2.virtual.value ? a2.by === null ? n2.virtual.value.options.indexOf(l2) : n2.virtual.value.options.findIndex((i2) => n2.compare(i2, l2)) : S2.value.findIndex((i2) => n2.compare(i2.dataRef.value, l2));
-  }, defaultValue: computed(() => a2.defaultValue), nullable: K, immediate: computed(() => false), virtual: computed(() => null), inputRef: R2, labelRef: e2, buttonRef: u2, optionsRef: d2, disabled: computed(() => a2.disabled), options: S2, change(l2) {
-    o2(l2);
-  }, activeOptionIndex: computed(() => {
-    if (h2.value && m2.value === null && (n2.virtual.value ? n2.virtual.value.options.length > 0 : S2.value.length > 0)) {
-      if (n2.virtual.value) {
-        let i2 = n2.virtual.value.options.findIndex((s3) => {
-          var f2;
-          return !((f2 = n2.virtual.value) != null && f2.disabled(s3));
-        });
-        if (i2 !== -1)
-          return i2;
-      }
-      let l2 = S2.value.findIndex((i2) => !i2.dataRef.disabled);
-      if (l2 !== -1)
-        return l2;
-    }
-    return m2.value;
-  }), activationTrigger: w2, optionsPropsRef: g2, closeCombobox() {
-    h2.value = false, !a2.disabled && t2.value !== 1 && (t2.value = 1, m2.value = null);
-  }, openCombobox() {
-    if (h2.value = true, !a2.disabled && t2.value !== 0) {
-      if (n2.value.value) {
-        let l2 = n2.calculateIndex(n2.value.value);
-        l2 !== -1 && (m2.value = l2);
-      }
-      t2.value = 0;
-    }
-  }, setActivationTrigger(l2) {
-    w2.value = l2;
-  }, goToOption(l2, i2, s3) {
-    h2.value = false, c2 !== null && cancelAnimationFrame(c2), c2 = requestAnimationFrame(() => {
-      if (a2.disabled || d2.value && !g2.value.static && t2.value === 1)
-        return;
-      if (n2.virtual.value) {
-        m2.value = l2 === c$1.Specific ? i2 : f$1({ focus: l2 }, { resolveItems: () => n2.virtual.value.options, resolveActiveIndex: () => {
-          var T2, L2;
-          return (L2 = (T2 = n2.activeOptionIndex.value) != null ? T2 : n2.virtual.value.options.findIndex((W2) => {
-            var U;
-            return !((U = n2.virtual.value) != null && U.disabled(W2));
-          })) != null ? L2 : null;
-        }, resolveDisabled: (T2) => n2.virtual.value.disabled(T2), resolveId() {
-          throw new Error("Function not implemented.");
-        } }), w2.value = s3 != null ? s3 : 2;
-        return;
-      }
-      let f2 = F2();
-      if (f2.activeOptionIndex === null) {
-        let T2 = f2.options.findIndex((L2) => !L2.dataRef.disabled);
-        T2 !== -1 && (f2.activeOptionIndex = T2);
-      }
-      let y2 = l2 === c$1.Specific ? i2 : f$1({ focus: l2 }, { resolveItems: () => f2.options, resolveActiveIndex: () => f2.activeOptionIndex, resolveId: (T2) => T2.id, resolveDisabled: (T2) => T2.dataRef.disabled });
-      m2.value = y2, w2.value = s3 != null ? s3 : 2, S2.value = f2.options;
-    });
-  }, selectOption(l2) {
-    let i2 = S2.value.find((f2) => f2.id === l2);
-    if (!i2)
-      return;
-    let { dataRef: s3 } = i2;
-    C2(s3.value);
-  }, selectActiveOption() {
-    if (n2.activeOptionIndex.value !== null) {
-      if (n2.virtual.value)
-        C2(n2.virtual.value.options[n2.activeOptionIndex.value]);
-      else {
-        let { dataRef: l2 } = S2.value[n2.activeOptionIndex.value];
-        C2(l2.value);
-      }
-      n2.goToOption(c$1.Specific, n2.activeOptionIndex.value);
-    }
-  }, registerOption(l2, i2) {
-    let s3 = reactive({ id: l2, dataRef: i2 });
-    if (n2.virtual.value) {
-      S2.value.push(s3);
-      return;
-    }
-    P2 && cancelAnimationFrame(P2);
-    let f2 = F2((y2) => (y2.push(s3), y2));
-    m2.value === null && n2.isSelected(i2.value.value) && (f2.activeOptionIndex = f2.options.indexOf(s3)), S2.value = f2.options, m2.value = f2.activeOptionIndex, w2.value = 2, f2.options.some((y2) => !o$4(y2.dataRef.domRef)) && (P2 = requestAnimationFrame(() => {
-      let y2 = F2();
-      S2.value = y2.options, m2.value = y2.activeOptionIndex;
-    }));
-  }, unregisterOption(l2, i2) {
-    if (c2 !== null && cancelAnimationFrame(c2), i2 && (h2.value = true), n2.virtual.value) {
-      S2.value = S2.value.filter((f2) => f2.id !== l2);
-      return;
-    }
-    let s3 = F2((f2) => {
-      let y2 = f2.findIndex((T2) => T2.id === l2);
-      return y2 !== -1 && f2.splice(y2, 1), f2;
-    });
-    S2.value = s3.options, m2.value = s3.activeOptionIndex, w2.value = 2;
-  }, isSelected(l2) {
-    return u$6(M.value, { [0]: () => n2.compare(toRaw(n2.value.value), toRaw(l2)), [1]: () => toRaw(n2.value.value).some((i2) => n2.compare(toRaw(i2), toRaw(l2))) });
-  }, isActive(l2) {
-    return m2.value === n2.calculateIndex(l2);
-  } };
-  w$1([R2, u2, d2], () => n2.closeCombobox(), computed(() => t2.value === 0)), provide(ne, n2), t$4(computed(() => u$6(t2.value, { [0]: i$1.Open, [1]: i$1.Closed })));
-  let D = computed(() => {
-    var l2;
-    return (l2 = o$4(R2)) == null ? void 0 : l2.closest("form");
-  });
-  return onMounted(() => {
-    watch([D], () => {
-      if (!D.value || a2.defaultValue === void 0)
-        return;
-      function l2() {
-        n2.change(a2.defaultValue);
-      }
-      return D.value.addEventListener("reset", l2), () => {
-        var i2;
-        (i2 = D.value) == null || i2.removeEventListener("reset", l2);
-      };
-    }, { immediate: true });
-  }), () => {
-    var T2, L2, W2;
-    let { name: l2, disabled: i2, form: s3, ...f2 } = a2, y2 = { open: t2.value === 0, disabled: i2, activeIndex: n2.activeOptionIndex.value, activeOption: n2.activeOptionIndex.value === null ? null : n2.virtual.value ? n2.virtual.value.options[(T2 = n2.activeOptionIndex.value) != null ? T2 : 0] : (W2 = (L2 = n2.options.value[n2.activeOptionIndex.value]) == null ? void 0 : L2.dataRef.value.value) != null ? W2 : null, value: v2.value };
-    return h$1(Fragment, [...l2 != null && v2.value != null ? e$1({ [l2]: v2.value }).map(([U, ue2]) => h$1(f$2, E$2({ features: s$3.Hidden, key: U, as: "input", type: "hidden", hidden: true, readOnly: true, form: s3, name: U, value: ue2 }))) : [], A$3({ theirProps: { ...r2, ...T$1(f2, ["by", "defaultValue", "immediate", "modelValue", "multiple", "nullable", "onUpdate:modelValue", "virtual"]) }, ourProps: {}, slot: y2, slots: I2, attrs: r2, name: "Combobox" })]);
-  };
-} }), tt = /* @__PURE__ */ defineComponent({ name: "ComboboxButton", props: { as: { type: [Object, String], default: "button" }, id: { type: String, default: () => `headlessui-combobox-button-${t$6()}` } }, setup(a2, { attrs: I2, slots: r2, expose: O2 }) {
-  let t2 = N$4("ComboboxButton");
-  O2({ el: t2.buttonRef, $el: t2.buttonRef });
-  function e2(d2) {
-    t2.disabled.value || (t2.comboboxState.value === 0 ? t2.closeCombobox() : (d2.preventDefault(), t2.openCombobox()), nextTick(() => {
-      var g2;
-      return (g2 = o$4(t2.inputRef)) == null ? void 0 : g2.focus({ preventScroll: true });
-    }));
-  }
-  function R2(d2) {
-    switch (d2.key) {
-      case o$3.ArrowDown:
-        d2.preventDefault(), d2.stopPropagation(), t2.comboboxState.value === 1 && t2.openCombobox(), nextTick(() => {
-          var g2;
-          return (g2 = t2.inputRef.value) == null ? void 0 : g2.focus({ preventScroll: true });
-        });
-        return;
-      case o$3.ArrowUp:
-        d2.preventDefault(), d2.stopPropagation(), t2.comboboxState.value === 1 && (t2.openCombobox(), nextTick(() => {
-          t2.value.value || t2.goToOption(c$1.Last);
-        })), nextTick(() => {
-          var g2;
-          return (g2 = t2.inputRef.value) == null ? void 0 : g2.focus({ preventScroll: true });
-        });
-        return;
-      case o$3.Escape:
-        if (t2.comboboxState.value !== 0)
-          return;
-        d2.preventDefault(), t2.optionsRef.value && !t2.optionsPropsRef.value.static && d2.stopPropagation(), t2.closeCombobox(), nextTick(() => {
-          var g2;
-          return (g2 = t2.inputRef.value) == null ? void 0 : g2.focus({ preventScroll: true });
-        });
-        return;
-    }
-  }
-  let u2 = s$4(computed(() => ({ as: a2.as, type: I2.type })), t2.buttonRef);
-  return () => {
-    var w2, h2;
-    let d2 = { open: t2.comboboxState.value === 0, disabled: t2.disabled.value, value: t2.value.value }, { id: g2, ...S2 } = a2, m2 = { ref: t2.buttonRef, id: g2, type: u2.value, tabindex: "-1", "aria-haspopup": "listbox", "aria-controls": (w2 = o$4(t2.optionsRef)) == null ? void 0 : w2.id, "aria-expanded": t2.comboboxState.value === 0, "aria-labelledby": t2.labelRef.value ? [(h2 = o$4(t2.labelRef)) == null ? void 0 : h2.id, g2].join(" ") : void 0, disabled: t2.disabled.value === true ? true : void 0, onKeydown: R2, onClick: e2 };
-    return A$3({ ourProps: m2, theirProps: S2, slot: d2, attrs: I2, slots: r2, name: "ComboboxButton" });
-  };
-} }), ot = /* @__PURE__ */ defineComponent({ name: "ComboboxInput", props: { as: { type: [Object, String], default: "input" }, static: { type: Boolean, default: false }, unmount: { type: Boolean, default: true }, displayValue: { type: Function }, defaultValue: { type: String, default: void 0 }, id: { type: String, default: () => `headlessui-combobox-input-${t$6()}` } }, emits: { change: (a2) => true }, setup(a2, { emit: I2, attrs: r2, slots: O2, expose: t2 }) {
-  let e2 = N$4("ComboboxInput"), R2 = computed(() => i$4(o$4(e2.inputRef))), u2 = { value: false };
-  t2({ el: e2.inputRef, $el: e2.inputRef });
-  function d2() {
-    e2.change(null);
-    let o2 = o$4(e2.optionsRef);
-    o2 && (o2.scrollTop = 0), e2.goToOption(c$1.Nothing);
-  }
-  let g2 = computed(() => {
-    var v2;
-    let o2 = e2.value.value;
-    return o$4(e2.inputRef) ? typeof a2.displayValue != "undefined" && o2 !== void 0 ? (v2 = a2.displayValue(o2)) != null ? v2 : "" : typeof o2 == "string" ? o2 : "" : "";
-  });
-  onMounted(() => {
-    watch([g2, e2.comboboxState, R2], ([o2, v2], [c2, P2]) => {
-      if (u2.value)
-        return;
-      let C2 = o$4(e2.inputRef);
-      C2 && ((P2 === 0 && v2 === 1 || o2 !== c2) && (C2.value = o2), requestAnimationFrame(() => {
-        var D;
-        if (u2.value || !C2 || ((D = R2.value) == null ? void 0 : D.activeElement) !== C2)
-          return;
-        let { selectionStart: V, selectionEnd: n2 } = C2;
-        Math.abs((n2 != null ? n2 : 0) - (V != null ? V : 0)) === 0 && V === 0 && C2.setSelectionRange(C2.value.length, C2.value.length);
-      }));
-    }, { immediate: true }), watch([e2.comboboxState], ([o2], [v2]) => {
-      if (o2 === 0 && v2 === 1) {
-        if (u2.value)
-          return;
-        let c2 = o$4(e2.inputRef);
-        if (!c2)
-          return;
-        let P2 = c2.value, { selectionStart: C2, selectionEnd: V, selectionDirection: n2 } = c2;
-        c2.value = "", c2.value = P2, n2 !== null ? c2.setSelectionRange(C2, V, n2) : c2.setSelectionRange(C2, V);
-      }
-    });
-  });
-  let S2 = ref(false);
-  function m2() {
-    S2.value = true;
-  }
-  function w2() {
-    o$2().nextFrame(() => {
-      S2.value = false;
-    });
-  }
-  function h2(o2) {
-    switch (u2.value = true, o2.key) {
-      case o$3.Enter:
-        if (u2.value = false, e2.comboboxState.value !== 0 || S2.value)
-          return;
-        if (o2.preventDefault(), o2.stopPropagation(), e2.activeOptionIndex.value === null) {
-          e2.closeCombobox();
-          return;
-        }
-        e2.selectActiveOption(), e2.mode.value === 0 && e2.closeCombobox();
-        break;
-      case o$3.ArrowDown:
-        return u2.value = false, o2.preventDefault(), o2.stopPropagation(), u$6(e2.comboboxState.value, { [0]: () => e2.goToOption(c$1.Next), [1]: () => e2.openCombobox() });
-      case o$3.ArrowUp:
-        return u2.value = false, o2.preventDefault(), o2.stopPropagation(), u$6(e2.comboboxState.value, { [0]: () => e2.goToOption(c$1.Previous), [1]: () => {
-          e2.openCombobox(), nextTick(() => {
-            e2.value.value || e2.goToOption(c$1.Last);
-          });
-        } });
-      case o$3.Home:
-        if (o2.shiftKey)
-          break;
-        return u2.value = false, o2.preventDefault(), o2.stopPropagation(), e2.goToOption(c$1.First);
-      case o$3.PageUp:
-        return u2.value = false, o2.preventDefault(), o2.stopPropagation(), e2.goToOption(c$1.First);
-      case o$3.End:
-        if (o2.shiftKey)
-          break;
-        return u2.value = false, o2.preventDefault(), o2.stopPropagation(), e2.goToOption(c$1.Last);
-      case o$3.PageDown:
-        return u2.value = false, o2.preventDefault(), o2.stopPropagation(), e2.goToOption(c$1.Last);
-      case o$3.Escape:
-        if (u2.value = false, e2.comboboxState.value !== 0)
-          return;
-        o2.preventDefault(), e2.optionsRef.value && !e2.optionsPropsRef.value.static && o2.stopPropagation(), e2.nullable.value && e2.mode.value === 0 && e2.value.value === null && d2(), e2.closeCombobox();
-        break;
-      case o$3.Tab:
-        if (u2.value = false, e2.comboboxState.value !== 0)
-          return;
-        e2.mode.value === 0 && e2.activationTrigger.value !== 1 && e2.selectActiveOption(), e2.closeCombobox();
-        break;
-    }
-  }
-  function F2(o2) {
-    I2("change", o2), e2.nullable.value && e2.mode.value === 0 && o2.target.value === "" && d2(), e2.openCombobox();
-  }
-  function M(o2) {
-    var c2, P2, C2;
-    let v2 = (c2 = o2.relatedTarget) != null ? c2 : t$2.find((V) => V !== o2.currentTarget);
-    if (u2.value = false, !((P2 = o$4(e2.optionsRef)) != null && P2.contains(v2)) && !((C2 = o$4(e2.buttonRef)) != null && C2.contains(v2)) && e2.comboboxState.value === 0)
-      return o2.preventDefault(), e2.mode.value === 0 && (e2.nullable.value && e2.value.value === null ? d2() : e2.activationTrigger.value !== 1 && e2.selectActiveOption()), e2.closeCombobox();
-  }
-  function K(o2) {
-    var c2, P2, C2;
-    let v2 = (c2 = o2.relatedTarget) != null ? c2 : t$2.find((V) => V !== o2.currentTarget);
-    (P2 = o$4(e2.buttonRef)) != null && P2.contains(v2) || (C2 = o$4(e2.optionsRef)) != null && C2.contains(v2) || e2.disabled.value || e2.immediate.value && e2.comboboxState.value !== 0 && (e2.openCombobox(), o$2().nextFrame(() => {
-      e2.setActivationTrigger(1);
-    }));
-  }
-  let p2 = computed(() => {
-    var o2, v2, c2, P2;
-    return (P2 = (c2 = (v2 = a2.defaultValue) != null ? v2 : e2.defaultValue.value !== void 0 ? (o2 = a2.displayValue) == null ? void 0 : o2.call(a2, e2.defaultValue.value) : null) != null ? c2 : e2.defaultValue.value) != null ? P2 : "";
-  });
-  return () => {
-    var n2, D, l2, i2, s3, f2, y2;
-    let o2 = { open: e2.comboboxState.value === 0 }, { id: v2, displayValue: c2, onChange: P2, ...C2 } = a2, V = { "aria-controls": (n2 = e2.optionsRef.value) == null ? void 0 : n2.id, "aria-expanded": e2.comboboxState.value === 0, "aria-activedescendant": e2.activeOptionIndex.value === null ? void 0 : e2.virtual.value ? (D = e2.options.value.find((T2) => !e2.virtual.value.disabled(T2.dataRef.value) && e2.compare(T2.dataRef.value, e2.virtual.value.options[e2.activeOptionIndex.value]))) == null ? void 0 : D.id : (l2 = e2.options.value[e2.activeOptionIndex.value]) == null ? void 0 : l2.id, "aria-labelledby": (f2 = (i2 = o$4(e2.labelRef)) == null ? void 0 : i2.id) != null ? f2 : (s3 = o$4(e2.buttonRef)) == null ? void 0 : s3.id, "aria-autocomplete": "list", id: v2, onCompositionstart: m2, onCompositionend: w2, onKeydown: h2, onInput: F2, onFocus: K, onBlur: M, role: "combobox", type: (y2 = r2.type) != null ? y2 : "text", tabIndex: 0, ref: e2.inputRef, defaultValue: p2.value, disabled: e2.disabled.value === true ? true : void 0 };
-    return A$3({ ourProps: V, theirProps: C2, slot: o2, attrs: r2, slots: O2, features: N$5.RenderStrategy | N$5.Static, name: "ComboboxInput" });
-  };
-} }), lt = /* @__PURE__ */ defineComponent({ name: "ComboboxOptions", props: { as: { type: [Object, String], default: "ul" }, static: { type: Boolean, default: false }, unmount: { type: Boolean, default: true }, hold: { type: [Boolean], default: false } }, setup(a2, { attrs: I2, slots: r2, expose: O2 }) {
-  let t2 = N$4("ComboboxOptions"), e2 = `headlessui-combobox-options-${t$6()}`;
-  O2({ el: t2.optionsRef, $el: t2.optionsRef }), watchEffect(() => {
-    t2.optionsPropsRef.value.static = a2.static;
-  }), watchEffect(() => {
-    t2.optionsPropsRef.value.hold = a2.hold;
-  });
-  let R2 = l$2(), u2 = computed(() => R2 !== null ? (R2.value & i$1.Open) === i$1.Open : t2.comboboxState.value === 0);
-  return i$2({ container: computed(() => o$4(t2.optionsRef)), enabled: computed(() => t2.comboboxState.value === 0), accept(d2) {
-    return d2.getAttribute("role") === "option" ? NodeFilter.FILTER_REJECT : d2.hasAttribute("role") ? NodeFilter.FILTER_SKIP : NodeFilter.FILTER_ACCEPT;
-  }, walk(d2) {
-    d2.setAttribute("role", "none");
-  } }), () => {
-    var m2, w2, h2;
-    let d2 = { open: t2.comboboxState.value === 0 }, g2 = { "aria-labelledby": (h2 = (m2 = o$4(t2.labelRef)) == null ? void 0 : m2.id) != null ? h2 : (w2 = o$4(t2.buttonRef)) == null ? void 0 : w2.id, id: e2, ref: t2.optionsRef, role: "listbox", "aria-multiselectable": t2.mode.value === 1 ? true : void 0 }, S2 = T$1(a2, ["hold"]);
-    return A$3({ ourProps: g2, theirProps: S2, slot: d2, attrs: I2, slots: t2.virtual.value && t2.comboboxState.value === 0 ? { ...r2, default: () => [h$1(ke, {}, r2.default)] } : r2, features: N$5.RenderStrategy | N$5.Static, visible: u2.value, name: "ComboboxOptions" });
-  };
-} }), at = /* @__PURE__ */ defineComponent({ name: "ComboboxOption", props: { as: { type: [Object, String], default: "li" }, value: { type: [Object, String, Number, Boolean] }, disabled: { type: Boolean, default: false }, order: { type: [Number], default: null } }, setup(a2, { slots: I2, attrs: r2, expose: O2 }) {
-  let t2 = N$4("ComboboxOption"), e2 = `headlessui-combobox-option-${t$6()}`, R2 = ref(null);
-  O2({ el: R2, $el: R2 });
-  let u2 = computed(() => {
-    var p2;
-    return t2.virtual.value ? t2.activeOptionIndex.value === t2.calculateIndex(a2.value) : t2.activeOptionIndex.value === null ? false : ((p2 = t2.options.value[t2.activeOptionIndex.value]) == null ? void 0 : p2.id) === e2;
-  }), d2 = computed(() => t2.isSelected(a2.value)), g2 = inject(ie, null), S2 = computed(() => ({ disabled: a2.disabled, value: a2.value, domRef: R2, order: computed(() => a2.order) }));
-  onMounted(() => t2.registerOption(e2, S2)), onUnmounted(() => t2.unregisterOption(e2, u2.value)), watchEffect(() => {
-    let p2 = o$4(R2);
-    p2 && (g2 == null || g2.value.measureElement(p2));
-  }), watchEffect(() => {
-    t2.comboboxState.value === 0 && u2.value && (t2.virtual.value || t2.activationTrigger.value !== 0 && nextTick(() => {
-      var p2, o2;
-      return (o2 = (p2 = o$4(R2)) == null ? void 0 : p2.scrollIntoView) == null ? void 0 : o2.call(p2, { block: "nearest" });
-    }));
-  });
-  function m2(p2) {
-    var o2;
-    if (a2.disabled || (o2 = t2.virtual.value) != null && o2.disabled(a2.value))
-      return p2.preventDefault();
-    t2.selectOption(e2), n$2() || requestAnimationFrame(() => {
-      var v2;
-      return (v2 = o$4(t2.inputRef)) == null ? void 0 : v2.focus({ preventScroll: true });
-    }), t2.mode.value === 0 && requestAnimationFrame(() => t2.closeCombobox());
-  }
-  function w2() {
-    var o2;
-    if (a2.disabled || (o2 = t2.virtual.value) != null && o2.disabled(a2.value))
-      return t2.goToOption(c$1.Nothing);
-    let p2 = t2.calculateIndex(a2.value);
-    t2.goToOption(c$1.Specific, p2);
-  }
-  let h2 = u$4();
-  function F2(p2) {
-    h2.update(p2);
-  }
-  function M(p2) {
-    var v2;
-    if (!h2.wasMoved(p2) || a2.disabled || (v2 = t2.virtual.value) != null && v2.disabled(a2.value) || u2.value)
-      return;
-    let o2 = t2.calculateIndex(a2.value);
-    t2.goToOption(c$1.Specific, o2, 0);
-  }
-  function K(p2) {
-    var o2;
-    h2.wasMoved(p2) && (a2.disabled || (o2 = t2.virtual.value) != null && o2.disabled(a2.value) || u2.value && (t2.optionsPropsRef.value.hold || t2.goToOption(c$1.Nothing)));
-  }
-  return () => {
-    let { disabled: p2 } = a2, o2 = { active: u2.value, selected: d2.value, disabled: p2 }, v2 = { id: e2, ref: R2, role: "option", tabIndex: p2 === true ? void 0 : -1, "aria-disabled": p2 === true ? true : void 0, "aria-selected": d2.value, disabled: void 0, onClick: m2, onFocus: w2, onPointerenter: F2, onMouseenter: F2, onPointermove: M, onMousemove: M, onPointerleave: K, onMouseleave: K }, c2 = T$1(a2, ["order", "value"]);
-    return A$3({ ourProps: v2, theirProps: c2, slot: o2, attrs: r2, slots: I2, name: "ComboboxOption" });
-  };
-} });
-function E$1(n2, e2, o2, r2) {
-  c$3.isServer || watchEffect((t2) => {
-    n2 = n2 != null ? n2 : window, n2.addEventListener(e2, o2, r2), t2(() => n2.removeEventListener(e2, o2, r2));
-  });
-}
-var d$2 = ((r2) => (r2[r2.Forwards = 0] = "Forwards", r2[r2.Backwards = 1] = "Backwards", r2))(d$2 || {});
-function n() {
-  let o2 = ref(0);
-  return w$2("keydown", (e2) => {
-    e2.key === "Tab" && (o2.value = e2.shiftKey ? 1 : 0);
-  }), o2;
-}
-function B(t2) {
-  if (!t2)
-    return /* @__PURE__ */ new Set();
-  if (typeof t2 == "function")
-    return new Set(t2());
-  let n2 = /* @__PURE__ */ new Set();
-  for (let r2 of t2.value) {
-    let l2 = o$4(r2);
-    l2 instanceof HTMLElement && n2.add(l2);
-  }
-  return n2;
-}
-var A$2 = ((e2) => (e2[e2.None = 1] = "None", e2[e2.InitialFocus = 2] = "InitialFocus", e2[e2.TabLock = 4] = "TabLock", e2[e2.FocusLock = 8] = "FocusLock", e2[e2.RestoreFocus = 16] = "RestoreFocus", e2[e2.All = 30] = "All", e2))(A$2 || {});
-let ue = Object.assign(/* @__PURE__ */ defineComponent({ name: "FocusTrap", props: { as: { type: [Object, String], default: "div" }, initialFocus: { type: Object, default: null }, features: { type: Number, default: 30 }, containers: { type: [Object, Function], default: ref(/* @__PURE__ */ new Set()) } }, inheritAttrs: false, setup(t2, { attrs: n$12, slots: r2, expose: l2 }) {
-  let o2 = ref(null);
-  l2({ el: o2, $el: o2 });
-  let i2 = computed(() => i$4(o2)), e2 = ref(false);
-  onMounted(() => e2.value = true), onUnmounted(() => e2.value = false), $({ ownerDocument: i2 }, computed(() => e2.value && Boolean(t2.features & 16)));
-  let m2 = z({ ownerDocument: i2, container: o2, initialFocus: computed(() => t2.initialFocus) }, computed(() => e2.value && Boolean(t2.features & 2)));
-  J({ ownerDocument: i2, container: o2, containers: t2.containers, previousActiveElement: m2 }, computed(() => e2.value && Boolean(t2.features & 8)));
-  let f2 = n();
-  function a2(u2) {
-    let T2 = o$4(o2);
-    if (!T2)
-      return;
-    ((w2) => w2())(() => {
-      u$6(f2.value, { [d$2.Forwards]: () => {
-        P(T2, N$6.First, { skipElements: [u2.relatedTarget] });
-      }, [d$2.Backwards]: () => {
-        P(T2, N$6.Last, { skipElements: [u2.relatedTarget] });
-      } });
-    });
-  }
-  let s3 = ref(false);
-  function F2(u2) {
-    u2.key === "Tab" && (s3.value = true, requestAnimationFrame(() => {
-      s3.value = false;
-    }));
-  }
-  function H2(u2) {
-    if (!e2.value)
-      return;
-    let T2 = B(t2.containers);
-    o$4(o2) instanceof HTMLElement && T2.add(o$4(o2));
-    let d2 = u2.relatedTarget;
-    d2 instanceof HTMLElement && d2.dataset.headlessuiFocusGuard !== "true" && (N$3(T2, d2) || (s3.value ? P(o$4(o2), u$6(f2.value, { [d$2.Forwards]: () => N$6.Next, [d$2.Backwards]: () => N$6.Previous }) | N$6.WrapAround, { relativeTo: u2.target }) : u2.target instanceof HTMLElement && S$2(u2.target)));
-  }
-  return () => {
-    let u2 = {}, T2 = { ref: o2, onKeydown: F2, onFocusout: H2 }, { features: d2, initialFocus: w2, containers: Q2, ...O2 } = t2;
-    return h$1(Fragment, [Boolean(d2 & 4) && h$1(f$2, { as: "button", type: "button", "data-headlessui-focus-guard": true, onFocus: a2, features: s$3.Focusable }), A$3({ ourProps: T2, theirProps: { ...n$12, ...O2 }, slot: u2, attrs: n$12, slots: r2, name: "FocusTrap" }), Boolean(d2 & 4) && h$1(f$2, { as: "button", type: "button", "data-headlessui-focus-guard": true, onFocus: a2, features: s$3.Focusable })]);
-  };
-} }), { features: A$2 });
-function W$1(t2) {
-  let n2 = ref(t$2.slice());
-  return watch([t2], ([r2], [l2]) => {
-    l2 === true && r2 === false ? t$1(() => {
-      n2.value.splice(0);
-    }) : l2 === false && r2 === true && (n2.value = t$2.slice());
-  }, { flush: "post" }), () => {
-    var r2;
-    return (r2 = n2.value.find((l2) => l2 != null && l2.isConnected)) != null ? r2 : null;
-  };
-}
-function $({ ownerDocument: t2 }, n2) {
-  let r2 = W$1(n2);
-  onMounted(() => {
-    watchEffect(() => {
-      var l2, o2;
-      n2.value || ((l2 = t2.value) == null ? void 0 : l2.activeElement) === ((o2 = t2.value) == null ? void 0 : o2.body) && S$2(r2());
-    }, { flush: "post" });
-  }), onUnmounted(() => {
-    n2.value && S$2(r2());
-  });
-}
-function z({ ownerDocument: t2, container: n2, initialFocus: r2 }, l2) {
-  let o2 = ref(null), i2 = ref(false);
-  return onMounted(() => i2.value = true), onUnmounted(() => i2.value = false), onMounted(() => {
-    watch([n2, r2, l2], (e2, m2) => {
-      if (e2.every((a2, s3) => (m2 == null ? void 0 : m2[s3]) === a2) || !l2.value)
-        return;
-      let f2 = o$4(n2);
-      f2 && t$1(() => {
-        var F2, H2;
-        if (!i2.value)
-          return;
-        let a2 = o$4(r2), s3 = (F2 = t2.value) == null ? void 0 : F2.activeElement;
-        if (a2) {
-          if (a2 === s3) {
-            o2.value = s3;
-            return;
-          }
-        } else if (f2.contains(s3)) {
-          o2.value = s3;
-          return;
-        }
-        a2 ? S$2(a2) : P(f2, N$6.First | N$6.NoScroll) === T$2.Error && console.warn("There are no focusable elements inside the <FocusTrap />"), o2.value = (H2 = t2.value) == null ? void 0 : H2.activeElement;
-      });
-    }, { immediate: true, flush: "post" });
-  }), o2;
-}
-function J({ ownerDocument: t2, container: n2, containers: r2, previousActiveElement: l2 }, o2) {
-  var i2;
-  E$1((i2 = t2.value) == null ? void 0 : i2.defaultView, "focus", (e2) => {
-    if (!o2.value)
-      return;
-    let m2 = B(r2);
-    o$4(n2) instanceof HTMLElement && m2.add(o$4(n2));
-    let f2 = l2.value;
-    if (!f2)
-      return;
-    let a2 = e2.target;
-    a2 && a2 instanceof HTMLElement ? N$3(m2, a2) ? (l2.value = a2, S$2(a2)) : (e2.preventDefault(), e2.stopPropagation(), S$2(f2)) : S$2(l2.value);
-  }, true);
-}
-function N$3(t2, n2) {
-  for (let r2 of t2)
-    if (r2.contains(n2))
-      return true;
-  return false;
-}
-function m$3(t2) {
-  let e2 = shallowRef(t2.getSnapshot());
-  return onUnmounted(t2.subscribe(() => {
-    e2.value = t2.getSnapshot();
-  })), e2;
-}
-function a$2(o2, r2) {
-  let t2 = o2(), n2 = /* @__PURE__ */ new Set();
-  return { getSnapshot() {
-    return t2;
-  }, subscribe(e2) {
-    return n2.add(e2), () => n2.delete(e2);
-  }, dispatch(e2, ...s3) {
-    let i2 = r2[e2].call(t2, ...s3);
-    i2 && (t2 = i2, n2.forEach((c2) => c2()));
-  } };
-}
-function c() {
-  let o2;
-  return { before({ doc: e2 }) {
-    var l2;
-    let n2 = e2.documentElement;
-    o2 = ((l2 = e2.defaultView) != null ? l2 : window).innerWidth - n2.clientWidth;
-  }, after({ doc: e2, d: n2 }) {
-    let t2 = e2.documentElement, l2 = t2.clientWidth - t2.offsetWidth, r2 = o2 - l2;
-    n2.style(t2, "paddingRight", `${r2}px`);
-  } };
-}
-function w() {
-  return t$5() ? { before({ doc: r2, d: n2, meta: c2 }) {
-    function o2(a2) {
-      return c2.containers.flatMap((l2) => l2()).some((l2) => l2.contains(a2));
-    }
-    n2.microTask(() => {
-      var s3;
-      if (window.getComputedStyle(r2.documentElement).scrollBehavior !== "auto") {
-        let t2 = o$2();
-        t2.style(r2.documentElement, "scrollBehavior", "auto"), n2.add(() => n2.microTask(() => t2.dispose()));
-      }
-      let a2 = (s3 = window.scrollY) != null ? s3 : window.pageYOffset, l2 = null;
-      n2.addEventListener(r2, "click", (t2) => {
-        if (t2.target instanceof HTMLElement)
-          try {
-            let e2 = t2.target.closest("a");
-            if (!e2)
-              return;
-            let { hash: f2 } = new URL(e2.href), i2 = r2.querySelector(f2);
-            i2 && !o2(i2) && (l2 = i2);
-          } catch {
-          }
-      }, true), n2.addEventListener(r2, "touchstart", (t2) => {
-        if (t2.target instanceof HTMLElement)
-          if (o2(t2.target)) {
-            let e2 = t2.target;
-            for (; e2.parentElement && o2(e2.parentElement); )
-              e2 = e2.parentElement;
-            n2.style(e2, "overscrollBehavior", "contain");
-          } else
-            n2.style(t2.target, "touchAction", "none");
-      }), n2.addEventListener(r2, "touchmove", (t2) => {
-        if (t2.target instanceof HTMLElement)
-          if (o2(t2.target)) {
-            let e2 = t2.target;
-            for (; e2.parentElement && e2.dataset.headlessuiPortal !== "" && !(e2.scrollHeight > e2.clientHeight || e2.scrollWidth > e2.clientWidth); )
-              e2 = e2.parentElement;
-            e2.dataset.headlessuiPortal === "" && t2.preventDefault();
-          } else
-            t2.preventDefault();
-      }, { passive: false }), n2.add(() => {
-        var e2;
-        let t2 = (e2 = window.scrollY) != null ? e2 : window.pageYOffset;
-        a2 !== t2 && window.scrollTo(0, a2), l2 && l2.isConnected && (l2.scrollIntoView({ block: "nearest" }), l2 = null);
-      });
-    });
-  } } : {};
-}
-function l$1() {
-  return { before({ doc: e2, d: o2 }) {
-    o2.style(e2.documentElement, "overflow", "hidden");
-  } };
-}
-function m$2(e2) {
-  let n2 = {};
-  for (let t2 of e2)
-    Object.assign(n2, t2(n2));
-  return n2;
-}
-let a$1 = a$2(() => /* @__PURE__ */ new Map(), { PUSH(e2, n2) {
-  var o2;
-  let t2 = (o2 = this.get(e2)) != null ? o2 : { doc: e2, count: 0, d: o$2(), meta: /* @__PURE__ */ new Set() };
-  return t2.count++, t2.meta.add(n2), this.set(e2, t2), this;
-}, POP(e2, n2) {
-  let t2 = this.get(e2);
-  return t2 && (t2.count--, t2.meta.delete(n2)), this;
-}, SCROLL_PREVENT({ doc: e2, d: n2, meta: t2 }) {
-  let o2 = { doc: e2, d: n2, meta: m$2(t2) }, c$12 = [w(), c(), l$1()];
-  c$12.forEach(({ before: r2 }) => r2 == null ? void 0 : r2(o2)), c$12.forEach(({ after: r2 }) => r2 == null ? void 0 : r2(o2));
-}, SCROLL_ALLOW({ d: e2 }) {
-  e2.dispose();
-}, TEARDOWN({ doc: e2 }) {
-  this.delete(e2);
-} });
-a$1.subscribe(() => {
-  let e2 = a$1.getSnapshot(), n2 = /* @__PURE__ */ new Map();
-  for (let [t2] of e2)
-    n2.set(t2, t2.documentElement.style.overflow);
-  for (let t2 of e2.values()) {
-    let o2 = n2.get(t2.doc) === "hidden", c2 = t2.count !== 0;
-    (c2 && !o2 || !c2 && o2) && a$1.dispatch(t2.count > 0 ? "SCROLL_PREVENT" : "SCROLL_ALLOW", t2), t2.count === 0 && a$1.dispatch("TEARDOWN", t2);
-  }
-});
-function d$1(t2, a2, n2) {
-  let i2 = m$3(a$1), l2 = computed(() => {
-    let e2 = t2.value ? i2.value.get(t2.value) : void 0;
-    return e2 ? e2.count > 0 : false;
-  });
-  return watch([t2, a2], ([e2, m2], [r2], o2) => {
-    if (!e2 || !m2)
-      return;
-    a$1.dispatch("PUSH", e2, n2);
-    let f2 = false;
-    o2(() => {
-      f2 || (a$1.dispatch("POP", r2 != null ? r2 : e2, n2), f2 = true);
-    });
-  }, { immediate: true }), l2;
-}
-let i = /* @__PURE__ */ new Map(), t = /* @__PURE__ */ new Map();
-function E(d2, f2 = ref(true)) {
-  watchEffect((o2) => {
-    var a2;
-    if (!f2.value)
-      return;
-    let e2 = o$4(d2);
-    if (!e2)
-      return;
-    o2(function() {
-      var u2;
-      if (!e2)
-        return;
-      let r2 = (u2 = t.get(e2)) != null ? u2 : 1;
-      if (r2 === 1 ? t.delete(e2) : t.set(e2, r2 - 1), r2 !== 1)
-        return;
-      let n2 = i.get(e2);
-      n2 && (n2["aria-hidden"] === null ? e2.removeAttribute("aria-hidden") : e2.setAttribute("aria-hidden", n2["aria-hidden"]), e2.inert = n2.inert, i.delete(e2));
-    });
-    let l2 = (a2 = t.get(e2)) != null ? a2 : 0;
-    t.set(e2, l2 + 1), l2 === 0 && (i.set(e2, { "aria-hidden": e2.getAttribute("aria-hidden"), inert: e2.inert }), e2.setAttribute("aria-hidden", "true"), e2.inert = true);
-  });
-}
-function N$2({ defaultContainers: o2 = [], portals: i2, mainTreeNodeRef: H2 } = {}) {
-  let t2 = ref(null), r2 = i$4(t2);
-  function u2() {
-    var l2, f2, a2;
-    let n2 = [];
-    for (let e2 of o2)
-      e2 !== null && (e2 instanceof HTMLElement ? n2.push(e2) : "value" in e2 && e2.value instanceof HTMLElement && n2.push(e2.value));
-    if (i2 != null && i2.value)
-      for (let e2 of i2.value)
-        n2.push(e2);
-    for (let e2 of (l2 = r2 == null ? void 0 : r2.querySelectorAll("html > *, body > *")) != null ? l2 : [])
-      e2 !== document.body && e2 !== document.head && e2 instanceof HTMLElement && e2.id !== "headlessui-portal-root" && (e2.contains(o$4(t2)) || e2.contains((a2 = (f2 = o$4(t2)) == null ? void 0 : f2.getRootNode()) == null ? void 0 : a2.host) || n2.some((M) => e2.contains(M)) || n2.push(e2));
-    return n2;
-  }
-  return { resolveContainers: u2, contains(n2) {
-    return u2().some((l2) => l2.contains(n2));
-  }, mainTreeNodeRef: t2, MainTreeNode() {
-    return H2 != null ? null : h$1(f$2, { features: s$3.Hidden, ref: t2 });
-  } };
-}
-let e = Symbol("ForcePortalRootContext");
-function s$1() {
-  return inject(e, false);
-}
-let u$2 = /* @__PURE__ */ defineComponent({ name: "ForcePortalRoot", props: { as: { type: [Object, String], default: "template" }, force: { type: Boolean, default: false } }, setup(o2, { slots: t2, attrs: r2 }) {
-  return provide(e, o2.force), () => {
-    let { force: f2, ...n2 } = o2;
-    return A$3({ theirProps: n2, ourProps: {}, slot: {}, slots: t2, attrs: r2, name: "ForcePortalRoot" });
-  };
-} });
-let u$1 = Symbol("StackContext");
-var s2 = ((e2) => (e2[e2.Add = 0] = "Add", e2[e2.Remove = 1] = "Remove", e2))(s2 || {});
-function y() {
-  return inject(u$1, () => {
-  });
-}
-function R$1({ type: o2, enabled: r2, element: e2, onUpdate: i2 }) {
-  let a2 = y();
-  function t2(...n2) {
-    i2 == null || i2(...n2), a2(...n2);
-  }
-  onMounted(() => {
-    watch(r2, (n2, d2) => {
-      n2 ? t2(0, o2, e2) : d2 === true && t2(1, o2, e2);
-    }, { immediate: true, flush: "sync" });
-  }), onUnmounted(() => {
-    r2.value && t2(1, o2, e2);
-  }), provide(u$1, t2);
-}
-let u = Symbol("DescriptionContext");
-function S({ slot: t2 = ref({}), name: i2 = "Description", props: o2 = {} } = {}) {
-  let e2 = ref([]);
-  function s3(n2) {
-    return e2.value.push(n2), () => {
-      let r2 = e2.value.indexOf(n2);
-      r2 !== -1 && e2.value.splice(r2, 1);
-    };
-  }
-  return provide(u, { register: s3, slot: t2, name: i2, props: o2 }), computed(() => e2.value.length > 0 ? e2.value.join(" ") : void 0);
-}
-function x(r2) {
-  let e2 = i$4(r2);
-  if (!e2) {
-    if (r2 === null)
-      return null;
-    throw new Error(`[Headless UI]: Cannot find ownerDocument for contextElement: ${r2}`);
-  }
-  let u2 = e2.getElementById("headlessui-portal-root");
-  if (u2)
-    return u2;
-  let t2 = e2.createElement("div");
-  return t2.setAttribute("id", "headlessui-portal-root"), e2.body.appendChild(t2);
-}
-let _ = /* @__PURE__ */ defineComponent({ name: "Portal", props: { as: { type: [Object, String], default: "div" } }, setup(r2, { slots: e2, attrs: u2 }) {
-  let t2 = ref(null), i2 = computed(() => i$4(t2)), l2 = s$1(), n2 = inject(C, null), o2 = ref(l2 === true || n2 == null ? x(t2.value) : n2.resolveTarget()), d2 = ref(false);
-  onMounted(() => {
-    d2.value = true;
-  }), watchEffect(() => {
-    l2 || n2 != null && (o2.value = n2.resolveTarget());
-  });
-  let c2 = inject(m$1, null), v2 = false, H2 = getCurrentInstance();
-  return watch(t2, () => {
-    if (v2 || !c2)
-      return;
-    let a2 = o$4(t2);
-    a2 && (onUnmounted(c2.register(a2), H2), v2 = true);
-  }), onUnmounted(() => {
-    var g2, P2;
-    let a2 = (g2 = i2.value) == null ? void 0 : g2.getElementById("headlessui-portal-root");
-    a2 && o2.value === a2 && o2.value.children.length <= 0 && ((P2 = o2.value.parentElement) == null || P2.removeChild(o2.value));
-  }), () => {
-    if (!d2.value || o2.value === null)
-      return null;
-    let a2 = { ref: t2, "data-headlessui-portal": "" };
-    return h$1(Teleport, { to: o2.value }, A$3({ ourProps: a2, theirProps: r2, slot: {}, attrs: u2, slots: e2, name: "Portal" }));
-  };
-} }), m$1 = Symbol("PortalParentContext");
-function A$1() {
-  let r2 = inject(m$1, null), e2 = ref([]);
-  function u2(l2) {
-    return e2.value.push(l2), r2 && r2.register(l2), () => t2(l2);
-  }
-  function t2(l2) {
-    let n2 = e2.value.indexOf(l2);
-    n2 !== -1 && e2.value.splice(n2, 1), r2 && r2.unregister(l2);
-  }
-  let i2 = { register: u2, unregister: t2, portals: e2 };
-  return [e2, /* @__PURE__ */ defineComponent({ name: "PortalWrapper", setup(l2, { slots: n2 }) {
-    return provide(m$1, i2), () => {
-      var o2;
-      return (o2 = n2.default) == null ? void 0 : o2.call(n2);
-    };
-  } })];
-}
-let C = Symbol("PortalGroupContext"), N$1 = /* @__PURE__ */ defineComponent({ name: "PortalGroup", props: { as: { type: [Object, String], default: "template" }, target: { type: Object, default: null } }, setup(r2, { attrs: e2, slots: u2 }) {
-  let t2 = reactive({ resolveTarget() {
-    return r2.target;
-  } });
-  return provide(C, t2), () => {
-    let { target: i2, ...l2 } = r2;
-    return A$3({ theirProps: l2, ourProps: {}, slot: {}, attrs: e2, slots: u2, name: "PortalGroup" });
-  };
-} });
-var be$1 = ((l2) => (l2[l2.Open = 0] = "Open", l2[l2.Closed = 1] = "Closed", l2))(be$1 || {});
-let j = Symbol("DialogContext");
-function T(t2) {
-  let n2 = inject(j, null);
-  if (n2 === null) {
-    let l2 = new Error(`<${t2} /> is missing a parent <Dialog /> component.`);
-    throw Error.captureStackTrace && Error.captureStackTrace(l2, T), l2;
-  }
-  return n2;
-}
-let I = "DC8F892D-2EBD-447C-A4C8-A03058436FF4", _e = /* @__PURE__ */ defineComponent({ name: "Dialog", inheritAttrs: false, props: { as: { type: [Object, String], default: "div" }, static: { type: Boolean, default: false }, unmount: { type: Boolean, default: true }, open: { type: [Boolean, String], default: I }, initialFocus: { type: Object, default: null }, id: { type: String, default: () => `headlessui-dialog-${t$6()}` }, role: { type: String, default: "dialog" } }, emits: { close: (t2) => true }, setup(t2, { emit: n2, attrs: l2, slots: u2, expose: i2 }) {
-  var U;
-  let r2 = ref(false);
-  onMounted(() => {
-    r2.value = true;
-  });
-  let s$12 = false, v2 = computed(() => t2.role === "dialog" || t2.role === "alertdialog" ? t2.role : (s$12 || (s$12 = true, console.warn(`Invalid role [${v2}] passed to <Dialog />. Only \`dialog\` and and \`alertdialog\` are supported. Using \`dialog\` instead.`)), "dialog")), m2 = ref(0), S$12 = l$2(), R2 = computed(() => t2.open === I && S$12 !== null ? (S$12.value & i$1.Open) === i$1.Open : t2.open), c2 = ref(null), E$22 = computed(() => i$4(c2));
-  if (i2({ el: c2, $el: c2 }), !(t2.open !== I || S$12 !== null))
-    throw new Error("You forgot to provide an `open` prop to the `Dialog`.");
-  if (typeof R2.value != "boolean")
-    throw new Error(`You provided an \`open\` prop to the \`Dialog\`, but the value is not a boolean. Received: ${R2.value === I ? void 0 : t2.open}`);
-  let f2 = computed(() => r2.value && R2.value ? 0 : 1), k = computed(() => f2.value === 0), w2 = computed(() => m2.value > 1), H2 = inject(j, null) !== null, [V, J2] = A$1(), { resolveContainers: A2, mainTreeNodeRef: N2, MainTreeNode: Q2 } = N$2({ portals: V, defaultContainers: [computed(() => {
-    var e2;
-    return (e2 = h2.panelRef.value) != null ? e2 : c2.value;
-  })] }), X = computed(() => w2.value ? "parent" : "leaf"), K = computed(() => S$12 !== null ? (S$12.value & i$1.Closing) === i$1.Closing : false), Z2 = computed(() => H2 || K.value ? false : k.value), ee2 = computed(() => {
-    var e2, a2, p2;
-    return (p2 = Array.from((a2 = (e2 = E$22.value) == null ? void 0 : e2.querySelectorAll("body > *")) != null ? a2 : []).find((d2) => d2.id === "headlessui-portal-root" ? false : d2.contains(o$4(N2)) && d2 instanceof HTMLElement)) != null ? p2 : null;
-  });
-  E(ee2, Z2);
-  let te = computed(() => w2.value ? true : k.value), le = computed(() => {
-    var e2, a2, p2;
-    return (p2 = Array.from((a2 = (e2 = E$22.value) == null ? void 0 : e2.querySelectorAll("[data-headlessui-portal]")) != null ? a2 : []).find((d2) => d2.contains(o$4(N2)) && d2 instanceof HTMLElement)) != null ? p2 : null;
-  });
-  E(le, te), R$1({ type: "Dialog", enabled: computed(() => f2.value === 0), element: c2, onUpdate: (e2, a2) => {
-    if (a2 === "Dialog")
-      return u$6(e2, { [s2.Add]: () => m2.value += 1, [s2.Remove]: () => m2.value -= 1 });
-  } });
-  let ae = S({ name: "DialogDescription", slot: computed(() => ({ open: R2.value })) }), M = ref(null), h2 = { titleId: M, panelRef: ref(null), dialogState: f2, setTitleId(e2) {
-    M.value !== e2 && (M.value = e2);
-  }, close() {
-    n2("close", false);
-  } };
-  provide(j, h2);
-  let oe = computed(() => !(!k.value || w2.value));
-  w$1(A2, (e2, a2) => {
-    h2.close(), nextTick(() => a2 == null ? void 0 : a2.focus());
-  }, oe);
-  let re = computed(() => !(w2.value || f2.value !== 0));
-  E$1((U = E$22.value) == null ? void 0 : U.defaultView, "keydown", (e2) => {
-    re.value && (e2.defaultPrevented || e2.key === o$3.Escape && (e2.preventDefault(), e2.stopPropagation(), h2.close()));
-  });
-  let ne2 = computed(() => !(K.value || f2.value !== 0 || H2));
-  return d$1(E$22, ne2, (e2) => {
-    var a2;
-    return { containers: [...(a2 = e2.containers) != null ? a2 : [], A2] };
-  }), watchEffect((e2) => {
-    if (f2.value !== 0)
-      return;
-    let a2 = o$4(c2);
-    if (!a2)
-      return;
-    let p2 = new ResizeObserver((d2) => {
-      for (let B2 of d2) {
-        let D = B2.target.getBoundingClientRect();
-        D.x === 0 && D.y === 0 && D.width === 0 && D.height === 0 && h2.close();
-      }
-    });
-    p2.observe(a2), e2(() => p2.disconnect());
-  }), () => {
-    let { id: e2, open: a2, initialFocus: p2, ...d2 } = t2, B2 = { ...l2, ref: c2, id: e2, role: v2.value, "aria-modal": f2.value === 0 ? true : void 0, "aria-labelledby": M.value, "aria-describedby": ae.value }, D = { open: f2.value === 0 };
-    return h$1(u$2, { force: true }, () => [h$1(_, () => h$1(N$1, { target: c2.value }, () => h$1(u$2, { force: false }, () => h$1(ue, { initialFocus: p2, containers: A2, features: k.value ? u$6(X.value, { parent: ue.features.RestoreFocus, leaf: ue.features.All & ~ue.features.FocusLock }) : ue.features.None }, () => h$1(J2, {}, () => A$3({ ourProps: B2, theirProps: { ...d2, ...l2 }, slot: D, attrs: l2, slots: u2, visible: f2.value === 0, features: N$5.RenderStrategy | N$5.Static, name: "Dialog" })))))), h$1(Q2)]);
-  };
-} }), Ye = /* @__PURE__ */ defineComponent({ name: "DialogPanel", props: { as: { type: [Object, String], default: "div" }, id: { type: String, default: () => `headlessui-dialog-panel-${t$6()}` } }, setup(t2, { attrs: n2, slots: l2, expose: u2 }) {
-  let i2 = T("DialogPanel");
-  u2({ el: i2.panelRef, $el: i2.panelRef });
-  function r2(s3) {
-    s3.stopPropagation();
-  }
-  return () => {
-    let { id: s3, ...v2 } = t2, m2 = { id: s3, ref: i2.panelRef, onClick: r2 };
-    return A$3({ ourProps: m2, theirProps: v2, slot: { open: i2.dialogState.value === 0 }, attrs: n2, slots: l2, name: "DialogPanel" });
-  };
-} });
-let a = /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g;
-function o(e2) {
-  var r2, i2;
-  let n2 = (r2 = e2.innerText) != null ? r2 : "", t2 = e2.cloneNode(true);
-  if (!(t2 instanceof HTMLElement))
-    return n2;
-  let u2 = false;
-  for (let f2 of t2.querySelectorAll('[hidden],[aria-hidden],[role="img"]'))
-    f2.remove(), u2 = true;
-  let l2 = u2 ? (i2 = t2.innerText) != null ? i2 : "" : n2;
-  return a.test(l2) && (l2 = l2.replace(a, "")), l2;
-}
-function g$2(e2) {
-  let n2 = e2.getAttribute("aria-label");
-  if (typeof n2 == "string")
-    return n2.trim();
-  let t2 = e2.getAttribute("aria-labelledby");
-  if (t2) {
-    let u2 = t2.split(" ").map((l2) => {
-      let r2 = document.getElementById(l2);
-      if (r2) {
-        let i2 = r2.getAttribute("aria-label");
-        return typeof i2 == "string" ? i2.trim() : o(r2).trim();
-      }
-      return null;
-    }).filter(Boolean);
-    if (u2.length > 0)
-      return u2.join(", ");
-  }
-  return o(e2).trim();
-}
-function p(a2) {
-  let t2 = ref(""), r2 = ref("");
-  return () => {
-    let e2 = o$4(a2);
-    if (!e2)
-      return "";
-    let l2 = e2.innerText;
-    if (t2.value === l2)
-      return r2.value;
-    let u2 = g$2(e2).trim().toLowerCase();
-    return t2.value = l2, r2.value = u2, u2;
-  };
-}
-var Y = ((l2) => (l2[l2.Open = 0] = "Open", l2[l2.Closed = 1] = "Closed", l2))(Y || {}), Z = ((l2) => (l2[l2.Pointer = 0] = "Pointer", l2[l2.Other = 1] = "Other", l2))(Z || {});
-function ee(r2) {
-  requestAnimationFrame(() => requestAnimationFrame(r2));
-}
-let A = Symbol("MenuContext");
-function O(r2) {
-  let b2 = inject(A, null);
-  if (b2 === null) {
-    let l2 = new Error(`<${r2} /> is missing a parent <Menu /> component.`);
-    throw Error.captureStackTrace && Error.captureStackTrace(l2, O), l2;
-  }
-  return b2;
-}
-let Ie = /* @__PURE__ */ defineComponent({ name: "Menu", props: { as: { type: [Object, String], default: "template" } }, setup(r2, { slots: b2, attrs: l2 }) {
-  let I2 = ref(1), e2 = ref(null), f2 = ref(null), s3 = ref([]), g2 = ref(""), d2 = ref(null), o2 = ref(1);
-  function t2(a2 = (i2) => i2) {
-    let i2 = d2.value !== null ? s3.value[d2.value] : null, u2 = O$1(a2(s3.value.slice()), (v2) => o$4(v2.dataRef.domRef)), n2 = i2 ? u2.indexOf(i2) : null;
-    return n2 === -1 && (n2 = null), { items: u2, activeItemIndex: n2 };
-  }
-  let p2 = { menuState: I2, buttonRef: e2, itemsRef: f2, items: s3, searchQuery: g2, activeItemIndex: d2, activationTrigger: o2, closeMenu: () => {
-    I2.value = 1, d2.value = null;
-  }, openMenu: () => I2.value = 0, goToItem(a2, i2, u2) {
-    let n2 = t2(), v2 = f$1(a2 === c$1.Specific ? { focus: c$1.Specific, id: i2 } : { focus: a2 }, { resolveItems: () => n2.items, resolveActiveIndex: () => n2.activeItemIndex, resolveId: (M) => M.id, resolveDisabled: (M) => M.dataRef.disabled });
-    g2.value = "", d2.value = v2, o2.value = u2 != null ? u2 : 1, s3.value = n2.items;
-  }, search(a2) {
-    let u2 = g2.value !== "" ? 0 : 1;
-    g2.value += a2.toLowerCase();
-    let v2 = (d2.value !== null ? s3.value.slice(d2.value + u2).concat(s3.value.slice(0, d2.value + u2)) : s3.value).find((x2) => x2.dataRef.textValue.startsWith(g2.value) && !x2.dataRef.disabled), M = v2 ? s3.value.indexOf(v2) : -1;
-    M === -1 || M === d2.value || (d2.value = M, o2.value = 1);
-  }, clearSearch() {
-    g2.value = "";
-  }, registerItem(a2, i2) {
-    let u2 = t2((n2) => [...n2, { id: a2, dataRef: i2 }]);
-    s3.value = u2.items, d2.value = u2.activeItemIndex, o2.value = 1;
-  }, unregisterItem(a2) {
-    let i2 = t2((u2) => {
-      let n2 = u2.findIndex((v2) => v2.id === a2);
-      return n2 !== -1 && u2.splice(n2, 1), u2;
-    });
-    s3.value = i2.items, d2.value = i2.activeItemIndex, o2.value = 1;
-  } };
-  return w$1([e2, f2], (a2, i2) => {
-    var u2;
-    p2.closeMenu(), w$3(i2, h.Loose) || (a2.preventDefault(), (u2 = o$4(e2)) == null || u2.focus());
-  }, computed(() => I2.value === 0)), provide(A, p2), t$4(computed(() => u$6(I2.value, { [0]: i$1.Open, [1]: i$1.Closed }))), () => {
-    let a2 = { open: I2.value === 0, close: p2.closeMenu };
-    return A$3({ ourProps: {}, theirProps: r2, slot: a2, slots: b2, attrs: l2, name: "Menu" });
-  };
-} }), ge$1 = /* @__PURE__ */ defineComponent({ name: "MenuButton", props: { disabled: { type: Boolean, default: false }, as: { type: [Object, String], default: "button" }, id: { type: String, default: () => `headlessui-menu-button-${t$6()}` } }, setup(r2, { attrs: b2, slots: l2, expose: I2 }) {
-  let e2 = O("MenuButton");
-  I2({ el: e2.buttonRef, $el: e2.buttonRef });
-  function f2(o2) {
-    switch (o2.key) {
-      case o$3.Space:
-      case o$3.Enter:
-      case o$3.ArrowDown:
-        o2.preventDefault(), o2.stopPropagation(), e2.openMenu(), nextTick(() => {
-          var t2;
-          (t2 = o$4(e2.itemsRef)) == null || t2.focus({ preventScroll: true }), e2.goToItem(c$1.First);
-        });
-        break;
-      case o$3.ArrowUp:
-        o2.preventDefault(), o2.stopPropagation(), e2.openMenu(), nextTick(() => {
-          var t2;
-          (t2 = o$4(e2.itemsRef)) == null || t2.focus({ preventScroll: true }), e2.goToItem(c$1.Last);
-        });
-        break;
-    }
-  }
-  function s3(o2) {
-    switch (o2.key) {
-      case o$3.Space:
-        o2.preventDefault();
-        break;
-    }
-  }
-  function g2(o2) {
-    r2.disabled || (e2.menuState.value === 0 ? (e2.closeMenu(), nextTick(() => {
-      var t2;
-      return (t2 = o$4(e2.buttonRef)) == null ? void 0 : t2.focus({ preventScroll: true });
-    })) : (o2.preventDefault(), e2.openMenu(), ee(() => {
-      var t2;
-      return (t2 = o$4(e2.itemsRef)) == null ? void 0 : t2.focus({ preventScroll: true });
-    })));
-  }
-  let d2 = s$4(computed(() => ({ as: r2.as, type: b2.type })), e2.buttonRef);
-  return () => {
-    var i2;
-    let o2 = { open: e2.menuState.value === 0 }, { id: t2, ...p2 } = r2, a2 = { ref: e2.buttonRef, id: t2, type: d2.value, "aria-haspopup": "menu", "aria-controls": (i2 = o$4(e2.itemsRef)) == null ? void 0 : i2.id, "aria-expanded": e2.menuState.value === 0, onKeydown: f2, onKeyup: s3, onClick: g2 };
-    return A$3({ ourProps: a2, theirProps: p2, slot: o2, attrs: b2, slots: l2, name: "MenuButton" });
-  };
-} }), Se$1 = /* @__PURE__ */ defineComponent({ name: "MenuItems", props: { as: { type: [Object, String], default: "div" }, static: { type: Boolean, default: false }, unmount: { type: Boolean, default: true }, id: { type: String, default: () => `headlessui-menu-items-${t$6()}` } }, setup(r2, { attrs: b2, slots: l2, expose: I2 }) {
-  let e2 = O("MenuItems"), f2 = ref(null);
-  I2({ el: e2.itemsRef, $el: e2.itemsRef }), i$2({ container: computed(() => o$4(e2.itemsRef)), enabled: computed(() => e2.menuState.value === 0), accept(t2) {
-    return t2.getAttribute("role") === "menuitem" ? NodeFilter.FILTER_REJECT : t2.hasAttribute("role") ? NodeFilter.FILTER_SKIP : NodeFilter.FILTER_ACCEPT;
-  }, walk(t2) {
-    t2.setAttribute("role", "none");
-  } });
-  function s3(t2) {
-    var p2;
-    switch (f2.value && clearTimeout(f2.value), t2.key) {
-      case o$3.Space:
-        if (e2.searchQuery.value !== "")
-          return t2.preventDefault(), t2.stopPropagation(), e2.search(t2.key);
-      case o$3.Enter:
-        if (t2.preventDefault(), t2.stopPropagation(), e2.activeItemIndex.value !== null) {
-          let i2 = e2.items.value[e2.activeItemIndex.value];
-          (p2 = o$4(i2.dataRef.domRef)) == null || p2.click();
-        }
-        e2.closeMenu(), _$1(o$4(e2.buttonRef));
-        break;
-      case o$3.ArrowDown:
-        return t2.preventDefault(), t2.stopPropagation(), e2.goToItem(c$1.Next);
-      case o$3.ArrowUp:
-        return t2.preventDefault(), t2.stopPropagation(), e2.goToItem(c$1.Previous);
-      case o$3.Home:
-      case o$3.PageUp:
-        return t2.preventDefault(), t2.stopPropagation(), e2.goToItem(c$1.First);
-      case o$3.End:
-      case o$3.PageDown:
-        return t2.preventDefault(), t2.stopPropagation(), e2.goToItem(c$1.Last);
-      case o$3.Escape:
-        t2.preventDefault(), t2.stopPropagation(), e2.closeMenu(), nextTick(() => {
-          var a2;
-          return (a2 = o$4(e2.buttonRef)) == null ? void 0 : a2.focus({ preventScroll: true });
-        });
-        break;
-      case o$3.Tab:
-        t2.preventDefault(), t2.stopPropagation(), e2.closeMenu(), nextTick(() => v$1(o$4(e2.buttonRef), t2.shiftKey ? N$6.Previous : N$6.Next));
-        break;
-      default:
-        t2.key.length === 1 && (e2.search(t2.key), f2.value = setTimeout(() => e2.clearSearch(), 350));
-        break;
-    }
-  }
-  function g2(t2) {
-    switch (t2.key) {
-      case o$3.Space:
-        t2.preventDefault();
-        break;
-    }
-  }
-  let d2 = l$2(), o2 = computed(() => d2 !== null ? (d2.value & i$1.Open) === i$1.Open : e2.menuState.value === 0);
-  return () => {
-    var u2, n2;
-    let t2 = { open: e2.menuState.value === 0 }, { id: p2, ...a2 } = r2, i2 = { "aria-activedescendant": e2.activeItemIndex.value === null || (u2 = e2.items.value[e2.activeItemIndex.value]) == null ? void 0 : u2.id, "aria-labelledby": (n2 = o$4(e2.buttonRef)) == null ? void 0 : n2.id, id: p2, onKeydown: s3, onKeyup: g2, role: "menu", tabIndex: 0, ref: e2.itemsRef };
-    return A$3({ ourProps: i2, theirProps: a2, slot: t2, attrs: b2, slots: l2, features: N$5.RenderStrategy | N$5.Static, visible: o2.value, name: "MenuItems" });
-  };
-} }), be = /* @__PURE__ */ defineComponent({ name: "MenuItem", inheritAttrs: false, props: { as: { type: [Object, String], default: "template" }, disabled: { type: Boolean, default: false }, id: { type: String, default: () => `headlessui-menu-item-${t$6()}` } }, setup(r2, { slots: b2, attrs: l2, expose: I2 }) {
-  let e2 = O("MenuItem"), f2 = ref(null);
-  I2({ el: f2, $el: f2 });
-  let s3 = computed(() => e2.activeItemIndex.value !== null ? e2.items.value[e2.activeItemIndex.value].id === r2.id : false), g2 = p(f2), d2 = computed(() => ({ disabled: r2.disabled, get textValue() {
-    return g2();
-  }, domRef: f2 }));
-  onMounted(() => e2.registerItem(r2.id, d2)), onUnmounted(() => e2.unregisterItem(r2.id)), watchEffect(() => {
-    e2.menuState.value === 0 && s3.value && e2.activationTrigger.value !== 0 && nextTick(() => {
-      var n2, v2;
-      return (v2 = (n2 = o$4(f2)) == null ? void 0 : n2.scrollIntoView) == null ? void 0 : v2.call(n2, { block: "nearest" });
-    });
-  });
-  function o2(n2) {
-    if (r2.disabled)
-      return n2.preventDefault();
-    e2.closeMenu(), _$1(o$4(e2.buttonRef));
-  }
-  function t2() {
-    if (r2.disabled)
-      return e2.goToItem(c$1.Nothing);
-    e2.goToItem(c$1.Specific, r2.id);
-  }
-  let p$12 = u$4();
-  function a2(n2) {
-    p$12.update(n2);
-  }
-  function i2(n2) {
-    p$12.wasMoved(n2) && (r2.disabled || s3.value || e2.goToItem(c$1.Specific, r2.id, 0));
-  }
-  function u2(n2) {
-    p$12.wasMoved(n2) && (r2.disabled || s3.value && e2.goToItem(c$1.Nothing));
-  }
-  return () => {
-    let { disabled: n2 } = r2, v2 = { active: s3.value, disabled: n2, close: e2.closeMenu }, { id: M, ...x2 } = r2;
-    return A$3({ ourProps: { id: M, ref: f2, role: "menuitem", tabIndex: n2 === true ? void 0 : -1, "aria-disabled": n2 === true ? true : void 0, disabled: void 0, onClick: o2, onFocus: t2, onPointerenter: a2, onMouseenter: a2, onPointermove: i2, onMousemove: i2, onPointerleave: u2, onMouseleave: u2 }, theirProps: { ...l2, ...x2 }, slot: v2, attrs: l2, slots: b2, name: "MenuItem" });
-  };
-} });
-function l(r2) {
-  let e2 = { called: false };
-  return (...t2) => {
-    if (!e2.called)
-      return e2.called = true, r2(...t2);
-  };
-}
-function m(e2, ...t2) {
-  e2 && t2.length > 0 && e2.classList.add(...t2);
-}
-function d(e2, ...t2) {
-  e2 && t2.length > 0 && e2.classList.remove(...t2);
-}
-var g$1 = ((i2) => (i2.Finished = "finished", i2.Cancelled = "cancelled", i2))(g$1 || {});
-function F(e2, t2) {
-  let i2 = o$2();
-  if (!e2)
-    return i2.dispose;
-  let { transitionDuration: n2, transitionDelay: a2 } = getComputedStyle(e2), [l2, s3] = [n2, a2].map((o2) => {
-    let [u2 = 0] = o2.split(",").filter(Boolean).map((r2) => r2.includes("ms") ? parseFloat(r2) : parseFloat(r2) * 1e3).sort((r2, c2) => c2 - r2);
-    return u2;
-  });
-  return l2 !== 0 ? i2.setTimeout(() => t2("finished"), l2 + s3) : t2("finished"), i2.add(() => t2("cancelled")), i2.dispose;
-}
-function L$1(e2, t2, i2, n2, a2, l$12) {
-  let s3 = o$2(), o2 = l$12 !== void 0 ? l(l$12) : () => {
-  };
-  return d(e2, ...a2), m(e2, ...t2, ...i2), s3.nextFrame(() => {
-    d(e2, ...i2), m(e2, ...n2), s3.add(F(e2, (u2) => (d(e2, ...n2, ...t2), m(e2, ...a2), o2(u2))));
-  }), s3.add(() => d(e2, ...t2, ...i2, ...n2, ...a2)), s3.add(() => o2("cancelled")), s3.dispose;
-}
-function g(e2 = "") {
-  return e2.split(/\s+/).filter((t2) => t2.length > 1);
-}
-let R = Symbol("TransitionContext");
-var pe = ((a2) => (a2.Visible = "visible", a2.Hidden = "hidden", a2))(pe || {});
-function me() {
-  return inject(R, null) !== null;
-}
-function Te() {
-  let e2 = inject(R, null);
-  if (e2 === null)
-    throw new Error("A <TransitionChild /> is used but it is missing a parent <TransitionRoot />.");
-  return e2;
-}
-function ge() {
-  let e2 = inject(N, null);
-  if (e2 === null)
-    throw new Error("A <TransitionChild /> is used but it is missing a parent <TransitionRoot />.");
-  return e2;
-}
-let N = Symbol("NestingContext");
-function L(e2) {
-  return "children" in e2 ? L(e2.children) : e2.value.filter(({ state: t2 }) => t2 === "visible").length > 0;
-}
-function Q(e2) {
-  let t2 = ref([]), a2 = ref(false);
-  onMounted(() => a2.value = true), onUnmounted(() => a2.value = false);
-  function s3(n2, r2 = S$1.Hidden) {
-    let l2 = t2.value.findIndex(({ id: f2 }) => f2 === n2);
-    l2 !== -1 && (u$6(r2, { [S$1.Unmount]() {
-      t2.value.splice(l2, 1);
-    }, [S$1.Hidden]() {
-      t2.value[l2].state = "hidden";
-    } }), !L(t2) && a2.value && (e2 == null || e2()));
-  }
-  function h2(n2) {
-    let r2 = t2.value.find(({ id: l2 }) => l2 === n2);
-    return r2 ? r2.state !== "visible" && (r2.state = "visible") : t2.value.push({ id: n2, state: "visible" }), () => s3(n2, S$1.Unmount);
-  }
-  return { children: t2, register: h2, unregister: s3 };
-}
-let W = N$5.RenderStrategy, he = /* @__PURE__ */ defineComponent({ props: { as: { type: [Object, String], default: "div" }, show: { type: [Boolean], default: null }, unmount: { type: [Boolean], default: true }, appear: { type: [Boolean], default: false }, enter: { type: [String], default: "" }, enterFrom: { type: [String], default: "" }, enterTo: { type: [String], default: "" }, entered: { type: [String], default: "" }, leave: { type: [String], default: "" }, leaveFrom: { type: [String], default: "" }, leaveTo: { type: [String], default: "" } }, emits: { beforeEnter: () => true, afterEnter: () => true, beforeLeave: () => true, afterLeave: () => true }, setup(e2, { emit: t2, attrs: a2, slots: s3, expose: h2 }) {
-  let n2 = ref(0);
-  function r2() {
-    n2.value |= i$1.Opening, t2("beforeEnter");
-  }
-  function l2() {
-    n2.value &= ~i$1.Opening, t2("afterEnter");
-  }
-  function f2() {
-    n2.value |= i$1.Closing, t2("beforeLeave");
-  }
-  function S2() {
-    n2.value &= ~i$1.Closing, t2("afterLeave");
-  }
-  if (!me() && s$2())
-    return () => h$1(Se, { ...e2, onBeforeEnter: r2, onAfterEnter: l2, onBeforeLeave: f2, onAfterLeave: S2 }, s3);
-  let d2 = ref(null), y2 = computed(() => e2.unmount ? S$1.Unmount : S$1.Hidden);
-  h2({ el: d2, $el: d2 });
-  let { show: v2, appear: A2 } = Te(), { register: D, unregister: H2 } = ge(), i2 = ref(v2.value ? "visible" : "hidden"), I2 = { value: true }, c2 = t$6(), b2 = { value: false }, P2 = Q(() => {
-    !b2.value && i2.value !== "hidden" && (i2.value = "hidden", H2(c2), S2());
-  });
-  onMounted(() => {
-    let o2 = D(c2);
-    onUnmounted(o2);
-  }), watchEffect(() => {
-    if (y2.value === S$1.Hidden && c2) {
-      if (v2.value && i2.value !== "visible") {
-        i2.value = "visible";
-        return;
-      }
-      u$6(i2.value, { ["hidden"]: () => H2(c2), ["visible"]: () => D(c2) });
-    }
-  });
-  let j2 = g(e2.enter), M = g(e2.enterFrom), X = g(e2.enterTo), _2 = g(e2.entered), Y2 = g(e2.leave), Z2 = g(e2.leaveFrom), ee2 = g(e2.leaveTo);
-  onMounted(() => {
-    watchEffect(() => {
-      if (i2.value === "visible") {
-        let o2 = o$4(d2);
-        if (o2 instanceof Comment && o2.data === "")
-          throw new Error("Did you forget to passthrough the `ref` to the actual DOM node?");
-      }
-    });
-  });
-  function te(o2) {
-    let E2 = I2.value && !A2.value, p2 = o$4(d2);
-    !p2 || !(p2 instanceof HTMLElement) || E2 || (b2.value = true, v2.value && r2(), v2.value || f2(), o2(v2.value ? L$1(p2, j2, M, X, _2, (V) => {
-      b2.value = false, V === g$1.Finished && l2();
-    }) : L$1(p2, Y2, Z2, ee2, _2, (V) => {
-      b2.value = false, V === g$1.Finished && (L(P2) || (i2.value = "hidden", H2(c2), S2()));
-    })));
-  }
-  return onMounted(() => {
-    watch([v2], (o2, E2, p2) => {
-      te(p2), I2.value = false;
-    }, { immediate: true });
-  }), provide(N, P2), t$4(computed(() => u$6(i2.value, { ["visible"]: i$1.Open, ["hidden"]: i$1.Closed }) | n2.value)), () => {
-    let { appear: o2, show: E2, enter: p2, enterFrom: V, enterTo: Ce, entered: ye, leave: be2, leaveFrom: Ee2, leaveTo: Ve2, ...U } = e2, ne2 = { ref: d2 }, re = { ...U, ...A2.value && v2.value && c$3.isServer ? { class: normalizeClass([a2.class, U.class, ...j2, ...M]) } : {} };
-    return A$3({ theirProps: re, ourProps: ne2, slot: {}, slots: s3, attrs: a2, features: W, visible: i2.value === "visible", name: "TransitionChild" });
-  };
-} }), ce = he, Se = /* @__PURE__ */ defineComponent({ inheritAttrs: false, props: { as: { type: [Object, String], default: "div" }, show: { type: [Boolean], default: null }, unmount: { type: [Boolean], default: true }, appear: { type: [Boolean], default: false }, enter: { type: [String], default: "" }, enterFrom: { type: [String], default: "" }, enterTo: { type: [String], default: "" }, entered: { type: [String], default: "" }, leave: { type: [String], default: "" }, leaveFrom: { type: [String], default: "" }, leaveTo: { type: [String], default: "" } }, emits: { beforeEnter: () => true, afterEnter: () => true, beforeLeave: () => true, afterLeave: () => true }, setup(e2, { emit: t2, attrs: a2, slots: s3 }) {
-  let h2 = l$2(), n2 = computed(() => e2.show === null && h2 !== null ? (h2.value & i$1.Open) === i$1.Open : e2.show);
-  watchEffect(() => {
-    if (![true, false].includes(n2.value))
-      throw new Error('A <Transition /> is used but it is missing a `:show="true | false"` prop.');
-  });
-  let r2 = ref(n2.value ? "visible" : "hidden"), l2 = Q(() => {
-    r2.value = "hidden";
-  }), f2 = ref(true), S2 = { show: n2, appear: computed(() => e2.appear || !f2.value) };
-  return onMounted(() => {
-    watchEffect(() => {
-      f2.value = false, n2.value ? r2.value = "visible" : L(l2) || (r2.value = "hidden");
-    });
-  }), provide(N, l2), provide(R, S2), () => {
-    let d2 = T$1(e2, ["show", "appear", "unmount", "onBeforeEnter", "onBeforeLeave", "onAfterEnter", "onAfterLeave"]), y2 = { unmount: e2.unmount };
-    return A$3({ ourProps: { ...y2, as: "template" }, theirProps: {}, slot: {}, slots: { ...s3, default: () => [h$1(ce, { onBeforeEnter: () => t2("beforeEnter"), onAfterEnter: () => t2("afterEnter"), onBeforeLeave: () => t2("beforeLeave"), onAfterLeave: () => t2("afterLeave"), ...a2, ...y2, ...d2 }, s3.default)] }, attrs: {}, features: W, visible: r2.value === "visible", name: "Transition" });
-  };
-} });
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
 function getAugmentedNamespace(n2) {
   if (n2.__esModule)
@@ -17395,118 +14931,6 @@ const require$$0 = /* @__PURE__ */ getAugmentedNamespace(vue_esmBundler);
   });
 })(dist, dist.exports);
 var distExports = dist.exports;
-const _export_sfc = (sfc, props) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props) {
-    target[key] = val;
-  }
-  return target;
-};
-const _sfc_main$q = {};
-const _hoisted_1$I = {
-  width: "24px",
-  height: "24px",
-  viewBox: "0 0 24 24",
-  version: "1.1",
-  xmlns: "http://www.w3.org/2000/svg",
-  "xmlns:xlink": "http://www.w3.org/1999/xlink"
-};
-const _hoisted_2$C = /* @__PURE__ */ createBaseVNode("g", {
-  stroke: "currentColor",
-  "stroke-width": "1",
-  fill: "none",
-  "fill-rule": "evenodd",
-  "stroke-linecap": "round",
-  "stroke-linejoin": "round"
-}, [
-  /* @__PURE__ */ createBaseVNode("g", {
-    id: "Star",
-    transform: "translate(3.000000, 3.500000)",
-    stroke: "currentColor",
-    "stroke-width": "1"
-  }, [
-    /* @__PURE__ */ createBaseVNode("path", {
-      d: "M10.1042564,0.67700614 L11.9316681,4.32775597 C12.1107648,4.68615589 12.4564632,4.93467388 12.8573484,4.99218218 L16.9453359,5.58061527 C17.9553583,5.72643988 18.3572847,6.95054503 17.6263201,7.65194084 L14.6701824,10.4924399 C14.3796708,10.7717659 14.2474307,11.173297 14.3161539,11.5676396 L15.0137982,15.5778163 C15.1856062,16.5698344 14.1297683,17.3266846 13.2269958,16.8573759 L9.57321374,14.9626829 C9.21502023,14.7768079 8.78602103,14.7768079 8.42678626,14.9626829 L4.77300425,16.8573759 C3.87023166,17.3266846 2.81439382,16.5698344 2.98724301,15.5778163 L3.68384608,11.5676396 C3.75256926,11.173297 3.62032921,10.7717659 3.32981762,10.4924399 L0.373679928,7.65194084 C-0.357284727,6.95054503 0.0446417073,5.72643988 1.05466409,5.58061527 L5.14265161,4.99218218 C5.54353679,4.93467388 5.89027643,4.68615589 6.06937319,4.32775597 L7.89574356,0.67700614 C8.34765049,-0.225668713 9.65234951,-0.225668713 10.1042564,0.67700614 Z",
-      id: "Stroke-1"
-    })
-  ])
-], -1);
-const _hoisted_3$q = [
-  _hoisted_2$C
-];
-function _sfc_render$9(_ctx, _cache) {
-  return openBlock(), createElementBlock("svg", _hoisted_1$I, _hoisted_3$q);
-}
-const EmptyStart = /* @__PURE__ */ _export_sfc(_sfc_main$q, [["render", _sfc_render$9], ["__file", "EmptyStart.vue"]]);
-const _sfc_main$p = {};
-const _hoisted_1$H = {
-  width: "24px",
-  height: "24px",
-  viewBox: "0 0 24 24",
-  version: "1.1",
-  xmlns: "http://www.w3.org/2000/svg",
-  "xmlns:xlink": "http://www.w3.org/1999/xlink"
-};
-const _hoisted_2$B = /* @__PURE__ */ createBaseVNode("g", {
-  stroke: "none",
-  "stroke-width": "1",
-  fill: "none",
-  "fill-rule": "evenodd"
-}, [
-  /* @__PURE__ */ createBaseVNode("g", {
-    transform: "translate(1.999624, 2.500100)",
-    fill: "currentColor",
-    "fill-rule": "nonzero"
-  }, [
-    /* @__PURE__ */ createBaseVNode("path", { d: "M15.9188758,11.82 C15.6598758,12.071 15.5408758,12.434 15.5998758,12.79 L16.4888758,17.71 C16.5638758,18.127 16.3878758,18.549 16.0388758,18.79 C15.6968758,19.04 15.2418758,19.07 14.8688758,18.87 L10.4398758,16.56 C10.2858758,16.478 10.1148758,16.434 9.93987581,16.429 L9.66887581,16.429 C9.57487581,16.443 9.48287581,16.473 9.39887581,16.519 L4.96887581,18.84 C4.74987581,18.95 4.50187581,18.989 4.25887581,18.95 C3.66687581,18.838 3.27187581,18.274 3.36887581,17.679 L4.25887581,12.759 C4.31787581,12.4 4.19887581,12.035 3.93987581,11.78 L0.32887581,8.28 C0.0268758104,7.987 -0.0781241896,7.547 0.0598758104,7.15 C0.19387581,6.754 0.53587581,6.465 0.94887581,6.4 L5.91887581,5.679 C6.29687581,5.64 6.62887581,5.41 6.79887581,5.07 L8.98887581,0.58 C9.04087581,0.48 9.10787581,0.388 9.18887581,0.31 L9.27887581,0.24 C9.32587581,0.188 9.37987581,0.145 9.43987581,0.11 L9.54887581,0.07 L9.71887581,5.32907052e-15 L10.1398758,5.32907052e-15 C10.5158758,0.039 10.8468758,0.264 11.0198758,0.6 L13.2388758,5.07 C13.3988758,5.397 13.7098758,5.624 14.0688758,5.679 L19.0388758,6.4 C19.4588758,6.46 19.8098758,6.75 19.9488758,7.15 C20.0798758,7.551 19.9668758,7.991 19.6588758,8.28 L15.9188758,11.82 Z" })
-  ])
-], -1);
-const _hoisted_3$p = [
-  _hoisted_2$B
-];
-function _sfc_render$8(_ctx, _cache) {
-  return openBlock(), createElementBlock("svg", _hoisted_1$H, _hoisted_3$p);
-}
-const FullStart = /* @__PURE__ */ _export_sfc(_sfc_main$p, [["render", _sfc_render$8], ["__file", "FullStart.vue"]]);
-const _sfc_main$o = {};
-const _hoisted_1$G = {
-  width: "24px",
-  height: "24px",
-  viewBox: "0 0 24 24",
-  version: "1.1",
-  xmlns: "http://www.w3.org/2000/svg",
-  "xmlns:xlink": "http://www.w3.org/1999/xlink"
-};
-const _hoisted_2$A = /* @__PURE__ */ createBaseVNode("g", {
-  stroke: "none",
-  "stroke-width": "1",
-  fill: "none",
-  "fill-rule": "evenodd"
-}, [
-  /* @__PURE__ */ createBaseVNode("g", {
-    id: "Star",
-    transform: "translate(2.000000, 2.500000)",
-    fill: "currentColor",
-    "fill-rule": "nonzero"
-  }, [
-    /* @__PURE__ */ createBaseVNode("path", {
-      d: "M10.9763014,0.613614058 L13.2027793,5.0878891 C13.3668145,5.41205393 13.6798817,5.63716839 14.0409592,5.68719383 L19.0420326,6.41556418 C19.3340953,6.45658504 19.5991522,6.61066339 19.7781906,6.84578294 C19.9552286,7.07790096 20.031245,7.37205053 19.9882357,7.66119755 C19.9532282,7.90131965 19.8402039,8.12343259 19.6671668,8.29351907 L16.043389,11.8063052 C15.7783321,12.0514299 15.6583063,12.4146145 15.7223201,12.7697951 L16.6145116,17.7083062 C16.709532,18.3046094 16.3144472,18.8668953 15.7223201,18.9799528 C15.4782677,19.0189727 15.228214,18.9779518 15.0081668,18.8658948 L10.5472093,16.541713 C10.2161382,16.3746281 9.8250543,16.3746281 9.49398324,16.541713 L5.03302574,18.8658948 C4.4849081,19.1570429 3.80576233,18.9589421 3.50069685,18.4186674 C3.38767259,18.203558 3.347664,17.9584334 3.38467194,17.7193118 L4.27686344,12.7798002 C4.34087718,12.4256201 4.21985121,12.0604344 3.95579453,11.8153098 L0.332016723,8.30452467 C-0.0990758059,7.88831304 -0.112078597,7.20296455 0.303010498,6.77174529 C0.31201243,6.76274071 0.322014577,6.75273563 0.332016723,6.74273054 C0.504053649,6.56764151 0.730102168,6.45658504 0.974154551,6.42757029 L5.97522798,5.69819942 C6.33530526,5.64717348 6.64837246,5.42406003 6.81340788,5.09789419 L8.9598686,0.613614058 C9.1509096,0.229418705 9.54699462,-0.00970288141 9.97708693,0.000302205888 L10.1111157,0.000302205888 C10.4841958,0.0453250987 10.8092656,0.276442615 10.9763014,0.613614058",
-      id: "Fill-1",
-      opacity: "0.400000006"
-    }),
-    /* @__PURE__ */ createBaseVNode("path", {
-      d: "M9.99201234,16.4171164 C9.79831148,16.4231213 9.60960292,16.475164 9.43986505,16.5682403 L5.00072073,18.8871415 C4.45755957,19.146354 3.80756341,18.9451891 3.50303371,18.4257632 C3.39020796,18.2135893 3.34927118,17.9703899 3.38721258,17.7321946 L4.2738433,12.8031534 C4.33375078,12.4448597 4.21393582,12.080561 3.95333828,11.8283542 L0.327937233,8.31847657 C-0.102398171,7.89713112 -0.110385835,7.20556413 0.310963446,6.77421048 C0.316954194,6.76820555 0.321946485,6.76320145 0.327937233,6.75819735 C0.499672011,6.58805786 0.72132969,6.47596595 0.959961155,6.44093724 L5.96523117,5.70433332 C6.32767143,5.65829557 6.6421857,5.43211013 6.80193899,5.10384099 L8.977579,0.563118196 C9.1842598,0.196817877 9.58064763,-0.0213610007 10,0.00165787172 C9.99201234,0.298901573 9.99201234,16.2149506 9.99201234,16.4171164",
-      id: "Fill-4"
-    })
-  ])
-], -1);
-const _hoisted_3$o = [
-  _hoisted_2$A
-];
-function _sfc_render$7(_ctx, _cache) {
-  return openBlock(), createElementBlock("svg", _hoisted_1$G, _hoisted_3$o);
-}
-const HalfStart = /* @__PURE__ */ _export_sfc(_sfc_main$o, [["render", _sfc_render$7], ["__file", "HalfStart.vue"]]);
 function _createForOfIteratorHelper$1(o2, allowArrayLike) {
   var it = typeof Symbol !== "undefined" && o2[Symbol.iterator] || o2["@@iterator"];
   if (!it) {
@@ -19245,6 +16669,27 @@ var BaseStyle = {
     }, style);
   }
 };
+var classes$c = {
+  root: function root(_ref) {
+    var props = _ref.props, instance = _ref.instance;
+    return ["p-badge p-component", {
+      "p-badge-no-gutter": ObjectUtils.isNotEmpty(props.value) && String(props.value).length === 1,
+      "p-badge-dot": ObjectUtils.isEmpty(props.value) && !instance.$slots["default"],
+      "p-badge-lg": props.size === "large",
+      "p-badge-xl": props.size === "xlarge",
+      "p-badge-info": props.severity === "info",
+      "p-badge-success": props.severity === "success",
+      "p-badge-warning": props.severity === "warning",
+      "p-badge-danger": props.severity === "danger",
+      "p-badge-secondary": props.severity === "secondary",
+      "p-badge-contrast": props.severity === "contrast"
+    }];
+  }
+};
+var BadgeStyle = BaseStyle.extend({
+  name: "badge",
+  classes: classes$c
+});
 function _typeof$1$1(o2) {
   "@babel/helpers - typeof";
   return _typeof$1$1 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o3) {
@@ -19630,616 +17075,6 @@ var script$t = {
     }
   }
 };
-var DeferredContentStyle = {};
-var script$s = {
-  name: "DeferredContent",
-  "extends": script$t,
-  emits: ["load"],
-  style: DeferredContentStyle,
-  data: function data() {
-    return {
-      loaded: false
-    };
-  },
-  mounted: function mounted2() {
-    if (!this.loaded) {
-      if (this.shouldLoad())
-        this.load();
-      else
-        this.bindScrollListener();
-    }
-  },
-  beforeUnmount: function beforeUnmount2() {
-    this.unbindScrollListener();
-  },
-  methods: {
-    bindScrollListener: function bindScrollListener() {
-      var _this = this;
-      this.documentScrollListener = function() {
-        if (_this.shouldLoad()) {
-          _this.load();
-          _this.unbindScrollListener();
-        }
-      };
-      window.addEventListener("scroll", this.documentScrollListener);
-    },
-    unbindScrollListener: function unbindScrollListener() {
-      if (this.documentScrollListener) {
-        window.removeEventListener("scroll", this.documentScrollListener);
-        this.documentScrollListener = null;
-      }
-    },
-    shouldLoad: function shouldLoad() {
-      if (this.loaded) {
-        return false;
-      } else {
-        var rect = this.$refs.container.getBoundingClientRect();
-        var docElement = document.documentElement;
-        var winHeight = docElement.clientHeight;
-        return winHeight >= rect.top;
-      }
-    },
-    load: function load(event) {
-      this.loaded = true;
-      this.$emit("load", event);
-    }
-  }
-};
-function render$s(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("div", mergeProps({
-    ref: "container"
-  }, _ctx.ptm("root")), [$data.loaded ? renderSlot(_ctx.$slots, "default", {
-    key: 0
-  }) : createCommentVNode("", true)], 16);
-}
-script$s.render = render$s;
-const _hoisted_1$F = { class: "sgm-aspect-h-1 sgm-aspect-w-1 sgm-w-full sgm-overflow-hidden sgm-rounded-md lg:sgm-aspect-none sgm-group-hover:sgm-opacity-75" };
-const _hoisted_2$z = ["src"];
-const _hoisted_3$n = { class: "sgm-mt-4 sgm-flex sgm-justify-between" };
-const _hoisted_4$e = {
-  key: 0,
-  class: "sgm-mt-1 sgm-text-sm sgm-text-gray-500 sgm-text-left sgm-font-normal"
-};
-const _hoisted_5$b = { class: "sgm-text-sm sgm-text-left sgm-mt-1" };
-const _hoisted_6$8 = /* @__PURE__ */ createBaseVNode("span", {
-  "aria-hidden": "true",
-  class: "sgm-absolute sgm-inset-0"
-}, null, -1);
-const _hoisted_7$8 = { class: "sgm-text-black" };
-const _hoisted_8$7 = {
-  key: 1,
-  class: "sgm-text-sm sgm-text-gray-500 sgm-text-left sgm-font-normal"
-};
-const _hoisted_9$7 = {
-  key: 2,
-  class: "sgm-text-sm sgm-text-gray-500 sgm-text-left sgm-font-normal sgm-h-8"
-};
-const _hoisted_10$5 = {
-  key: 3,
-  class: "sgm-flex sgm-flex-row sgm-space-x-1"
-};
-const _hoisted_11$5 = { class: "sgm-text-gray-500 sgm-font-light sgm-text-sm" };
-const _hoisted_12$5 = ["innerHTML"];
-const _hoisted_13$5 = ["innerHTML"];
-const _sfc_main$n = {
-  __name: "Hit",
-  props: {
-    hit: Object,
-    active: Boolean,
-    selected: Boolean,
-    maxDescriptionLength: Number,
-    showCategory: Boolean,
-    showDescription: Boolean,
-    showPrice: Boolean,
-    showRating: Boolean,
-    showSku: Boolean,
-    showStock: Boolean,
-    showOnSale: Boolean
-  },
-  setup(__props) {
-    return (_ctx, _cache) => {
-      return openBlock(), createElementBlock("div", {
-        class: normalizeClass(["sgm-group sgm-relative sgm-cursor-pointer sgm-p-3", __props.active || __props.selected ? "sgm-bg-zinc-100/50" : ""])
-      }, [
-        createBaseVNode("div", _hoisted_1$F, [
-          createVNode(unref(script$s), null, {
-            default: withCtx(() => [
-              createBaseVNode("img", {
-                src: __props.hit.image,
-                class: "sgm-h-full sgm-w-full sgm-object-cover sgm-object-center lg:sgm-h-full lg:sgm-w-full"
-              }, null, 8, _hoisted_2$z)
-            ]),
-            _: 1
-          })
-        ]),
-        createBaseVNode("div", _hoisted_3$n, [
-          createBaseVNode("div", null, [
-            __props.showCategory ? (openBlock(), createElementBlock("div", _hoisted_4$e, toDisplayString(__props.hit.categories.join(",")), 1)) : createCommentVNode("", true),
-            createBaseVNode("h3", _hoisted_5$b, [
-              _hoisted_6$8,
-              createBaseVNode("span", _hoisted_7$8, toDisplayString(__props.hit.name), 1)
-            ]),
-            __props.showDescription ? (openBlock(), createElementBlock("p", _hoisted_8$7, toDisplayString(__props.hit.short_description.length > __props.maxDescriptionLength ? __props.hit.short_description.substring(0, __props.maxDescriptionLength) : __props.hit.short_description), 1)) : createCommentVNode("", true),
-            __props.showSku ? (openBlock(), createElementBlock("p", _hoisted_9$7, toDisplayString(__props.hit.sku), 1)) : createCommentVNode("", true),
-            __props.showRating ? (openBlock(), createElementBlock("div", _hoisted_10$5, [
-              (openBlock(true), createElementBlock(Fragment, null, renderList(Math.floor(__props.hit.average_rating || 0), (n2) => {
-                return openBlock(), createBlock(FullStart, {
-                  key: `full-${n2}`,
-                  class: "sgm-text-yellow-400 sgm-h-5 sgm-w-5 sgm-flex-shrink-0",
-                  "aria-hidden": "true"
-                });
-              }), 128)),
-              (__props.hit.average_rating || 0) % 1 > 0 ? (openBlock(), createBlock(HalfStart, {
-                key: `half-${Math.floor(__props.hit.average_rating || 0)}`,
-                class: "sgm-text-yellow-400 sgm-h-5 sgm-w-5 sgm-flex-shrink-0",
-                "aria-hidden": "true"
-              })) : createCommentVNode("", true),
-              (openBlock(true), createElementBlock(Fragment, null, renderList(5 - Math.ceil(__props.hit.average_rating || 0), (n2) => {
-                return openBlock(), createBlock(EmptyStart, {
-                  key: `empty-${n2}`,
-                  class: "sgm-text-gray-400 sgm-h-5 sgm-w-5 sgm-flex-shrink-0",
-                  "aria-hidden": "true"
-                });
-              }), 128)),
-              createBaseVNode("div", null, [
-                createBaseVNode("span", _hoisted_11$5, " (" + toDisplayString(__props.hit.review_count) + ")", 1)
-              ])
-            ])) : createCommentVNode("", true),
-            __props.showOnSale ? (openBlock(), createElementBlock("div", {
-              key: 4,
-              class: "sgm-text-base sgm-font-medium sgm-text-gray-900 sgm-mt-2 sgm-text-left",
-              innerHTML: __props.hit.price_html
-            }, null, 8, _hoisted_12$5)) : (openBlock(), createElementBlock("div", {
-              key: 5,
-              class: "sgm-text-base sgm-font-medium sgm-text-gray-900 sgm-mt-2 sgm-text-left",
-              innerHTML: __props.hit.price
-            }, null, 8, _hoisted_13$5))
-          ])
-        ])
-      ], 2);
-    };
-  }
-};
-const Hit = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["__file", "Hit.vue"]]);
-const _hoisted_1$E = { class: "sgm-container sgm-flex sgm-flex-wrap sgm-items-center sgm-justify-between sgm-mx-auto" };
-const _hoisted_2$y = { class: "sgm-text-zinc-500 sgm-text-lg sgm-tracking-wide sgm-font-light sgm-font-sm" };
-const _hoisted_3$m = /* @__PURE__ */ createStaticVNode('<div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-2"><div class="sgm-px-2 sgm-py-1 sgm-flex sgm-flex-row sgm-items-center sgm-text-zinc-400 sgm-space-x-3 sgm-text-xs"><svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="currentColor" stroke-width="1.5" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(2.000000, 2.000000)" stroke="currentColor" stroke-width="1.5"><circle id="Ellipse_739" cx="9.76659044" cy="9.76659044" r="8.9885584"></circle><line x1="16.0183067" y1="16.4851259" x2="19.5423342" y2="20.0000001" id="Line_181" opacity="0.400000006"></line></g></g></svg></div></div>', 1);
-const _hoisted_4$d = /* @__PURE__ */ createBaseVNode("div", { class: "sgm-fixed sgm-inset-0 sgm-bg-transparent sgm-backdrop-filter sgm-backdrop-blur" }, null, -1);
-const _hoisted_5$a = { class: "sgm-fixed sgm-inset-x-0 sgm-top-5 sgm-overflow-y-auto" };
-const _hoisted_6$7 = { class: "sgm-flex md:sgm-min-h-full sgm-items-center sgm-justify-center sgm-pt-4 sgm-bg-white sgm-text-center" };
-const _hoisted_7$7 = { class: "" };
-const _hoisted_8$6 = { class: "sgm-w-full sgm-flex sgm-items-center sgm-justify-between sgm-px-10" };
-const _hoisted_9$6 = /* @__PURE__ */ createBaseVNode("a", {
-  href: "http://wordpress.test/",
-  class: "",
-  rel: "home"
-}, [
-  /* @__PURE__ */ createBaseVNode("img", {
-    class: "sgm-w-16",
-    src: "http://wordpress.test/wp-content/uploads/2024/01/cropped-elevated-circle.png",
-    alt: "WordPress",
-    decoding: "async",
-    srcset: "\n                                  http://wordpress.test/wp-content/uploads/2024/01/cropped-elevated-circle.png         550w,\n                                  http://wordpress.test/wp-content/uploads/2024/01/cropped-elevated-circle-300x300.png 300w,\n                                  http://wordpress.test/wp-content/uploads/2024/01/cropped-elevated-circle-150x150.png 150w,\n                                  http://wordpress.test/wp-content/uploads/2024/01/cropped-elevated-circle-350x350.png 350w,\n                                  http://wordpress.test/wp-content/uploads/2024/01/cropped-elevated-circle-100x100.png 100w\n                                ",
-    sizes: "(max-width: 550px) 100vw, 550px"
-  })
-], -1);
-const _hoisted_10$4 = { class: "sgm-max-w-3xl sgm-mx-auto sgm-py-4 sgm-flex sgm-flex-row sgm-items-center" };
-const _hoisted_11$4 = /* @__PURE__ */ createBaseVNode("path", {
-  d: "M6 6L18 18",
-  stroke: "currentColor",
-  "stroke-width": "1.5",
-  "stroke-linecap": "round",
-  "stroke-linejoin": "round"
-}, null, -1);
-const _hoisted_12$4 = /* @__PURE__ */ createBaseVNode("path", {
-  d: "M18 6L6 18",
-  stroke: "currentColor",
-  "stroke-width": "1.5",
-  "stroke-linecap": "round",
-  "stroke-linejoin": "round"
-}, null, -1);
-const _hoisted_13$4 = [
-  _hoisted_11$4,
-  _hoisted_12$4
-];
-const _hoisted_14$3 = {
-  key: 0,
-  class: "sgm-mx-auto sgm-max-w-7xl sgm-w-full sgm-flex sgm-flex-col sgm-items-center sgm-h-56"
-};
-const _hoisted_15$2 = /* @__PURE__ */ createBaseVNode("svg", {
-  class: "sgm-h-12 sgm-w-12",
-  viewBox: "0 0 24 24",
-  fill: "none",
-  xmlns: "http://www.w3.org/2000/svg"
-}, [
-  /* @__PURE__ */ createBaseVNode("path", {
-    d: "M21 12C21 16.9704 16.971 20.9995 12.0005 20.9995C7.03005 20.9995 3 16.9704 3 12C3 7.0295 7.03005 3.00049 12.0005 3.00049",
-    stroke: "currentColor",
-    "stroke-width": "1.5",
-    "stroke-linecap": "round",
-    "stroke-linejoin": "round"
-  }),
-  /* @__PURE__ */ createBaseVNode("path", {
-    d: "M15.2832 9.05715H18.1253M15.2832 5.58887H20.9683",
-    stroke: "currentColor",
-    "stroke-width": "1.5",
-    "stroke-linecap": "round",
-    "stroke-linejoin": "round"
-  }),
-  /* @__PURE__ */ createBaseVNode("path", {
-    d: "M17.585 19.1182L21.3446 22.879",
-    stroke: "currentColor",
-    "stroke-width": "1.5",
-    "stroke-linecap": "round",
-    "stroke-linejoin": "round"
-  })
-], -1);
-const _hoisted_16$2 = { class: "sgm-pb-10 sgm-pt-6" };
-const _hoisted_17$2 = {
-  key: 1,
-  class: "sgm-flex sgm-flex-row sgm-pt-10"
-};
-const _hoisted_18$2 = { class: "sgm-text-zinc-400" };
-const _hoisted_19$1 = { key: 0 };
-const _hoisted_20$1 = /* @__PURE__ */ createBaseVNode("svg", {
-  "aria-hidden": "true",
-  class: "md:sgm-w-10 md:sgm-h-10 sgm-h-6 sgm-w-6 sgm-text-zinc-600 sgm-animate-spin sgm-fill-zinc-200",
-  viewBox: "0 0 100 101",
-  fill: "none",
-  xmlns: "http://www.w3.org/2000/svg"
-}, [
-  /* @__PURE__ */ createBaseVNode("path", {
-    d: "M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z",
-    fill: "currentColor"
-  }),
-  /* @__PURE__ */ createBaseVNode("path", {
-    d: "M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z",
-    fill: "currentFill"
-  })
-], -1);
-const _hoisted_21$1 = /* @__PURE__ */ createBaseVNode("span", { class: "sgm-sr-only" }, "Loading...", -1);
-const _hoisted_22$1 = [
-  _hoisted_20$1,
-  _hoisted_21$1
-];
-const _sfc_main$m = {
-  __name: "Search",
-  props: {
-    searchFieldText: String,
-    showLoader: Boolean,
-    searchFieldHeight: Number,
-    searchFieldWidth: Number,
-    cornerRadius: Number,
-    showCategories: Boolean,
-    nothingFoundText: String,
-    sortBy: String,
-    numberOfResults: Number,
-    numberOfCategories: Number,
-    application: String,
-    apiKey: String,
-    index: String,
-    maxDescriptionLength: Number,
-    showCategory: Boolean,
-    showDescription: Boolean,
-    showPrice: Boolean,
-    showRating: Boolean,
-    showSku: Boolean,
-    showStock: Boolean,
-    showOnSale: Boolean
-  },
-  setup(__props) {
-    let props = __props;
-    let query = ref("");
-    let input2 = ref(null);
-    let hiddenButton = ref(null);
-    let isOpen = ref(false);
-    ref(navigator.userAgent.indexOf("Win") !== -1);
-    function visit(url) {
-      closeModal();
-      window.location.href = url;
-    }
-    function handleKeyDown(e2) {
-      if (e2.keyCode === 27)
-        ;
-      if (e2.keyCode === 75 && e2.metaKey || e2.keyCode === 75 && e2.ctrlKey) {
-        e2.preventDefault();
-        openModal();
-      }
-    }
-    function closeModal() {
-      isOpen.value = false;
-    }
-    function openModal() {
-      isOpen.value = true;
-    }
-    watchEffect(() => {
-      if (isOpen.value && input2.value) {
-        nextTick(() => {
-          hiddenButton.value.focus();
-          hiddenButton.value.click();
-        });
-      }
-    });
-    function slugify(str) {
-      return String(str).normalize("NFKD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase().replace(/[^a-z0-9 -]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-");
-    }
-    function addKeydownListener() {
-      document.addEventListener("keydown", handleKeyDown);
-    }
-    function removeKeydownListener() {
-      document.removeEventListener("keydown", handleKeyDown);
-    }
-    onMounted(() => {
-      console.log(JSON.parse(JSON.stringify(props)));
-      addKeydownListener();
-    });
-    onUnmounted(() => {
-      removeKeydownListener();
-    });
-    return (_ctx, _cache) => {
-      return openBlock(), createElementBlock("div", _hoisted_1$E, [
-        createBaseVNode("button", {
-          style: normalizeStyle({
-            height: __props.searchFieldHeight + "px",
-            width: __props.searchFieldWidth + "px",
-            borderRadius: __props.cornerRadius + "px"
-          }),
-          onClick: openModal,
-          class: "sgm-focus:ring-0 sgm-mt-10 sgm-max-w-xl sgm-mx-auto sgm-flex sgm-flex-row sgm-justify-between sgm-text-zinc-900 sgm-w-full sgm-border sgm-backdrop-filter sgm-backdrop-blur sgm-bg-zinc-100/30 sgm-items-center sgm-px-2 sgm-py-1"
-        }, [
-          createBaseVNode("div", _hoisted_2$y, toDisplayString(__props.searchFieldText), 1),
-          _hoisted_3$m
-        ], 4),
-        createVNode(unref(Se), {
-          appear: "",
-          show: unref(isOpen),
-          as: "div"
-        }, {
-          default: withCtx(() => [
-            createVNode(unref(_e), {
-              as: "div",
-              onClose: closeModal,
-              class: "sgm-relative sgm-z-100"
-            }, {
-              default: withCtx(() => [
-                createVNode(unref(he), {
-                  as: "template",
-                  enter: "sgm-duration-300 sgm-ease-out",
-                  "enter-from": "sgm-opacity-0",
-                  "enter-to": "sgm-opacity-100",
-                  leave: "sgm-duration-200 sgm-ease-in",
-                  "leave-from": "sgm-opacity-100",
-                  "leave-to": "sgm-opacity-0"
-                }, {
-                  default: withCtx(() => [
-                    _hoisted_4$d
-                  ]),
-                  _: 1
-                }),
-                createBaseVNode("div", _hoisted_5$a, [
-                  createBaseVNode("div", _hoisted_6$7, [
-                    createVNode(unref(he), {
-                      as: "template",
-                      enter: "sgm-duration-300 sgm-ease-out",
-                      "enter-from": "sgm-opacity-0 sgm-scale-95",
-                      "enter-to": "sgm-opacity-100 sgm-scale-100",
-                      leave: "sgm-duration-200 sgm-ease-in",
-                      "leave-from": "sgm-opacity-100 sgm-scale-100",
-                      "leave-to": "sgm-opacity-0 sgm-scale-95"
-                    }, {
-                      default: withCtx(() => [
-                        createVNode(unref(Ye), { class: "sgm-w-full sgm-transform sgm-overflow-hidden sgm-transition-all sgm-border-b sgm-border-zinc-200" }, {
-                          default: withCtx(() => [
-                            createBaseVNode("div", _hoisted_7$7, [
-                              createVNode(unref(distExports.SigmieSearch), {
-                                facets: `categories:${__props.numberOfCategories} price_as_number`,
-                                debounceMs: 250,
-                                apiKey: unref(props).apiKey,
-                                sort: __props.sortBy,
-                                query: unref(query),
-                                perPage: __props.numberOfResults,
-                                filters: "",
-                                search: unref(props).index,
-                                applicationId: unref(props).application
-                              }, {
-                                default: withCtx(({
-                                  hits,
-                                  facets,
-                                  total,
-                                  loading: loading2,
-                                  processing_time_ms
-                                }) => [
-                                  createVNode(unref(Ze), { "onUpdate:modelValue": visit }, {
-                                    default: withCtx(({ open }) => [
-                                      createBaseVNode("div", {
-                                        class: normalizeClass([{
-                                          "sgm-rounded-lg": open,
-                                          "sgm-rounded-t-lg": !open
-                                        }, "sgm-relative sgm-bg-white"])
-                                      }, [
-                                        createBaseVNode("div", {
-                                          class: normalizeClass([{
-                                            "sgm-rounded-lg": !open,
-                                            "sgm-rounded-t-lg": open
-                                          }, "sgm-relative sgm-w-full sgm-cursor-default sgm-text-left sgm-outline-none sgm-focus:outline-none sm:sgm-text-sm"])
-                                        }, [
-                                          createVNode(unref(tt), { class: "sgm-hidden" }, {
-                                            default: withCtx(() => [
-                                              createBaseVNode("button", {
-                                                ref_key: "hiddenButton",
-                                                ref: hiddenButton
-                                              }, null, 512)
-                                            ]),
-                                            _: 1
-                                          }),
-                                          createBaseVNode("div", _hoisted_8$6, [
-                                            _hoisted_9$6,
-                                            createBaseVNode("div", _hoisted_10$4, [
-                                              createVNode(unref(ot), {
-                                                autocomplete: "off",
-                                                ref_key: "input",
-                                                ref: input2,
-                                                class: normalizeClass([{
-                                                  "": !open,
-                                                  "": open
-                                                }, "sgm-ring-0 sgm-h-10 sgm-mx-auto sgm-p-2 sgm-w-full sgm-outline-none sgm-border-none sgm-focus:outline-none sgm-px-12 sgm-text-base sgm-leading-3 sgm-text-zinc-400"]),
-                                                displayValue: () => unref(query),
-                                                onChange: _cache[0] || (_cache[0] = ($event) => isRef(query) ? query.value = $event.target.value : query = $event.target.value)
-                                              }, null, 8, ["class", "displayValue"])
-                                            ]),
-                                            createBaseVNode("div", null, [
-                                              (openBlock(), createElementBlock("svg", {
-                                                onClick: closeModal,
-                                                class: "sgm-h-10 sgm-w-10 sgm-text-zinc-800 sgm-cursor-pointer",
-                                                viewBox: "0 0 24 24",
-                                                fill: "none",
-                                                xmlns: "http://www.w3.org/2000/svg"
-                                              }, _hoisted_13$4))
-                                            ])
-                                          ])
-                                        ], 2),
-                                        createVNode(unref(Se), {
-                                          leave: "sgm-transition sgm-ease-in sgm-duration-100",
-                                          leaveFrom: "sgm-opacity-100",
-                                          leaveTo: "sgm-opacity-0",
-                                          onAfterLeave: _cache[1] || (_cache[1] = ($event) => isRef(query) ? query.value = "" : query = "")
-                                        }, {
-                                          default: withCtx(() => [
-                                            total === 0 && !loading2 ? (openBlock(), createElementBlock("div", _hoisted_14$3, [
-                                              _hoisted_15$2,
-                                              createBaseVNode("div", _hoisted_16$2, toDisplayString(__props.nothingFoundText), 1)
-                                            ])) : (openBlock(), createElementBlock("div", _hoisted_17$2, [
-                                              __props.showCategories ? (openBlock(), createElementBlock("div", {
-                                                key: 0,
-                                                class: normalizeClass([{
-                                                  "sgm-w-1/3": __props.showCategories
-                                                }, "sgm-flex sgm-flex-col sgm-max-h-[800px] sgm-overflow-y-scroll"])
-                                              }, [
-                                                createVNode(unref(lt), {
-                                                  role: "list",
-                                                  class: "sgm-px-2 sgm-py-3 sgm-font-medium sgm-text-gray-900 sgm-flex sgm-flex-col sgm-space-y-2"
-                                                }, {
-                                                  default: withCtx(() => [
-                                                    (openBlock(true), createElementBlock(Fragment, null, renderList(facets.categories, (count, category) => {
-                                                      return openBlock(), createBlock(unref(at), {
-                                                        key: category,
-                                                        class: "",
-                                                        value: `/product-category/${slugify(
-                                                          category
-                                                        )}`
-                                                      }, {
-                                                        default: withCtx(({ selected, active }) => [
-                                                          createBaseVNode("div", {
-                                                            class: normalizeClass([
-                                                              "sgm-flex sgm-flex-row sgm-justify-between sgm-items-center sgm-px-10 sgm-h-10 sgm-cursor-pointer",
-                                                              active || selected ? "sgm-bg-zinc-100" : ""
-                                                            ])
-                                                          }, [
-                                                            createBaseVNode("span", null, toDisplayString(category), 1),
-                                                            createBaseVNode("span", _hoisted_18$2, toDisplayString(count), 1)
-                                                          ], 2)
-                                                        ]),
-                                                        _: 2
-                                                      }, 1032, ["value"]);
-                                                    }), 128))
-                                                  ]),
-                                                  _: 2
-                                                }, 1024)
-                                              ], 2)) : createCommentVNode("", true),
-                                              createBaseVNode("div", {
-                                                class: normalizeClass([{
-                                                  "sgm-w-2/3": __props.showCategories,
-                                                  "sgm-w-full": !__props.showCategories
-                                                }, "sgm-h-full sgm-pb-20 sgm-px-12 sgm-max-h-[800px] sgm-overflow-y-scroll"])
-                                              }, [
-                                                loading2 && __props.showLoader ? (openBlock(), createElementBlock("div", _hoisted_19$1, _hoisted_22$1)) : (openBlock(), createBlock(unref(lt), {
-                                                  key: 1,
-                                                  class: normalizeClass([{
-                                                    "sgm-grid-cols-1 sm:sgm-grid-cols-3 lg:sgm-grid-cols-6": !__props.showCategories,
-                                                    "sgm-grid-cols-1 sm:sgm-grid-cols-2 lg:sgm-grid-cols-4": __props.showCategories
-                                                  }, "sgm-mt-6 sgm-grid sgm-gap-x-6 sgm-gap-y-10 xl:sgm-gap-x-8"])
-                                                }, {
-                                                  default: withCtx(() => [
-                                                    (openBlock(true), createElementBlock(Fragment, null, renderList(Object.values(hits), (hit, index2) => {
-                                                      return openBlock(), createBlock(unref(at), {
-                                                        key: hit._id,
-                                                        as: "div",
-                                                        value: `product/${hit.slug}`
-                                                      }, {
-                                                        default: withCtx(({ selected, active }) => [
-                                                          createVNode(Hit, {
-                                                            showDescription: __props.showDescription,
-                                                            showRating: __props.showRating,
-                                                            showSku: __props.showSku,
-                                                            showStock: __props.showStock,
-                                                            showOnSale: __props.showOnSale,
-                                                            showCategory: __props.showCategory,
-                                                            showPrice: __props.showPrice,
-                                                            "max-description-length": __props.maxDescriptionLength,
-                                                            hit,
-                                                            active,
-                                                            selected
-                                                          }, null, 8, ["showDescription", "showRating", "showSku", "showStock", "showOnSale", "showCategory", "showPrice", "max-description-length", "hit", "active", "selected"])
-                                                        ]),
-                                                        _: 2
-                                                      }, 1032, ["value"]);
-                                                    }), 128))
-                                                  ]),
-                                                  _: 2
-                                                }, 1032, ["class"]))
-                                              ], 2)
-                                            ]))
-                                          ]),
-                                          _: 2
-                                        }, 1024)
-                                      ], 2)
-                                    ]),
-                                    _: 2
-                                  }, 1024)
-                                ]),
-                                _: 1
-                              }, 8, ["facets", "apiKey", "sort", "query", "perPage", "search", "applicationId"])
-                            ])
-                          ]),
-                          _: 1
-                        })
-                      ]),
-                      _: 1
-                    })
-                  ])
-                ])
-              ]),
-              _: 1
-            })
-          ]),
-          _: 1
-        }, 8, ["show"])
-      ]);
-    };
-  }
-};
-const Search = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["__file", "Search.vue"]]);
-var classes$c = {
-  root: function root(_ref) {
-    var props = _ref.props, instance = _ref.instance;
-    return ["p-badge p-component", {
-      "p-badge-no-gutter": ObjectUtils.isNotEmpty(props.value) && String(props.value).length === 1,
-      "p-badge-dot": ObjectUtils.isEmpty(props.value) && !instance.$slots["default"],
-      "p-badge-lg": props.size === "large",
-      "p-badge-xl": props.size === "xlarge",
-      "p-badge-info": props.severity === "info",
-      "p-badge-success": props.severity === "success",
-      "p-badge-warning": props.severity === "warning",
-      "p-badge-danger": props.severity === "danger",
-      "p-badge-secondary": props.severity === "secondary",
-      "p-badge-contrast": props.severity === "contrast"
-    }];
-  }
-};
-var BadgeStyle = BaseStyle.extend({
-  name: "badge",
-  classes: classes$c
-});
 var script$1$d = {
   name: "BaseBadge",
   "extends": script$t,
@@ -20264,18 +17099,18 @@ var script$1$d = {
     };
   }
 };
-var script$r = {
+var script$s = {
   name: "Badge",
   "extends": script$1$d
 };
-function render$r(_ctx, _cache, $props, $setup, $data, $options) {
+function render$s(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("span", mergeProps({
     "class": _ctx.cx("root")
   }, _ctx.ptm("root")), [renderSlot(_ctx.$slots, "default", {}, function() {
     return [createTextVNode(toDisplayString(_ctx.value), 1)];
   })], 16);
 }
-script$r.render = render$r;
+script$s.render = render$s;
 var css$1 = "\n.p-icon {\n    display: inline-block;\n}\n\n.p-icon-spin {\n    -webkit-animation: p-icon-spin 2s infinite linear;\n    animation: p-icon-spin 2s infinite linear;\n}\n\n@-webkit-keyframes p-icon-spin {\n    0% {\n        -webkit-transform: rotate(0deg);\n        transform: rotate(0deg);\n    }\n    100% {\n        -webkit-transform: rotate(359deg);\n        transform: rotate(359deg);\n    }\n}\n\n@keyframes p-icon-spin {\n    0% {\n        -webkit-transform: rotate(0deg);\n        transform: rotate(0deg);\n    }\n    100% {\n        -webkit-transform: rotate(359deg);\n        transform: rotate(359deg);\n    }\n}\n";
 var BaseIconStyle = BaseStyle.extend({
   name: "baseicon",
@@ -20335,7 +17170,7 @@ function _toPrimitive$b(t2, r2) {
   }
   return ("string" === r2 ? String : Number)(t2);
 }
-var script$q = {
+var script$r = {
   name: "BaseIcon",
   "extends": script$t,
   props: {
@@ -20364,25 +17199,25 @@ var script$q = {
     }
   }
 };
-var script$p = {
+var script$q = {
   name: "SpinnerIcon",
-  "extends": script$q
+  "extends": script$r
 };
-var _hoisted_1$D = /* @__PURE__ */ createBaseVNode("path", {
+var _hoisted_1$G = /* @__PURE__ */ createBaseVNode("path", {
   d: "M6.99701 14C5.85441 13.999 4.72939 13.7186 3.72012 13.1832C2.71084 12.6478 1.84795 11.8737 1.20673 10.9284C0.565504 9.98305 0.165424 8.89526 0.041387 7.75989C-0.0826496 6.62453 0.073125 5.47607 0.495122 4.4147C0.917119 3.35333 1.59252 2.4113 2.46241 1.67077C3.33229 0.930247 4.37024 0.413729 5.4857 0.166275C6.60117 -0.0811796 7.76026 -0.0520535 8.86188 0.251112C9.9635 0.554278 10.9742 1.12227 11.8057 1.90555C11.915 2.01493 11.9764 2.16319 11.9764 2.31778C11.9764 2.47236 11.915 2.62062 11.8057 2.73C11.7521 2.78503 11.688 2.82877 11.6171 2.85864C11.5463 2.8885 11.4702 2.90389 11.3933 2.90389C11.3165 2.90389 11.2404 2.8885 11.1695 2.85864C11.0987 2.82877 11.0346 2.78503 10.9809 2.73C9.9998 1.81273 8.73246 1.26138 7.39226 1.16876C6.05206 1.07615 4.72086 1.44794 3.62279 2.22152C2.52471 2.99511 1.72683 4.12325 1.36345 5.41602C1.00008 6.70879 1.09342 8.08723 1.62775 9.31926C2.16209 10.5513 3.10478 11.5617 4.29713 12.1803C5.48947 12.7989 6.85865 12.988 8.17414 12.7157C9.48963 12.4435 10.6711 11.7264 11.5196 10.6854C12.3681 9.64432 12.8319 8.34282 12.8328 7C12.8328 6.84529 12.8943 6.69692 13.0038 6.58752C13.1132 6.47812 13.2616 6.41667 13.4164 6.41667C13.5712 6.41667 13.7196 6.47812 13.8291 6.58752C13.9385 6.69692 14 6.84529 14 7C14 8.85651 13.2622 10.637 11.9489 11.9497C10.6356 13.2625 8.85432 14 6.99701 14Z",
   fill: "currentColor"
 }, null, -1);
-var _hoisted_2$x = [_hoisted_1$D];
-function render$q(_ctx, _cache, $props, $setup, $data, $options) {
+var _hoisted_2$A = [_hoisted_1$G];
+function render$r(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("svg", mergeProps({
     width: "14",
     height: "14",
     viewBox: "0 0 14 14",
     fill: "none",
     xmlns: "http://www.w3.org/2000/svg"
-  }, _ctx.pti()), _hoisted_2$x, 16);
+  }, _ctx.pti()), _hoisted_2$A, 16);
 }
-script$p.render = render$q;
+script$q.render = render$r;
 function _typeof$a(o2) {
   "@babel/helpers - typeof";
   return _typeof$a = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o3) {
@@ -20768,7 +17603,7 @@ function _arrayLikeToArray$6(arr, len) {
   return arr2;
 }
 var Ripple = BaseRipple.extend("ripple", {
-  mounted: function mounted3(el) {
+  mounted: function mounted2(el) {
     var _el$$instance;
     var config = el === null || el === void 0 || (_el$$instance = el.$instance) === null || _el$$instance === void 0 ? void 0 : _el$$instance.$config;
     if (config && config.ripple) {
@@ -20992,7 +17827,7 @@ var script$1$c = {
     };
   }
 };
-var script$o = {
+var script$p = {
   name: "Button",
   "extends": script$1$c,
   methods: {
@@ -21016,15 +17851,15 @@ var script$o = {
     }
   },
   components: {
-    SpinnerIcon: script$p,
-    Badge: script$r
+    SpinnerIcon: script$q,
+    Badge: script$s
   },
   directives: {
     ripple: Ripple
   }
 };
-var _hoisted_1$C = ["aria-label", "disabled", "data-pc-severity"];
-function render$p(_ctx, _cache, $props, $setup, $data, $options) {
+var _hoisted_1$F = ["aria-label", "disabled", "data-pc-severity"];
+function render$q(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_SpinnerIcon = resolveComponent("SpinnerIcon");
   var _component_Badge = resolveComponent("Badge");
   var _directive_ripple = resolveDirective("ripple");
@@ -21065,9 +17900,9 @@ function render$p(_ctx, _cache, $props, $setup, $data, $options) {
       severity: _ctx.badgeSeverity,
       unstyled: _ctx.unstyled
     }, _ctx.ptm("badge")), null, 16, ["value", "class", "severity", "unstyled"])) : createCommentVNode("", true)];
-  })], 16, _hoisted_1$C)), [[_directive_ripple]]);
+  })], 16, _hoisted_1$F)), [[_directive_ripple]]);
 }
-script$o.render = render$p;
+script$p.render = render$q;
 var classes$9 = {
   root: function root3(_ref) {
     var instance = _ref.instance, props = _ref.props;
@@ -21145,7 +17980,7 @@ var script$1$b = {
     };
   }
 };
-var script$n = {
+var script$o = {
   name: "RadioButton",
   "extends": script$1$b,
   emits: ["update:modelValue", "change", "focus", "blur"],
@@ -21178,9 +18013,9 @@ var script$n = {
     }
   }
 };
-var _hoisted_1$B = ["data-p-highlight", "data-p-disabled"];
-var _hoisted_2$w = ["id", "value", "name", "checked", "tabindex", "disabled", "readonly", "aria-labelledby", "aria-label"];
-function render$o(_ctx, _cache, $props, $setup, $data, $options) {
+var _hoisted_1$E = ["data-p-highlight", "data-p-disabled"];
+var _hoisted_2$z = ["id", "value", "name", "checked", "tabindex", "disabled", "readonly", "aria-labelledby", "aria-label"];
+function render$p(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("div", mergeProps({
     "class": _ctx.cx("root")
   }, $options.getPTOptions("root"), {
@@ -21208,27 +18043,34 @@ function render$o(_ctx, _cache, $props, $setup, $data, $options) {
     onChange: _cache[2] || (_cache[2] = function() {
       return $options.onChange && $options.onChange.apply($options, arguments);
     })
-  }, $options.getPTOptions("input")), null, 16, _hoisted_2$w), createBaseVNode("div", mergeProps({
+  }, $options.getPTOptions("input")), null, 16, _hoisted_2$z), createBaseVNode("div", mergeProps({
     "class": _ctx.cx("box")
   }, $options.getPTOptions("box")), [createBaseVNode("div", mergeProps({
     "class": _ctx.cx("icon")
-  }, $options.getPTOptions("icon")), null, 16)], 16)], 16, _hoisted_1$B);
+  }, $options.getPTOptions("icon")), null, 16)], 16)], 16, _hoisted_1$E);
 }
-script$n.render = render$o;
-const _sfc_main$l = {};
-const _hoisted_1$A = {
+script$o.render = render$p;
+const _export_sfc = (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
+};
+const _sfc_main$o = {};
+const _hoisted_1$D = {
   viewBox: "0 0 24 24",
   fill: "none",
   xmlns: "http://www.w3.org/2000/svg"
 };
-const _hoisted_2$v = /* @__PURE__ */ createBaseVNode("path", {
+const _hoisted_2$y = /* @__PURE__ */ createBaseVNode("path", {
   d: "M6 6L18 18",
   stroke: "currentColor",
   "stroke-width": "2",
   "stroke-linecap": "round",
   "stroke-linejoin": "round"
 }, null, -1);
-const _hoisted_3$l = /* @__PURE__ */ createBaseVNode("path", {
+const _hoisted_3$o = /* @__PURE__ */ createBaseVNode("path", {
   d: "M18 6L6 18",
   stroke: "currentColor",
   "stroke-width": "2",
@@ -21236,62 +18078,81 @@ const _hoisted_3$l = /* @__PURE__ */ createBaseVNode("path", {
   "stroke-linejoin": "round"
 }, null, -1);
 const _hoisted_4$c = [
-  _hoisted_2$v,
-  _hoisted_3$l
+  _hoisted_2$y,
+  _hoisted_3$o
 ];
-function _sfc_render$6(_ctx, _cache) {
-  return openBlock(), createElementBlock("svg", _hoisted_1$A, _hoisted_4$c);
+function _sfc_render$9(_ctx, _cache) {
+  return openBlock(), createElementBlock("svg", _hoisted_1$D, _hoisted_4$c);
 }
-const XIcon = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$6], ["__file", "XIcon.vue"]]);
-const _sfc_main$k = {};
-const _hoisted_1$z = {
+const XIcon = /* @__PURE__ */ _export_sfc(_sfc_main$o, [["render", _sfc_render$9], ["__file", "XIcon.vue"]]);
+const _sfc_main$n = {};
+const _hoisted_1$C = {
   viewBox: "0 0 24 24",
   fill: "none",
   xmlns: "http://www.w3.org/2000/svg"
 };
-const _hoisted_2$u = /* @__PURE__ */ createBaseVNode("path", {
+const _hoisted_2$x = /* @__PURE__ */ createBaseVNode("path", {
   d: "M5 16L12 9L19 16",
   stroke: "currentColor",
   "stroke-width": "1.5",
   "stroke-linecap": "round",
   "stroke-linejoin": "round"
 }, null, -1);
-const _hoisted_3$k = [
-  _hoisted_2$u
+const _hoisted_3$n = [
+  _hoisted_2$x
 ];
-function _sfc_render$5(_ctx, _cache) {
-  return openBlock(), createElementBlock("svg", _hoisted_1$z, _hoisted_3$k);
+function _sfc_render$8(_ctx, _cache) {
+  return openBlock(), createElementBlock("svg", _hoisted_1$C, _hoisted_3$n);
 }
-const ChevronUpIcon = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$5], ["__file", "ChevronUpIcon.vue"]]);
-const _sfc_main$j = {};
-const _hoisted_1$y = {
+const ChevronUpIcon = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$8], ["__file", "ChevronUpIcon.vue"]]);
+const _sfc_main$m = {};
+const _hoisted_1$B = {
   viewBox: "0 0 24 24",
   fill: "none",
   xmlns: "http://www.w3.org/2000/svg"
 };
-const _hoisted_2$t = /* @__PURE__ */ createBaseVNode("path", {
+const _hoisted_2$w = /* @__PURE__ */ createBaseVNode("path", {
   d: "M19 9L12 16L5 9",
   stroke: "currentColor",
   "stroke-width": "1.5",
   "stroke-linecap": "round",
   "stroke-linejoin": "round"
 }, null, -1);
-const _hoisted_3$j = [
-  _hoisted_2$t
+const _hoisted_3$m = [
+  _hoisted_2$w
 ];
-function _sfc_render$4(_ctx, _cache) {
-  return openBlock(), createElementBlock("svg", _hoisted_1$y, _hoisted_3$j);
+function _sfc_render$7(_ctx, _cache) {
+  return openBlock(), createElementBlock("svg", _hoisted_1$B, _hoisted_3$m);
 }
-const ChevronDownIcon = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$4], ["__file", "ChevronDownIcon.vue"]]);
-var script$m = {
+const ChevronDownIcon = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["render", _sfc_render$7], ["__file", "ChevronDownIcon.vue"]]);
+var script$n = {
   name: "ChevronDownIcon",
-  "extends": script$q
+  "extends": script$r
 };
-var _hoisted_1$x = /* @__PURE__ */ createBaseVNode("path", {
+var _hoisted_1$A = /* @__PURE__ */ createBaseVNode("path", {
   d: "M7.01744 10.398C6.91269 10.3985 6.8089 10.378 6.71215 10.3379C6.61541 10.2977 6.52766 10.2386 6.45405 10.1641L1.13907 4.84913C1.03306 4.69404 0.985221 4.5065 1.00399 4.31958C1.02276 4.13266 1.10693 3.95838 1.24166 3.82747C1.37639 3.69655 1.55301 3.61742 1.74039 3.60402C1.92777 3.59062 2.11386 3.64382 2.26584 3.75424L7.01744 8.47394L11.769 3.75424C11.9189 3.65709 12.097 3.61306 12.2748 3.62921C12.4527 3.64535 12.6199 3.72073 12.7498 3.84328C12.8797 3.96582 12.9647 4.12842 12.9912 4.30502C13.0177 4.48162 12.9841 4.662 12.8958 4.81724L7.58083 10.1322C7.50996 10.2125 7.42344 10.2775 7.32656 10.3232C7.22968 10.3689 7.12449 10.3944 7.01744 10.398Z",
   fill: "currentColor"
 }, null, -1);
-var _hoisted_2$s = [_hoisted_1$x];
+var _hoisted_2$v = [_hoisted_1$A];
+function render$o(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("svg", mergeProps({
+    width: "14",
+    height: "14",
+    viewBox: "0 0 14 14",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
+  }, _ctx.pti()), _hoisted_2$v, 16);
+}
+script$n.render = render$o;
+var script$m = {
+  name: "ChevronRightIcon",
+  "extends": script$r
+};
+var _hoisted_1$z = /* @__PURE__ */ createBaseVNode("path", {
+  d: "M4.38708 13C4.28408 13.0005 4.18203 12.9804 4.08691 12.9409C3.99178 12.9014 3.9055 12.8433 3.83313 12.7701C3.68634 12.6231 3.60388 12.4238 3.60388 12.2161C3.60388 12.0084 3.68634 11.8091 3.83313 11.6622L8.50507 6.99022L3.83313 2.31827C3.69467 2.16968 3.61928 1.97313 3.62287 1.77005C3.62645 1.56698 3.70872 1.37322 3.85234 1.22959C3.99596 1.08597 4.18972 1.00371 4.3928 1.00012C4.59588 0.996539 4.79242 1.07192 4.94102 1.21039L10.1669 6.43628C10.3137 6.58325 10.3962 6.78249 10.3962 6.99022C10.3962 7.19795 10.3137 7.39718 10.1669 7.54416L4.94102 12.7701C4.86865 12.8433 4.78237 12.9014 4.68724 12.9409C4.59212 12.9804 4.49007 13.0005 4.38708 13Z",
+  fill: "currentColor"
+}, null, -1);
+var _hoisted_2$u = [_hoisted_1$z];
 function render$n(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("svg", mergeProps({
     width: "14",
@@ -21299,28 +18160,9 @@ function render$n(_ctx, _cache, $props, $setup, $data, $options) {
     viewBox: "0 0 14 14",
     fill: "none",
     xmlns: "http://www.w3.org/2000/svg"
-  }, _ctx.pti()), _hoisted_2$s, 16);
+  }, _ctx.pti()), _hoisted_2$u, 16);
 }
 script$m.render = render$n;
-var script$l = {
-  name: "ChevronRightIcon",
-  "extends": script$q
-};
-var _hoisted_1$w = /* @__PURE__ */ createBaseVNode("path", {
-  d: "M4.38708 13C4.28408 13.0005 4.18203 12.9804 4.08691 12.9409C3.99178 12.9014 3.9055 12.8433 3.83313 12.7701C3.68634 12.6231 3.60388 12.4238 3.60388 12.2161C3.60388 12.0084 3.68634 11.8091 3.83313 11.6622L8.50507 6.99022L3.83313 2.31827C3.69467 2.16968 3.61928 1.97313 3.62287 1.77005C3.62645 1.56698 3.70872 1.37322 3.85234 1.22959C3.99596 1.08597 4.18972 1.00371 4.3928 1.00012C4.59588 0.996539 4.79242 1.07192 4.94102 1.21039L10.1669 6.43628C10.3137 6.58325 10.3962 6.78249 10.3962 6.99022C10.3962 7.19795 10.3137 7.39718 10.1669 7.54416L4.94102 12.7701C4.86865 12.8433 4.78237 12.9014 4.68724 12.9409C4.59212 12.9804 4.49007 13.0005 4.38708 13Z",
-  fill: "currentColor"
-}, null, -1);
-var _hoisted_2$r = [_hoisted_1$w];
-function render$m(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("svg", mergeProps({
-    width: "14",
-    height: "14",
-    viewBox: "0 0 14 14",
-    fill: "none",
-    xmlns: "http://www.w3.org/2000/svg"
-  }, _ctx.pti()), _hoisted_2$r, 16);
-}
-script$l.render = render$m;
 var classes$8 = {
   root: "p-accordion p-component",
   tab: {
@@ -21388,11 +18230,11 @@ var script$1$a = {
     };
   }
 };
-var script$k = {
+var script$l = {
   name: "Accordion",
   "extends": script$1$a,
   emits: ["update:activeIndex", "tab-open", "tab-close", "tab-click"],
-  data: function data2() {
+  data: function data() {
     return {
       id: this.$attrs.id,
       d_activeIndex: this.activeIndex
@@ -21406,7 +18248,7 @@ var script$k = {
       this.d_activeIndex = newValue;
     }
   },
-  mounted: function mounted4() {
+  mounted: function mounted3() {
     this.id = this.id || UniqueComponentId();
   },
   methods: {
@@ -21575,8 +18417,8 @@ var script$k = {
     }
   },
   components: {
-    ChevronDownIcon: script$m,
-    ChevronRightIcon: script$l
+    ChevronDownIcon: script$n,
+    ChevronRightIcon: script$m
   },
   directives: {
     ripple: Ripple
@@ -21636,11 +18478,11 @@ function _toPrimitive$8(t2, r2) {
   }
   return ("string" === r2 ? String : Number)(t2);
 }
-var _hoisted_1$v = ["data-pc-index", "data-p-active"];
-var _hoisted_2$q = ["data-p-highlight", "data-p-disabled"];
-var _hoisted_3$i = ["id", "tabindex", "aria-disabled", "aria-expanded", "aria-controls", "onClick", "onKeydown"];
+var _hoisted_1$y = ["data-pc-index", "data-p-active"];
+var _hoisted_2$t = ["data-p-highlight", "data-p-disabled"];
+var _hoisted_3$l = ["id", "tabindex", "aria-disabled", "aria-expanded", "aria-controls", "onClick", "onKeydown"];
 var _hoisted_4$b = ["id", "aria-labelledby"];
-function render$l(_ctx, _cache, $props, $setup, $data, $options) {
+function render$m(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("div", mergeProps({
     "class": _ctx.cx("root")
   }, _ctx.ptm("root")), [(openBlock(true), createElementBlock(Fragment, null, renderList($options.tabs, function(tab, i2) {
@@ -21695,7 +18537,7 @@ function render$l(_ctx, _cache, $props, $setup, $data, $options) {
       "class": _ctx.cx("tab.headerTitle")
     }, $options.getTabPT(tab, "headertitle", i2)), toDisplayString(tab.props.header), 17)) : createCommentVNode("", true), tab.children && tab.children.header ? (openBlock(), createBlock(resolveDynamicComponent(tab.children.header), {
       key: 4
-    })) : createCommentVNode("", true)], 16, _hoisted_3$i)], 16, _hoisted_2$q), createVNode(Transition, mergeProps({
+    })) : createCommentVNode("", true)], 16, _hoisted_3$l)], 16, _hoisted_2$t), createVNode(Transition, mergeProps({
       name: "p-toggleable-content"
     }, $options.getTabPT(tab, "transition", i2)), {
       "default": withCtx(function() {
@@ -21711,10 +18553,10 @@ function render$l(_ctx, _cache, $props, $setup, $data, $options) {
         }, $options.getTabPT(tab, "content", i2)), [(openBlock(), createBlock(resolveDynamicComponent(tab)))], 16)], 16, _hoisted_4$b)), [[vShow, _ctx.lazy ? true : $options.isTabActive(i2)]]) : createCommentVNode("", true)];
       }),
       _: 2
-    }, 1040)], 16, _hoisted_1$v);
+    }, 1040)], 16, _hoisted_1$y);
   }), 128))], 16);
 }
-script$k.render = render$l;
+script$l.render = render$m;
 var AccordionTabStyle = {};
 var script$1$9 = {
   name: "BaseAccordionTab",
@@ -21737,39 +18579,1347 @@ var script$1$9 = {
     };
   }
 };
-var script$j = {
+var script$k = {
   name: "AccordionTab",
   "extends": script$1$9
 };
-function render$k(_ctx, _cache, $props, $setup, $data, $options) {
+function render$l(_ctx, _cache, $props, $setup, $data, $options) {
   return renderSlot(_ctx.$slots, "default");
 }
-script$j.render = render$k;
-const _hoisted_1$u = { class: "sgm-flex sgm-flex-col sgm-border-b sgm-border-gray-300" };
-const _hoisted_2$p = { class: "sgm-text-md xl:sgm-text-sm sgm-font-medium sgm-text-black sgm-no-underline" };
-const _hoisted_3$h = {
+script$k.render = render$l;
+const _hoisted_1$x = { class: "sgm-flex sgm-flex-col sgm-border-b sgm-border-gray-300" };
+const _hoisted_2$s = { class: "sgm-text-md xl:sgm-text-sm sgm-font-medium sgm-text-black sgm-no-underline" };
+const _hoisted_3$k = {
   key: 0,
   class: "sgm-text-sm sgm-font-medium sgm-text-gray-600 sgm-h-6 lg:sgm-hidden"
 };
-const _sfc_main$i = {
+const _sfc_main$l = {
   __name: "FilterLabel",
   props: ["title", "subtitle"],
   setup(__props) {
     return (_ctx, _cache) => {
-      return openBlock(), createElementBlock("div", _hoisted_1$u, [
-        createBaseVNode("div", _hoisted_2$p, [
+      return openBlock(), createElementBlock("div", _hoisted_1$x, [
+        createBaseVNode("div", _hoisted_2$s, [
           createBaseVNode("span", null, toDisplayString(__props.title), 1)
         ]),
-        __props.subtitle ? (openBlock(), createElementBlock("div", _hoisted_3$h, [
+        __props.subtitle ? (openBlock(), createElementBlock("div", _hoisted_3$k, [
           createBaseVNode("span", null, toDisplayString(__props.subtitle), 1)
         ])) : createCommentVNode("", true)
       ]);
     };
   }
 };
-const FilterLabel = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["__file", "FilterLabel.vue"]]);
+const FilterLabel = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["__file", "FilterLabel.vue"]]);
+let e$1 = 0;
+function n$4() {
+  return ++e$1;
+}
+function t$6() {
+  return n$4();
+}
+function o$3(e2) {
+  var l2;
+  if (e2 == null || e2.value == null)
+    return null;
+  let n2 = (l2 = e2.value.$el) != null ? l2 : e2.value;
+  return n2 instanceof Node ? n2 : null;
+}
+function u$6(r2, n2, ...a2) {
+  if (r2 in n2) {
+    let e2 = n2[r2];
+    return typeof e2 == "function" ? e2(...a2) : e2;
+  }
+  let t2 = new Error(`Tried to handle "${r2}" but there is no handler defined. Only defined handlers are: ${Object.keys(n2).map((e2) => `"${e2}"`).join(", ")}.`);
+  throw Error.captureStackTrace && Error.captureStackTrace(t2, u$6), t2;
+}
+var i$5 = Object.defineProperty;
+var d$3 = (t2, e2, r2) => e2 in t2 ? i$5(t2, e2, { enumerable: true, configurable: true, writable: true, value: r2 }) : t2[e2] = r2;
+var n$3 = (t2, e2, r2) => (d$3(t2, typeof e2 != "symbol" ? e2 + "" : e2, r2), r2);
+let s$5 = class s {
+  constructor() {
+    n$3(this, "current", this.detect());
+    n$3(this, "currentId", 0);
+  }
+  set(e2) {
+    this.current !== e2 && (this.currentId = 0, this.current = e2);
+  }
+  reset() {
+    this.set(this.detect());
+  }
+  nextId() {
+    return ++this.currentId;
+  }
+  get isServer() {
+    return this.current === "server";
+  }
+  get isClient() {
+    return this.current === "client";
+  }
+  detect() {
+    return typeof window == "undefined" || typeof document == "undefined" ? "server" : "client";
+  }
+};
+let c$3 = new s$5();
+function i$4(r2) {
+  if (c$3.isServer)
+    return null;
+  if (r2 instanceof Node)
+    return r2.ownerDocument;
+  if (r2 != null && r2.hasOwnProperty("value")) {
+    let n2 = o$3(r2);
+    if (n2)
+      return n2.ownerDocument;
+  }
+  return document;
+}
+let c$2 = ["[contentEditable=true]", "[tabindex]", "a[href]", "area[href]", "button:not([disabled])", "iframe", "input:not([disabled])", "select:not([disabled])", "textarea:not([disabled])"].map((e2) => `${e2}:not([tabindex='-1'])`).join(",");
+var N$5 = ((n2) => (n2[n2.First = 1] = "First", n2[n2.Previous = 2] = "Previous", n2[n2.Next = 4] = "Next", n2[n2.Last = 8] = "Last", n2[n2.WrapAround = 16] = "WrapAround", n2[n2.NoScroll = 32] = "NoScroll", n2))(N$5 || {}), T$2 = ((o2) => (o2[o2.Error = 0] = "Error", o2[o2.Overflow = 1] = "Overflow", o2[o2.Success = 2] = "Success", o2[o2.Underflow = 3] = "Underflow", o2))(T$2 || {}), F$1 = ((t2) => (t2[t2.Previous = -1] = "Previous", t2[t2.Next = 1] = "Next", t2))(F$1 || {});
+function E$2(e2 = document.body) {
+  return e2 == null ? [] : Array.from(e2.querySelectorAll(c$2)).sort((r2, t2) => Math.sign((r2.tabIndex || Number.MAX_SAFE_INTEGER) - (t2.tabIndex || Number.MAX_SAFE_INTEGER)));
+}
+var h = ((t2) => (t2[t2.Strict = 0] = "Strict", t2[t2.Loose = 1] = "Loose", t2))(h || {});
+function w$3(e2, r2 = 0) {
+  var t2;
+  return e2 === ((t2 = i$4(e2)) == null ? void 0 : t2.body) ? false : u$6(r2, { [0]() {
+    return e2.matches(c$2);
+  }, [1]() {
+    let l2 = e2;
+    for (; l2 !== null; ) {
+      if (l2.matches(c$2))
+        return true;
+      l2 = l2.parentElement;
+    }
+    return false;
+  } });
+}
+function _$1(e2) {
+  let r2 = i$4(e2);
+  nextTick(() => {
+    r2 && !w$3(r2.activeElement, 0) && S$2(e2);
+  });
+}
+var y$2 = ((t2) => (t2[t2.Keyboard = 0] = "Keyboard", t2[t2.Mouse = 1] = "Mouse", t2))(y$2 || {});
+typeof window != "undefined" && typeof document != "undefined" && (document.addEventListener("keydown", (e2) => {
+  e2.metaKey || e2.altKey || e2.ctrlKey || (document.documentElement.dataset.headlessuiFocusVisible = "");
+}, true), document.addEventListener("click", (e2) => {
+  e2.detail === 1 ? delete document.documentElement.dataset.headlessuiFocusVisible : e2.detail === 0 && (document.documentElement.dataset.headlessuiFocusVisible = "");
+}, true));
+function S$2(e2) {
+  e2 == null || e2.focus({ preventScroll: true });
+}
+let H = ["textarea", "input"].join(",");
+function I$1(e2) {
+  var r2, t2;
+  return (t2 = (r2 = e2 == null ? void 0 : e2.matches) == null ? void 0 : r2.call(e2, H)) != null ? t2 : false;
+}
+function O$1(e2, r2 = (t2) => t2) {
+  return e2.slice().sort((t2, l2) => {
+    let o2 = r2(t2), i2 = r2(l2);
+    if (o2 === null || i2 === null)
+      return 0;
+    let n2 = o2.compareDocumentPosition(i2);
+    return n2 & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : n2 & Node.DOCUMENT_POSITION_PRECEDING ? 1 : 0;
+  });
+}
+function v$1(e2, r2) {
+  return P(E$2(), r2, { relativeTo: e2 });
+}
+function P(e2, r2, { sorted: t2 = true, relativeTo: l2 = null, skipElements: o2 = [] } = {}) {
+  var m2;
+  let i2 = (m2 = Array.isArray(e2) ? e2.length > 0 ? e2[0].ownerDocument : document : e2 == null ? void 0 : e2.ownerDocument) != null ? m2 : document, n2 = Array.isArray(e2) ? t2 ? O$1(e2) : e2 : E$2(e2);
+  o2.length > 0 && n2.length > 1 && (n2 = n2.filter((s3) => !o2.includes(s3))), l2 = l2 != null ? l2 : i2.activeElement;
+  let x2 = (() => {
+    if (r2 & 5)
+      return 1;
+    if (r2 & 10)
+      return -1;
+    throw new Error("Missing Focus.First, Focus.Previous, Focus.Next or Focus.Last");
+  })(), p2 = (() => {
+    if (r2 & 1)
+      return 0;
+    if (r2 & 2)
+      return Math.max(0, n2.indexOf(l2)) - 1;
+    if (r2 & 4)
+      return Math.max(0, n2.indexOf(l2)) + 1;
+    if (r2 & 8)
+      return n2.length - 1;
+    throw new Error("Missing Focus.First, Focus.Previous, Focus.Next or Focus.Last");
+  })(), L2 = r2 & 32 ? { preventScroll: true } : {}, a2 = 0, d2 = n2.length, u2;
+  do {
+    if (a2 >= d2 || a2 + d2 <= 0)
+      return 0;
+    let s3 = p2 + a2;
+    if (r2 & 16)
+      s3 = (s3 + d2) % d2;
+    else {
+      if (s3 < 0)
+        return 3;
+      if (s3 >= d2)
+        return 1;
+    }
+    u2 = n2[s3], u2 == null || u2.focus(L2), a2 += x2;
+  } while (u2 !== i2.activeElement);
+  return r2 & 6 && I$1(u2) && u2.select(), 2;
+}
+function t$5() {
+  return /iPhone/gi.test(window.navigator.platform) || /Mac/gi.test(window.navigator.platform) && window.navigator.maxTouchPoints > 0;
+}
+function i$3() {
+  return /Android/gi.test(window.navigator.userAgent);
+}
+function n$2() {
+  return t$5() || i$3();
+}
+function u$5(e2, t2, n2) {
+  c$3.isServer || watchEffect((o2) => {
+    document.addEventListener(e2, t2, n2), o2(() => document.removeEventListener(e2, t2, n2));
+  });
+}
+function w$2(e2, n2, t2) {
+  c$3.isServer || watchEffect((o2) => {
+    window.addEventListener(e2, n2, t2), o2(() => window.removeEventListener(e2, n2, t2));
+  });
+}
+function w$1(f2, m2, l2 = computed(() => true)) {
+  function a2(e2, r2) {
+    if (!l2.value || e2.defaultPrevented)
+      return;
+    let t2 = r2(e2);
+    if (t2 === null || !t2.getRootNode().contains(t2))
+      return;
+    let c2 = function o2(n2) {
+      return typeof n2 == "function" ? o2(n2()) : Array.isArray(n2) || n2 instanceof Set ? n2 : [n2];
+    }(f2);
+    for (let o2 of c2) {
+      if (o2 === null)
+        continue;
+      let n2 = o2 instanceof HTMLElement ? o2 : o$3(o2);
+      if (n2 != null && n2.contains(t2) || e2.composed && e2.composedPath().includes(n2))
+        return;
+    }
+    return !w$3(t2, h.Loose) && t2.tabIndex !== -1 && e2.preventDefault(), m2(e2, t2);
+  }
+  let u2 = ref(null);
+  u$5("pointerdown", (e2) => {
+    var r2, t2;
+    l2.value && (u2.value = ((t2 = (r2 = e2.composedPath) == null ? void 0 : r2.call(e2)) == null ? void 0 : t2[0]) || e2.target);
+  }, true), u$5("mousedown", (e2) => {
+    var r2, t2;
+    l2.value && (u2.value = ((t2 = (r2 = e2.composedPath) == null ? void 0 : r2.call(e2)) == null ? void 0 : t2[0]) || e2.target);
+  }, true), u$5("click", (e2) => {
+    n$2() || u2.value && (a2(e2, () => u2.value), u2.value = null);
+  }, true), u$5("touchend", (e2) => a2(e2, () => e2.target instanceof HTMLElement ? e2.target : null), true), w$2("blur", (e2) => a2(e2, () => window.document.activeElement instanceof HTMLIFrameElement ? window.document.activeElement : null), true);
+}
+function r$1(t2, e2) {
+  if (t2)
+    return t2;
+  let n2 = e2 != null ? e2 : "button";
+  if (typeof n2 == "string" && n2.toLowerCase() === "button")
+    return "button";
+}
+function s$4(t2, e2) {
+  let n2 = ref(r$1(t2.value.type, t2.value.as));
+  return onMounted(() => {
+    n2.value = r$1(t2.value.type, t2.value.as);
+  }), watchEffect(() => {
+    var u2;
+    n2.value || o$3(e2) && o$3(e2) instanceof HTMLButtonElement && !((u2 = o$3(e2)) != null && u2.hasAttribute("type")) && (n2.value = "button");
+  }), n2;
+}
+function r(e2) {
+  return [e2.screenX, e2.screenY];
+}
+function u$4() {
+  let e2 = ref([-1, -1]);
+  return { wasMoved(n2) {
+    let t2 = r(n2);
+    return e2.value[0] === t2[0] && e2.value[1] === t2[1] ? false : (e2.value = t2, true);
+  }, update(n2) {
+    e2.value = r(n2);
+  } };
+}
+function i$2({ container: e2, accept: t2, walk: d2, enabled: o2 }) {
+  watchEffect(() => {
+    let r2 = e2.value;
+    if (!r2 || o2 !== void 0 && !o2.value)
+      return;
+    let l2 = i$4(e2);
+    if (!l2)
+      return;
+    let c2 = Object.assign((f2) => t2(f2), { acceptNode: t2 }), n2 = l2.createTreeWalker(r2, NodeFilter.SHOW_ELEMENT, c2, false);
+    for (; n2.nextNode(); )
+      d2(n2.currentNode);
+  });
+}
+var N$4 = ((o2) => (o2[o2.None = 0] = "None", o2[o2.RenderStrategy = 1] = "RenderStrategy", o2[o2.Static = 2] = "Static", o2))(N$4 || {}), S$1 = ((e2) => (e2[e2.Unmount = 0] = "Unmount", e2[e2.Hidden = 1] = "Hidden", e2))(S$1 || {});
+function A$3({ visible: r2 = true, features: t2 = 0, ourProps: e2, theirProps: o2, ...i2 }) {
+  var a2;
+  let n2 = j$1(o2, e2), l2 = Object.assign(i2, { props: n2 });
+  if (r2 || t2 & 2 && n2.static)
+    return y$1(l2);
+  if (t2 & 1) {
+    let d2 = (a2 = n2.unmount) == null || a2 ? 0 : 1;
+    return u$6(d2, { [0]() {
+      return null;
+    }, [1]() {
+      return y$1({ ...i2, props: { ...n2, hidden: true, style: { display: "none" } } });
+    } });
+  }
+  return y$1(l2);
+}
+function y$1({ props: r2, attrs: t2, slots: e2, slot: o2, name: i2 }) {
+  var m2, h2;
+  let { as: n2, ...l2 } = T$1(r2, ["unmount", "static"]), a2 = (m2 = e2.default) == null ? void 0 : m2.call(e2, o2), d2 = {};
+  if (o2) {
+    let u2 = false, c2 = [];
+    for (let [p2, f2] of Object.entries(o2))
+      typeof f2 == "boolean" && (u2 = true), f2 === true && c2.push(p2);
+    u2 && (d2["data-headlessui-state"] = c2.join(" "));
+  }
+  if (n2 === "template") {
+    if (a2 = b(a2 != null ? a2 : []), Object.keys(l2).length > 0 || Object.keys(t2).length > 0) {
+      let [u2, ...c2] = a2 != null ? a2 : [];
+      if (!v(u2) || c2.length > 0)
+        throw new Error(['Passing props on "template"!', "", `The current component <${i2} /> is rendering a "template".`, "However we need to passthrough the following props:", Object.keys(l2).concat(Object.keys(t2)).map((s3) => s3.trim()).filter((s3, g2, R2) => R2.indexOf(s3) === g2).sort((s3, g2) => s3.localeCompare(g2)).map((s3) => `  - ${s3}`).join(`
+`), "", "You can apply a few solutions:", ['Add an `as="..."` prop, to ensure that we render an actual element instead of a "template".', "Render a single element as the child so that we can forward the props onto that element."].map((s3) => `  - ${s3}`).join(`
+`)].join(`
+`));
+      let p2 = j$1((h2 = u2.props) != null ? h2 : {}, l2, d2), f2 = cloneVNode(u2, p2, true);
+      for (let s3 in p2)
+        s3.startsWith("on") && (f2.props || (f2.props = {}), f2.props[s3] = p2[s3]);
+      return f2;
+    }
+    return Array.isArray(a2) && a2.length === 1 ? a2[0] : a2;
+  }
+  return h$1(n2, Object.assign({}, l2, d2), { default: () => a2 });
+}
+function b(r2) {
+  return r2.flatMap((t2) => t2.type === Fragment ? b(t2.children) : [t2]);
+}
+function j$1(...r2) {
+  if (r2.length === 0)
+    return {};
+  if (r2.length === 1)
+    return r2[0];
+  let t2 = {}, e2 = {};
+  for (let i2 of r2)
+    for (let n2 in i2)
+      n2.startsWith("on") && typeof i2[n2] == "function" ? (e2[n2] != null || (e2[n2] = []), e2[n2].push(i2[n2])) : t2[n2] = i2[n2];
+  if (t2.disabled || t2["aria-disabled"])
+    return Object.assign(t2, Object.fromEntries(Object.keys(e2).map((i2) => [i2, void 0])));
+  for (let i2 in e2)
+    Object.assign(t2, { [i2](n2, ...l2) {
+      let a2 = e2[i2];
+      for (let d2 of a2) {
+        if (n2 instanceof Event && n2.defaultPrevented)
+          return;
+        d2(n2, ...l2);
+      }
+    } });
+  return t2;
+}
+function T$1(r2, t2 = []) {
+  let e2 = Object.assign({}, r2);
+  for (let o2 of t2)
+    o2 in e2 && delete e2[o2];
+  return e2;
+}
+function v(r2) {
+  return r2 == null ? false : typeof r2.type == "string" || typeof r2.type == "object" || typeof r2.type == "function";
+}
+var s$3 = ((e2) => (e2[e2.None = 1] = "None", e2[e2.Focusable = 2] = "Focusable", e2[e2.Hidden = 4] = "Hidden", e2))(s$3 || {});
+let f$1 = /* @__PURE__ */ defineComponent({ name: "Hidden", props: { as: { type: [Object, String], default: "div" }, features: { type: Number, default: 1 } }, setup(d2, { slots: o2, attrs: i2 }) {
+  return () => {
+    var t2;
+    let { features: e2, ...r2 } = d2, n2 = { "aria-hidden": (e2 & 2) === 2 ? true : (t2 = r2["aria-hidden"]) != null ? t2 : void 0, style: { position: "fixed", top: 1, left: 1, width: 1, height: 0, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", borderWidth: "0", ...(e2 & 4) === 4 && (e2 & 2) !== 2 && { display: "none" } } };
+    return A$3({ ourProps: n2, theirProps: r2, slot: {}, attrs: i2, slots: o2, name: "Hidden" });
+  };
+} });
+let n$1 = Symbol("Context");
+var i$1 = ((e2) => (e2[e2.Open = 1] = "Open", e2[e2.Closed = 2] = "Closed", e2[e2.Closing = 4] = "Closing", e2[e2.Opening = 8] = "Opening", e2))(i$1 || {});
+function s$2() {
+  return l$2() !== null;
+}
+function l$2() {
+  return inject(n$1, null);
+}
+function t$4(o2) {
+  provide(n$1, o2);
+}
+var o$2 = ((r2) => (r2.Space = " ", r2.Enter = "Enter", r2.Escape = "Escape", r2.Backspace = "Backspace", r2.Delete = "Delete", r2.ArrowLeft = "ArrowLeft", r2.ArrowUp = "ArrowUp", r2.ArrowRight = "ArrowRight", r2.ArrowDown = "ArrowDown", r2.Home = "Home", r2.End = "End", r2.PageUp = "PageUp", r2.PageDown = "PageDown", r2.Tab = "Tab", r2))(o$2 || {});
+function t$3(n2) {
+  function e2() {
+    document.readyState !== "loading" && (n2(), document.removeEventListener("DOMContentLoaded", e2));
+  }
+  typeof window != "undefined" && typeof document != "undefined" && (document.addEventListener("DOMContentLoaded", e2), e2());
+}
+let t$2 = [];
+t$3(() => {
+  function e2(n2) {
+    n2.target instanceof HTMLElement && n2.target !== document.body && t$2[0] !== n2.target && (t$2.unshift(n2.target), t$2 = t$2.filter((r2) => r2 != null && r2.isConnected), t$2.splice(10));
+  }
+  window.addEventListener("click", e2, { capture: true }), window.addEventListener("mousedown", e2, { capture: true }), window.addEventListener("focus", e2, { capture: true }), document.body.addEventListener("click", e2, { capture: true }), document.body.addEventListener("mousedown", e2, { capture: true }), document.body.addEventListener("focus", e2, { capture: true });
+});
+function u$3(l2) {
+  throw new Error("Unexpected object: " + l2);
+}
+var c$1 = ((i2) => (i2[i2.First = 0] = "First", i2[i2.Previous = 1] = "Previous", i2[i2.Next = 2] = "Next", i2[i2.Last = 3] = "Last", i2[i2.Specific = 4] = "Specific", i2[i2.Nothing = 5] = "Nothing", i2))(c$1 || {});
+function f(l2, n2) {
+  let t2 = n2.resolveItems();
+  if (t2.length <= 0)
+    return null;
+  let r2 = n2.resolveActiveIndex(), s3 = r2 != null ? r2 : -1;
+  switch (l2.focus) {
+    case 0: {
+      for (let e2 = 0; e2 < t2.length; ++e2)
+        if (!n2.resolveDisabled(t2[e2], e2, t2))
+          return e2;
+      return r2;
+    }
+    case 1: {
+      s3 === -1 && (s3 = t2.length);
+      for (let e2 = s3 - 1; e2 >= 0; --e2)
+        if (!n2.resolveDisabled(t2[e2], e2, t2))
+          return e2;
+      return r2;
+    }
+    case 2: {
+      for (let e2 = s3 + 1; e2 < t2.length; ++e2)
+        if (!n2.resolveDisabled(t2[e2], e2, t2))
+          return e2;
+      return r2;
+    }
+    case 3: {
+      for (let e2 = t2.length - 1; e2 >= 0; --e2)
+        if (!n2.resolveDisabled(t2[e2], e2, t2))
+          return e2;
+      return r2;
+    }
+    case 4: {
+      for (let e2 = 0; e2 < t2.length; ++e2)
+        if (n2.resolveId(t2[e2], e2, t2) === l2.id)
+          return e2;
+      return r2;
+    }
+    case 5:
+      return null;
+    default:
+      u$3(l2);
+  }
+}
+function t$1(e2) {
+  typeof queueMicrotask == "function" ? queueMicrotask(e2) : Promise.resolve().then(e2).catch((o2) => setTimeout(() => {
+    throw o2;
+  }));
+}
+function o$1() {
+  let a2 = [], s3 = { addEventListener(e2, t2, r2, i2) {
+    return e2.addEventListener(t2, r2, i2), s3.add(() => e2.removeEventListener(t2, r2, i2));
+  }, requestAnimationFrame(...e2) {
+    let t2 = requestAnimationFrame(...e2);
+    s3.add(() => cancelAnimationFrame(t2));
+  }, nextFrame(...e2) {
+    s3.requestAnimationFrame(() => {
+      s3.requestAnimationFrame(...e2);
+    });
+  }, setTimeout(...e2) {
+    let t2 = setTimeout(...e2);
+    s3.add(() => clearTimeout(t2));
+  }, microTask(...e2) {
+    let t2 = { current: true };
+    return t$1(() => {
+      t2.current && e2[0]();
+    }), s3.add(() => {
+      t2.current = false;
+    });
+  }, style(e2, t2, r2) {
+    let i2 = e2.style.getPropertyValue(t2);
+    return Object.assign(e2.style, { [t2]: r2 }), this.add(() => {
+      Object.assign(e2.style, { [t2]: i2 });
+    });
+  }, group(e2) {
+    let t2 = o$1();
+    return e2(t2), this.add(() => t2.dispose());
+  }, add(e2) {
+    return a2.push(e2), () => {
+      let t2 = a2.indexOf(e2);
+      if (t2 >= 0)
+        for (let r2 of a2.splice(t2, 1))
+          r2();
+    };
+  }, dispose() {
+    for (let e2 of a2.splice(0))
+      e2();
+  } };
+  return s3;
+}
+function E$1(n2, e2, o2, r2) {
+  c$3.isServer || watchEffect((t2) => {
+    n2 = n2 != null ? n2 : window, n2.addEventListener(e2, o2, r2), t2(() => n2.removeEventListener(e2, o2, r2));
+  });
+}
+var d$2 = ((r2) => (r2[r2.Forwards = 0] = "Forwards", r2[r2.Backwards = 1] = "Backwards", r2))(d$2 || {});
+function n() {
+  let o2 = ref(0);
+  return w$2("keydown", (e2) => {
+    e2.key === "Tab" && (o2.value = e2.shiftKey ? 1 : 0);
+  }), o2;
+}
+function B(t2) {
+  if (!t2)
+    return /* @__PURE__ */ new Set();
+  if (typeof t2 == "function")
+    return new Set(t2());
+  let n2 = /* @__PURE__ */ new Set();
+  for (let r2 of t2.value) {
+    let l2 = o$3(r2);
+    l2 instanceof HTMLElement && n2.add(l2);
+  }
+  return n2;
+}
+var A$2 = ((e2) => (e2[e2.None = 1] = "None", e2[e2.InitialFocus = 2] = "InitialFocus", e2[e2.TabLock = 4] = "TabLock", e2[e2.FocusLock = 8] = "FocusLock", e2[e2.RestoreFocus = 16] = "RestoreFocus", e2[e2.All = 30] = "All", e2))(A$2 || {});
+let ue = Object.assign(/* @__PURE__ */ defineComponent({ name: "FocusTrap", props: { as: { type: [Object, String], default: "div" }, initialFocus: { type: Object, default: null }, features: { type: Number, default: 30 }, containers: { type: [Object, Function], default: ref(/* @__PURE__ */ new Set()) } }, inheritAttrs: false, setup(t2, { attrs: n$12, slots: r2, expose: l2 }) {
+  let o2 = ref(null);
+  l2({ el: o2, $el: o2 });
+  let i2 = computed(() => i$4(o2)), e2 = ref(false);
+  onMounted(() => e2.value = true), onUnmounted(() => e2.value = false), $({ ownerDocument: i2 }, computed(() => e2.value && Boolean(t2.features & 16)));
+  let m2 = z({ ownerDocument: i2, container: o2, initialFocus: computed(() => t2.initialFocus) }, computed(() => e2.value && Boolean(t2.features & 2)));
+  J({ ownerDocument: i2, container: o2, containers: t2.containers, previousActiveElement: m2 }, computed(() => e2.value && Boolean(t2.features & 8)));
+  let f2 = n();
+  function a2(u2) {
+    let T2 = o$3(o2);
+    if (!T2)
+      return;
+    ((w2) => w2())(() => {
+      u$6(f2.value, { [d$2.Forwards]: () => {
+        P(T2, N$5.First, { skipElements: [u2.relatedTarget] });
+      }, [d$2.Backwards]: () => {
+        P(T2, N$5.Last, { skipElements: [u2.relatedTarget] });
+      } });
+    });
+  }
+  let s3 = ref(false);
+  function F2(u2) {
+    u2.key === "Tab" && (s3.value = true, requestAnimationFrame(() => {
+      s3.value = false;
+    }));
+  }
+  function H2(u2) {
+    if (!e2.value)
+      return;
+    let T2 = B(t2.containers);
+    o$3(o2) instanceof HTMLElement && T2.add(o$3(o2));
+    let d2 = u2.relatedTarget;
+    d2 instanceof HTMLElement && d2.dataset.headlessuiFocusGuard !== "true" && (N$3(T2, d2) || (s3.value ? P(o$3(o2), u$6(f2.value, { [d$2.Forwards]: () => N$5.Next, [d$2.Backwards]: () => N$5.Previous }) | N$5.WrapAround, { relativeTo: u2.target }) : u2.target instanceof HTMLElement && S$2(u2.target)));
+  }
+  return () => {
+    let u2 = {}, T2 = { ref: o2, onKeydown: F2, onFocusout: H2 }, { features: d2, initialFocus: w2, containers: Q2, ...O2 } = t2;
+    return h$1(Fragment, [Boolean(d2 & 4) && h$1(f$1, { as: "button", type: "button", "data-headlessui-focus-guard": true, onFocus: a2, features: s$3.Focusable }), A$3({ ourProps: T2, theirProps: { ...n$12, ...O2 }, slot: u2, attrs: n$12, slots: r2, name: "FocusTrap" }), Boolean(d2 & 4) && h$1(f$1, { as: "button", type: "button", "data-headlessui-focus-guard": true, onFocus: a2, features: s$3.Focusable })]);
+  };
+} }), { features: A$2 });
+function W$1(t2) {
+  let n2 = ref(t$2.slice());
+  return watch([t2], ([r2], [l2]) => {
+    l2 === true && r2 === false ? t$1(() => {
+      n2.value.splice(0);
+    }) : l2 === false && r2 === true && (n2.value = t$2.slice());
+  }, { flush: "post" }), () => {
+    var r2;
+    return (r2 = n2.value.find((l2) => l2 != null && l2.isConnected)) != null ? r2 : null;
+  };
+}
+function $({ ownerDocument: t2 }, n2) {
+  let r2 = W$1(n2);
+  onMounted(() => {
+    watchEffect(() => {
+      var l2, o2;
+      n2.value || ((l2 = t2.value) == null ? void 0 : l2.activeElement) === ((o2 = t2.value) == null ? void 0 : o2.body) && S$2(r2());
+    }, { flush: "post" });
+  }), onUnmounted(() => {
+    n2.value && S$2(r2());
+  });
+}
+function z({ ownerDocument: t2, container: n2, initialFocus: r2 }, l2) {
+  let o2 = ref(null), i2 = ref(false);
+  return onMounted(() => i2.value = true), onUnmounted(() => i2.value = false), onMounted(() => {
+    watch([n2, r2, l2], (e2, m2) => {
+      if (e2.every((a2, s3) => (m2 == null ? void 0 : m2[s3]) === a2) || !l2.value)
+        return;
+      let f2 = o$3(n2);
+      f2 && t$1(() => {
+        var F2, H2;
+        if (!i2.value)
+          return;
+        let a2 = o$3(r2), s3 = (F2 = t2.value) == null ? void 0 : F2.activeElement;
+        if (a2) {
+          if (a2 === s3) {
+            o2.value = s3;
+            return;
+          }
+        } else if (f2.contains(s3)) {
+          o2.value = s3;
+          return;
+        }
+        a2 ? S$2(a2) : P(f2, N$5.First | N$5.NoScroll) === T$2.Error && console.warn("There are no focusable elements inside the <FocusTrap />"), o2.value = (H2 = t2.value) == null ? void 0 : H2.activeElement;
+      });
+    }, { immediate: true, flush: "post" });
+  }), o2;
+}
+function J({ ownerDocument: t2, container: n2, containers: r2, previousActiveElement: l2 }, o2) {
+  var i2;
+  E$1((i2 = t2.value) == null ? void 0 : i2.defaultView, "focus", (e2) => {
+    if (!o2.value)
+      return;
+    let m2 = B(r2);
+    o$3(n2) instanceof HTMLElement && m2.add(o$3(n2));
+    let f2 = l2.value;
+    if (!f2)
+      return;
+    let a2 = e2.target;
+    a2 && a2 instanceof HTMLElement ? N$3(m2, a2) ? (l2.value = a2, S$2(a2)) : (e2.preventDefault(), e2.stopPropagation(), S$2(f2)) : S$2(l2.value);
+  }, true);
+}
+function N$3(t2, n2) {
+  for (let r2 of t2)
+    if (r2.contains(n2))
+      return true;
+  return false;
+}
+function m$3(t2) {
+  let e2 = shallowRef(t2.getSnapshot());
+  return onUnmounted(t2.subscribe(() => {
+    e2.value = t2.getSnapshot();
+  })), e2;
+}
+function a$2(o2, r2) {
+  let t2 = o2(), n2 = /* @__PURE__ */ new Set();
+  return { getSnapshot() {
+    return t2;
+  }, subscribe(e2) {
+    return n2.add(e2), () => n2.delete(e2);
+  }, dispatch(e2, ...s3) {
+    let i2 = r2[e2].call(t2, ...s3);
+    i2 && (t2 = i2, n2.forEach((c2) => c2()));
+  } };
+}
+function c() {
+  let o2;
+  return { before({ doc: e2 }) {
+    var l2;
+    let n2 = e2.documentElement;
+    o2 = ((l2 = e2.defaultView) != null ? l2 : window).innerWidth - n2.clientWidth;
+  }, after({ doc: e2, d: n2 }) {
+    let t2 = e2.documentElement, l2 = t2.clientWidth - t2.offsetWidth, r2 = o2 - l2;
+    n2.style(t2, "paddingRight", `${r2}px`);
+  } };
+}
+function w() {
+  return t$5() ? { before({ doc: r2, d: n2, meta: c2 }) {
+    function o2(a2) {
+      return c2.containers.flatMap((l2) => l2()).some((l2) => l2.contains(a2));
+    }
+    n2.microTask(() => {
+      var s3;
+      if (window.getComputedStyle(r2.documentElement).scrollBehavior !== "auto") {
+        let t2 = o$1();
+        t2.style(r2.documentElement, "scrollBehavior", "auto"), n2.add(() => n2.microTask(() => t2.dispose()));
+      }
+      let a2 = (s3 = window.scrollY) != null ? s3 : window.pageYOffset, l2 = null;
+      n2.addEventListener(r2, "click", (t2) => {
+        if (t2.target instanceof HTMLElement)
+          try {
+            let e2 = t2.target.closest("a");
+            if (!e2)
+              return;
+            let { hash: f2 } = new URL(e2.href), i2 = r2.querySelector(f2);
+            i2 && !o2(i2) && (l2 = i2);
+          } catch {
+          }
+      }, true), n2.addEventListener(r2, "touchstart", (t2) => {
+        if (t2.target instanceof HTMLElement)
+          if (o2(t2.target)) {
+            let e2 = t2.target;
+            for (; e2.parentElement && o2(e2.parentElement); )
+              e2 = e2.parentElement;
+            n2.style(e2, "overscrollBehavior", "contain");
+          } else
+            n2.style(t2.target, "touchAction", "none");
+      }), n2.addEventListener(r2, "touchmove", (t2) => {
+        if (t2.target instanceof HTMLElement)
+          if (o2(t2.target)) {
+            let e2 = t2.target;
+            for (; e2.parentElement && e2.dataset.headlessuiPortal !== "" && !(e2.scrollHeight > e2.clientHeight || e2.scrollWidth > e2.clientWidth); )
+              e2 = e2.parentElement;
+            e2.dataset.headlessuiPortal === "" && t2.preventDefault();
+          } else
+            t2.preventDefault();
+      }, { passive: false }), n2.add(() => {
+        var e2;
+        let t2 = (e2 = window.scrollY) != null ? e2 : window.pageYOffset;
+        a2 !== t2 && window.scrollTo(0, a2), l2 && l2.isConnected && (l2.scrollIntoView({ block: "nearest" }), l2 = null);
+      });
+    });
+  } } : {};
+}
+function l$1() {
+  return { before({ doc: e2, d: o2 }) {
+    o2.style(e2.documentElement, "overflow", "hidden");
+  } };
+}
+function m$2(e2) {
+  let n2 = {};
+  for (let t2 of e2)
+    Object.assign(n2, t2(n2));
+  return n2;
+}
+let a$1 = a$2(() => /* @__PURE__ */ new Map(), { PUSH(e2, n2) {
+  var o2;
+  let t2 = (o2 = this.get(e2)) != null ? o2 : { doc: e2, count: 0, d: o$1(), meta: /* @__PURE__ */ new Set() };
+  return t2.count++, t2.meta.add(n2), this.set(e2, t2), this;
+}, POP(e2, n2) {
+  let t2 = this.get(e2);
+  return t2 && (t2.count--, t2.meta.delete(n2)), this;
+}, SCROLL_PREVENT({ doc: e2, d: n2, meta: t2 }) {
+  let o2 = { doc: e2, d: n2, meta: m$2(t2) }, c$12 = [w(), c(), l$1()];
+  c$12.forEach(({ before: r2 }) => r2 == null ? void 0 : r2(o2)), c$12.forEach(({ after: r2 }) => r2 == null ? void 0 : r2(o2));
+}, SCROLL_ALLOW({ d: e2 }) {
+  e2.dispose();
+}, TEARDOWN({ doc: e2 }) {
+  this.delete(e2);
+} });
+a$1.subscribe(() => {
+  let e2 = a$1.getSnapshot(), n2 = /* @__PURE__ */ new Map();
+  for (let [t2] of e2)
+    n2.set(t2, t2.documentElement.style.overflow);
+  for (let t2 of e2.values()) {
+    let o2 = n2.get(t2.doc) === "hidden", c2 = t2.count !== 0;
+    (c2 && !o2 || !c2 && o2) && a$1.dispatch(t2.count > 0 ? "SCROLL_PREVENT" : "SCROLL_ALLOW", t2), t2.count === 0 && a$1.dispatch("TEARDOWN", t2);
+  }
+});
+function d$1(t2, a2, n2) {
+  let i2 = m$3(a$1), l2 = computed(() => {
+    let e2 = t2.value ? i2.value.get(t2.value) : void 0;
+    return e2 ? e2.count > 0 : false;
+  });
+  return watch([t2, a2], ([e2, m2], [r2], o2) => {
+    if (!e2 || !m2)
+      return;
+    a$1.dispatch("PUSH", e2, n2);
+    let f2 = false;
+    o2(() => {
+      f2 || (a$1.dispatch("POP", r2 != null ? r2 : e2, n2), f2 = true);
+    });
+  }, { immediate: true }), l2;
+}
+let i = /* @__PURE__ */ new Map(), t = /* @__PURE__ */ new Map();
+function E(d2, f2 = ref(true)) {
+  watchEffect((o2) => {
+    var a2;
+    if (!f2.value)
+      return;
+    let e2 = o$3(d2);
+    if (!e2)
+      return;
+    o2(function() {
+      var u2;
+      if (!e2)
+        return;
+      let r2 = (u2 = t.get(e2)) != null ? u2 : 1;
+      if (r2 === 1 ? t.delete(e2) : t.set(e2, r2 - 1), r2 !== 1)
+        return;
+      let n2 = i.get(e2);
+      n2 && (n2["aria-hidden"] === null ? e2.removeAttribute("aria-hidden") : e2.setAttribute("aria-hidden", n2["aria-hidden"]), e2.inert = n2.inert, i.delete(e2));
+    });
+    let l2 = (a2 = t.get(e2)) != null ? a2 : 0;
+    t.set(e2, l2 + 1), l2 === 0 && (i.set(e2, { "aria-hidden": e2.getAttribute("aria-hidden"), inert: e2.inert }), e2.setAttribute("aria-hidden", "true"), e2.inert = true);
+  });
+}
+function N$2({ defaultContainers: o2 = [], portals: i2, mainTreeNodeRef: H2 } = {}) {
+  let t2 = ref(null), r2 = i$4(t2);
+  function u2() {
+    var l2, f2, a2;
+    let n2 = [];
+    for (let e2 of o2)
+      e2 !== null && (e2 instanceof HTMLElement ? n2.push(e2) : "value" in e2 && e2.value instanceof HTMLElement && n2.push(e2.value));
+    if (i2 != null && i2.value)
+      for (let e2 of i2.value)
+        n2.push(e2);
+    for (let e2 of (l2 = r2 == null ? void 0 : r2.querySelectorAll("html > *, body > *")) != null ? l2 : [])
+      e2 !== document.body && e2 !== document.head && e2 instanceof HTMLElement && e2.id !== "headlessui-portal-root" && (e2.contains(o$3(t2)) || e2.contains((a2 = (f2 = o$3(t2)) == null ? void 0 : f2.getRootNode()) == null ? void 0 : a2.host) || n2.some((M) => e2.contains(M)) || n2.push(e2));
+    return n2;
+  }
+  return { resolveContainers: u2, contains(n2) {
+    return u2().some((l2) => l2.contains(n2));
+  }, mainTreeNodeRef: t2, MainTreeNode() {
+    return H2 != null ? null : h$1(f$1, { features: s$3.Hidden, ref: t2 });
+  } };
+}
+let e = Symbol("ForcePortalRootContext");
+function s$1() {
+  return inject(e, false);
+}
+let u$2 = /* @__PURE__ */ defineComponent({ name: "ForcePortalRoot", props: { as: { type: [Object, String], default: "template" }, force: { type: Boolean, default: false } }, setup(o2, { slots: t2, attrs: r2 }) {
+  return provide(e, o2.force), () => {
+    let { force: f2, ...n2 } = o2;
+    return A$3({ theirProps: n2, ourProps: {}, slot: {}, slots: t2, attrs: r2, name: "ForcePortalRoot" });
+  };
+} });
+let u$1 = Symbol("StackContext");
+var s2 = ((e2) => (e2[e2.Add = 0] = "Add", e2[e2.Remove = 1] = "Remove", e2))(s2 || {});
+function y() {
+  return inject(u$1, () => {
+  });
+}
+function R$1({ type: o2, enabled: r2, element: e2, onUpdate: i2 }) {
+  let a2 = y();
+  function t2(...n2) {
+    i2 == null || i2(...n2), a2(...n2);
+  }
+  onMounted(() => {
+    watch(r2, (n2, d2) => {
+      n2 ? t2(0, o2, e2) : d2 === true && t2(1, o2, e2);
+    }, { immediate: true, flush: "sync" });
+  }), onUnmounted(() => {
+    r2.value && t2(1, o2, e2);
+  }), provide(u$1, t2);
+}
+let u = Symbol("DescriptionContext");
+function S({ slot: t2 = ref({}), name: i2 = "Description", props: o2 = {} } = {}) {
+  let e2 = ref([]);
+  function s3(n2) {
+    return e2.value.push(n2), () => {
+      let r2 = e2.value.indexOf(n2);
+      r2 !== -1 && e2.value.splice(r2, 1);
+    };
+  }
+  return provide(u, { register: s3, slot: t2, name: i2, props: o2 }), computed(() => e2.value.length > 0 ? e2.value.join(" ") : void 0);
+}
+function x(r2) {
+  let e2 = i$4(r2);
+  if (!e2) {
+    if (r2 === null)
+      return null;
+    throw new Error(`[Headless UI]: Cannot find ownerDocument for contextElement: ${r2}`);
+  }
+  let u2 = e2.getElementById("headlessui-portal-root");
+  if (u2)
+    return u2;
+  let t2 = e2.createElement("div");
+  return t2.setAttribute("id", "headlessui-portal-root"), e2.body.appendChild(t2);
+}
+let _ = /* @__PURE__ */ defineComponent({ name: "Portal", props: { as: { type: [Object, String], default: "div" } }, setup(r2, { slots: e2, attrs: u2 }) {
+  let t2 = ref(null), i2 = computed(() => i$4(t2)), l2 = s$1(), n2 = inject(C, null), o2 = ref(l2 === true || n2 == null ? x(t2.value) : n2.resolveTarget()), d2 = ref(false);
+  onMounted(() => {
+    d2.value = true;
+  }), watchEffect(() => {
+    l2 || n2 != null && (o2.value = n2.resolveTarget());
+  });
+  let c2 = inject(m$1, null), v2 = false, H2 = getCurrentInstance();
+  return watch(t2, () => {
+    if (v2 || !c2)
+      return;
+    let a2 = o$3(t2);
+    a2 && (onUnmounted(c2.register(a2), H2), v2 = true);
+  }), onUnmounted(() => {
+    var g2, P2;
+    let a2 = (g2 = i2.value) == null ? void 0 : g2.getElementById("headlessui-portal-root");
+    a2 && o2.value === a2 && o2.value.children.length <= 0 && ((P2 = o2.value.parentElement) == null || P2.removeChild(o2.value));
+  }), () => {
+    if (!d2.value || o2.value === null)
+      return null;
+    let a2 = { ref: t2, "data-headlessui-portal": "" };
+    return h$1(Teleport, { to: o2.value }, A$3({ ourProps: a2, theirProps: r2, slot: {}, attrs: u2, slots: e2, name: "Portal" }));
+  };
+} }), m$1 = Symbol("PortalParentContext");
+function A$1() {
+  let r2 = inject(m$1, null), e2 = ref([]);
+  function u2(l2) {
+    return e2.value.push(l2), r2 && r2.register(l2), () => t2(l2);
+  }
+  function t2(l2) {
+    let n2 = e2.value.indexOf(l2);
+    n2 !== -1 && e2.value.splice(n2, 1), r2 && r2.unregister(l2);
+  }
+  let i2 = { register: u2, unregister: t2, portals: e2 };
+  return [e2, /* @__PURE__ */ defineComponent({ name: "PortalWrapper", setup(l2, { slots: n2 }) {
+    return provide(m$1, i2), () => {
+      var o2;
+      return (o2 = n2.default) == null ? void 0 : o2.call(n2);
+    };
+  } })];
+}
+let C = Symbol("PortalGroupContext"), N$1 = /* @__PURE__ */ defineComponent({ name: "PortalGroup", props: { as: { type: [Object, String], default: "template" }, target: { type: Object, default: null } }, setup(r2, { attrs: e2, slots: u2 }) {
+  let t2 = reactive({ resolveTarget() {
+    return r2.target;
+  } });
+  return provide(C, t2), () => {
+    let { target: i2, ...l2 } = r2;
+    return A$3({ theirProps: l2, ourProps: {}, slot: {}, attrs: e2, slots: u2, name: "PortalGroup" });
+  };
+} });
+var be$1 = ((l2) => (l2[l2.Open = 0] = "Open", l2[l2.Closed = 1] = "Closed", l2))(be$1 || {});
+let j = Symbol("DialogContext");
+function T(t2) {
+  let n2 = inject(j, null);
+  if (n2 === null) {
+    let l2 = new Error(`<${t2} /> is missing a parent <Dialog /> component.`);
+    throw Error.captureStackTrace && Error.captureStackTrace(l2, T), l2;
+  }
+  return n2;
+}
+let I = "DC8F892D-2EBD-447C-A4C8-A03058436FF4", _e = /* @__PURE__ */ defineComponent({ name: "Dialog", inheritAttrs: false, props: { as: { type: [Object, String], default: "div" }, static: { type: Boolean, default: false }, unmount: { type: Boolean, default: true }, open: { type: [Boolean, String], default: I }, initialFocus: { type: Object, default: null }, id: { type: String, default: () => `headlessui-dialog-${t$6()}` }, role: { type: String, default: "dialog" } }, emits: { close: (t2) => true }, setup(t2, { emit: n2, attrs: l2, slots: u2, expose: i2 }) {
+  var U;
+  let r2 = ref(false);
+  onMounted(() => {
+    r2.value = true;
+  });
+  let s$12 = false, v2 = computed(() => t2.role === "dialog" || t2.role === "alertdialog" ? t2.role : (s$12 || (s$12 = true, console.warn(`Invalid role [${v2}] passed to <Dialog />. Only \`dialog\` and and \`alertdialog\` are supported. Using \`dialog\` instead.`)), "dialog")), m2 = ref(0), S$12 = l$2(), R2 = computed(() => t2.open === I && S$12 !== null ? (S$12.value & i$1.Open) === i$1.Open : t2.open), c2 = ref(null), E$22 = computed(() => i$4(c2));
+  if (i2({ el: c2, $el: c2 }), !(t2.open !== I || S$12 !== null))
+    throw new Error("You forgot to provide an `open` prop to the `Dialog`.");
+  if (typeof R2.value != "boolean")
+    throw new Error(`You provided an \`open\` prop to the \`Dialog\`, but the value is not a boolean. Received: ${R2.value === I ? void 0 : t2.open}`);
+  let f2 = computed(() => r2.value && R2.value ? 0 : 1), k = computed(() => f2.value === 0), w2 = computed(() => m2.value > 1), H2 = inject(j, null) !== null, [V, J2] = A$1(), { resolveContainers: A2, mainTreeNodeRef: N2, MainTreeNode: Q2 } = N$2({ portals: V, defaultContainers: [computed(() => {
+    var e2;
+    return (e2 = h2.panelRef.value) != null ? e2 : c2.value;
+  })] }), X = computed(() => w2.value ? "parent" : "leaf"), K = computed(() => S$12 !== null ? (S$12.value & i$1.Closing) === i$1.Closing : false), Z2 = computed(() => H2 || K.value ? false : k.value), ee2 = computed(() => {
+    var e2, a2, p2;
+    return (p2 = Array.from((a2 = (e2 = E$22.value) == null ? void 0 : e2.querySelectorAll("body > *")) != null ? a2 : []).find((d2) => d2.id === "headlessui-portal-root" ? false : d2.contains(o$3(N2)) && d2 instanceof HTMLElement)) != null ? p2 : null;
+  });
+  E(ee2, Z2);
+  let te = computed(() => w2.value ? true : k.value), le = computed(() => {
+    var e2, a2, p2;
+    return (p2 = Array.from((a2 = (e2 = E$22.value) == null ? void 0 : e2.querySelectorAll("[data-headlessui-portal]")) != null ? a2 : []).find((d2) => d2.contains(o$3(N2)) && d2 instanceof HTMLElement)) != null ? p2 : null;
+  });
+  E(le, te), R$1({ type: "Dialog", enabled: computed(() => f2.value === 0), element: c2, onUpdate: (e2, a2) => {
+    if (a2 === "Dialog")
+      return u$6(e2, { [s2.Add]: () => m2.value += 1, [s2.Remove]: () => m2.value -= 1 });
+  } });
+  let ae = S({ name: "DialogDescription", slot: computed(() => ({ open: R2.value })) }), M = ref(null), h2 = { titleId: M, panelRef: ref(null), dialogState: f2, setTitleId(e2) {
+    M.value !== e2 && (M.value = e2);
+  }, close() {
+    n2("close", false);
+  } };
+  provide(j, h2);
+  let oe = computed(() => !(!k.value || w2.value));
+  w$1(A2, (e2, a2) => {
+    h2.close(), nextTick(() => a2 == null ? void 0 : a2.focus());
+  }, oe);
+  let re = computed(() => !(w2.value || f2.value !== 0));
+  E$1((U = E$22.value) == null ? void 0 : U.defaultView, "keydown", (e2) => {
+    re.value && (e2.defaultPrevented || e2.key === o$2.Escape && (e2.preventDefault(), e2.stopPropagation(), h2.close()));
+  });
+  let ne = computed(() => !(K.value || f2.value !== 0 || H2));
+  return d$1(E$22, ne, (e2) => {
+    var a2;
+    return { containers: [...(a2 = e2.containers) != null ? a2 : [], A2] };
+  }), watchEffect((e2) => {
+    if (f2.value !== 0)
+      return;
+    let a2 = o$3(c2);
+    if (!a2)
+      return;
+    let p2 = new ResizeObserver((d2) => {
+      for (let B2 of d2) {
+        let D = B2.target.getBoundingClientRect();
+        D.x === 0 && D.y === 0 && D.width === 0 && D.height === 0 && h2.close();
+      }
+    });
+    p2.observe(a2), e2(() => p2.disconnect());
+  }), () => {
+    let { id: e2, open: a2, initialFocus: p2, ...d2 } = t2, B2 = { ...l2, ref: c2, id: e2, role: v2.value, "aria-modal": f2.value === 0 ? true : void 0, "aria-labelledby": M.value, "aria-describedby": ae.value }, D = { open: f2.value === 0 };
+    return h$1(u$2, { force: true }, () => [h$1(_, () => h$1(N$1, { target: c2.value }, () => h$1(u$2, { force: false }, () => h$1(ue, { initialFocus: p2, containers: A2, features: k.value ? u$6(X.value, { parent: ue.features.RestoreFocus, leaf: ue.features.All & ~ue.features.FocusLock }) : ue.features.None }, () => h$1(J2, {}, () => A$3({ ourProps: B2, theirProps: { ...d2, ...l2 }, slot: D, attrs: l2, slots: u2, visible: f2.value === 0, features: N$4.RenderStrategy | N$4.Static, name: "Dialog" })))))), h$1(Q2)]);
+  };
+} }), Ye = /* @__PURE__ */ defineComponent({ name: "DialogPanel", props: { as: { type: [Object, String], default: "div" }, id: { type: String, default: () => `headlessui-dialog-panel-${t$6()}` } }, setup(t2, { attrs: n2, slots: l2, expose: u2 }) {
+  let i2 = T("DialogPanel");
+  u2({ el: i2.panelRef, $el: i2.panelRef });
+  function r2(s3) {
+    s3.stopPropagation();
+  }
+  return () => {
+    let { id: s3, ...v2 } = t2, m2 = { id: s3, ref: i2.panelRef, onClick: r2 };
+    return A$3({ ourProps: m2, theirProps: v2, slot: { open: i2.dialogState.value === 0 }, attrs: n2, slots: l2, name: "DialogPanel" });
+  };
+} });
+let a = /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g;
+function o(e2) {
+  var r2, i2;
+  let n2 = (r2 = e2.innerText) != null ? r2 : "", t2 = e2.cloneNode(true);
+  if (!(t2 instanceof HTMLElement))
+    return n2;
+  let u2 = false;
+  for (let f2 of t2.querySelectorAll('[hidden],[aria-hidden],[role="img"]'))
+    f2.remove(), u2 = true;
+  let l2 = u2 ? (i2 = t2.innerText) != null ? i2 : "" : n2;
+  return a.test(l2) && (l2 = l2.replace(a, "")), l2;
+}
+function g$2(e2) {
+  let n2 = e2.getAttribute("aria-label");
+  if (typeof n2 == "string")
+    return n2.trim();
+  let t2 = e2.getAttribute("aria-labelledby");
+  if (t2) {
+    let u2 = t2.split(" ").map((l2) => {
+      let r2 = document.getElementById(l2);
+      if (r2) {
+        let i2 = r2.getAttribute("aria-label");
+        return typeof i2 == "string" ? i2.trim() : o(r2).trim();
+      }
+      return null;
+    }).filter(Boolean);
+    if (u2.length > 0)
+      return u2.join(", ");
+  }
+  return o(e2).trim();
+}
+function p(a2) {
+  let t2 = ref(""), r2 = ref("");
+  return () => {
+    let e2 = o$3(a2);
+    if (!e2)
+      return "";
+    let l2 = e2.innerText;
+    if (t2.value === l2)
+      return r2.value;
+    let u2 = g$2(e2).trim().toLowerCase();
+    return t2.value = l2, r2.value = u2, u2;
+  };
+}
+var Y = ((l2) => (l2[l2.Open = 0] = "Open", l2[l2.Closed = 1] = "Closed", l2))(Y || {}), Z = ((l2) => (l2[l2.Pointer = 0] = "Pointer", l2[l2.Other = 1] = "Other", l2))(Z || {});
+function ee(r2) {
+  requestAnimationFrame(() => requestAnimationFrame(r2));
+}
+let A = Symbol("MenuContext");
+function O(r2) {
+  let b2 = inject(A, null);
+  if (b2 === null) {
+    let l2 = new Error(`<${r2} /> is missing a parent <Menu /> component.`);
+    throw Error.captureStackTrace && Error.captureStackTrace(l2, O), l2;
+  }
+  return b2;
+}
+let Ie = /* @__PURE__ */ defineComponent({ name: "Menu", props: { as: { type: [Object, String], default: "template" } }, setup(r2, { slots: b2, attrs: l2 }) {
+  let I2 = ref(1), e2 = ref(null), f$12 = ref(null), s3 = ref([]), g2 = ref(""), d2 = ref(null), o2 = ref(1);
+  function t2(a2 = (i2) => i2) {
+    let i2 = d2.value !== null ? s3.value[d2.value] : null, u2 = O$1(a2(s3.value.slice()), (v2) => o$3(v2.dataRef.domRef)), n2 = i2 ? u2.indexOf(i2) : null;
+    return n2 === -1 && (n2 = null), { items: u2, activeItemIndex: n2 };
+  }
+  let p2 = { menuState: I2, buttonRef: e2, itemsRef: f$12, items: s3, searchQuery: g2, activeItemIndex: d2, activationTrigger: o2, closeMenu: () => {
+    I2.value = 1, d2.value = null;
+  }, openMenu: () => I2.value = 0, goToItem(a2, i2, u2) {
+    let n2 = t2(), v2 = f(a2 === c$1.Specific ? { focus: c$1.Specific, id: i2 } : { focus: a2 }, { resolveItems: () => n2.items, resolveActiveIndex: () => n2.activeItemIndex, resolveId: (M) => M.id, resolveDisabled: (M) => M.dataRef.disabled });
+    g2.value = "", d2.value = v2, o2.value = u2 != null ? u2 : 1, s3.value = n2.items;
+  }, search(a2) {
+    let u2 = g2.value !== "" ? 0 : 1;
+    g2.value += a2.toLowerCase();
+    let v2 = (d2.value !== null ? s3.value.slice(d2.value + u2).concat(s3.value.slice(0, d2.value + u2)) : s3.value).find((x2) => x2.dataRef.textValue.startsWith(g2.value) && !x2.dataRef.disabled), M = v2 ? s3.value.indexOf(v2) : -1;
+    M === -1 || M === d2.value || (d2.value = M, o2.value = 1);
+  }, clearSearch() {
+    g2.value = "";
+  }, registerItem(a2, i2) {
+    let u2 = t2((n2) => [...n2, { id: a2, dataRef: i2 }]);
+    s3.value = u2.items, d2.value = u2.activeItemIndex, o2.value = 1;
+  }, unregisterItem(a2) {
+    let i2 = t2((u2) => {
+      let n2 = u2.findIndex((v2) => v2.id === a2);
+      return n2 !== -1 && u2.splice(n2, 1), u2;
+    });
+    s3.value = i2.items, d2.value = i2.activeItemIndex, o2.value = 1;
+  } };
+  return w$1([e2, f$12], (a2, i2) => {
+    var u2;
+    p2.closeMenu(), w$3(i2, h.Loose) || (a2.preventDefault(), (u2 = o$3(e2)) == null || u2.focus());
+  }, computed(() => I2.value === 0)), provide(A, p2), t$4(computed(() => u$6(I2.value, { [0]: i$1.Open, [1]: i$1.Closed }))), () => {
+    let a2 = { open: I2.value === 0, close: p2.closeMenu };
+    return A$3({ ourProps: {}, theirProps: r2, slot: a2, slots: b2, attrs: l2, name: "Menu" });
+  };
+} }), ge$1 = /* @__PURE__ */ defineComponent({ name: "MenuButton", props: { disabled: { type: Boolean, default: false }, as: { type: [Object, String], default: "button" }, id: { type: String, default: () => `headlessui-menu-button-${t$6()}` } }, setup(r2, { attrs: b2, slots: l2, expose: I2 }) {
+  let e2 = O("MenuButton");
+  I2({ el: e2.buttonRef, $el: e2.buttonRef });
+  function f2(o2) {
+    switch (o2.key) {
+      case o$2.Space:
+      case o$2.Enter:
+      case o$2.ArrowDown:
+        o2.preventDefault(), o2.stopPropagation(), e2.openMenu(), nextTick(() => {
+          var t2;
+          (t2 = o$3(e2.itemsRef)) == null || t2.focus({ preventScroll: true }), e2.goToItem(c$1.First);
+        });
+        break;
+      case o$2.ArrowUp:
+        o2.preventDefault(), o2.stopPropagation(), e2.openMenu(), nextTick(() => {
+          var t2;
+          (t2 = o$3(e2.itemsRef)) == null || t2.focus({ preventScroll: true }), e2.goToItem(c$1.Last);
+        });
+        break;
+    }
+  }
+  function s3(o2) {
+    switch (o2.key) {
+      case o$2.Space:
+        o2.preventDefault();
+        break;
+    }
+  }
+  function g2(o2) {
+    r2.disabled || (e2.menuState.value === 0 ? (e2.closeMenu(), nextTick(() => {
+      var t2;
+      return (t2 = o$3(e2.buttonRef)) == null ? void 0 : t2.focus({ preventScroll: true });
+    })) : (o2.preventDefault(), e2.openMenu(), ee(() => {
+      var t2;
+      return (t2 = o$3(e2.itemsRef)) == null ? void 0 : t2.focus({ preventScroll: true });
+    })));
+  }
+  let d2 = s$4(computed(() => ({ as: r2.as, type: b2.type })), e2.buttonRef);
+  return () => {
+    var i2;
+    let o2 = { open: e2.menuState.value === 0 }, { id: t2, ...p2 } = r2, a2 = { ref: e2.buttonRef, id: t2, type: d2.value, "aria-haspopup": "menu", "aria-controls": (i2 = o$3(e2.itemsRef)) == null ? void 0 : i2.id, "aria-expanded": e2.menuState.value === 0, onKeydown: f2, onKeyup: s3, onClick: g2 };
+    return A$3({ ourProps: a2, theirProps: p2, slot: o2, attrs: b2, slots: l2, name: "MenuButton" });
+  };
+} }), Se$1 = /* @__PURE__ */ defineComponent({ name: "MenuItems", props: { as: { type: [Object, String], default: "div" }, static: { type: Boolean, default: false }, unmount: { type: Boolean, default: true }, id: { type: String, default: () => `headlessui-menu-items-${t$6()}` } }, setup(r2, { attrs: b2, slots: l2, expose: I2 }) {
+  let e2 = O("MenuItems"), f2 = ref(null);
+  I2({ el: e2.itemsRef, $el: e2.itemsRef }), i$2({ container: computed(() => o$3(e2.itemsRef)), enabled: computed(() => e2.menuState.value === 0), accept(t2) {
+    return t2.getAttribute("role") === "menuitem" ? NodeFilter.FILTER_REJECT : t2.hasAttribute("role") ? NodeFilter.FILTER_SKIP : NodeFilter.FILTER_ACCEPT;
+  }, walk(t2) {
+    t2.setAttribute("role", "none");
+  } });
+  function s3(t2) {
+    var p2;
+    switch (f2.value && clearTimeout(f2.value), t2.key) {
+      case o$2.Space:
+        if (e2.searchQuery.value !== "")
+          return t2.preventDefault(), t2.stopPropagation(), e2.search(t2.key);
+      case o$2.Enter:
+        if (t2.preventDefault(), t2.stopPropagation(), e2.activeItemIndex.value !== null) {
+          let i2 = e2.items.value[e2.activeItemIndex.value];
+          (p2 = o$3(i2.dataRef.domRef)) == null || p2.click();
+        }
+        e2.closeMenu(), _$1(o$3(e2.buttonRef));
+        break;
+      case o$2.ArrowDown:
+        return t2.preventDefault(), t2.stopPropagation(), e2.goToItem(c$1.Next);
+      case o$2.ArrowUp:
+        return t2.preventDefault(), t2.stopPropagation(), e2.goToItem(c$1.Previous);
+      case o$2.Home:
+      case o$2.PageUp:
+        return t2.preventDefault(), t2.stopPropagation(), e2.goToItem(c$1.First);
+      case o$2.End:
+      case o$2.PageDown:
+        return t2.preventDefault(), t2.stopPropagation(), e2.goToItem(c$1.Last);
+      case o$2.Escape:
+        t2.preventDefault(), t2.stopPropagation(), e2.closeMenu(), nextTick(() => {
+          var a2;
+          return (a2 = o$3(e2.buttonRef)) == null ? void 0 : a2.focus({ preventScroll: true });
+        });
+        break;
+      case o$2.Tab:
+        t2.preventDefault(), t2.stopPropagation(), e2.closeMenu(), nextTick(() => v$1(o$3(e2.buttonRef), t2.shiftKey ? N$5.Previous : N$5.Next));
+        break;
+      default:
+        t2.key.length === 1 && (e2.search(t2.key), f2.value = setTimeout(() => e2.clearSearch(), 350));
+        break;
+    }
+  }
+  function g2(t2) {
+    switch (t2.key) {
+      case o$2.Space:
+        t2.preventDefault();
+        break;
+    }
+  }
+  let d2 = l$2(), o2 = computed(() => d2 !== null ? (d2.value & i$1.Open) === i$1.Open : e2.menuState.value === 0);
+  return () => {
+    var u2, n2;
+    let t2 = { open: e2.menuState.value === 0 }, { id: p2, ...a2 } = r2, i2 = { "aria-activedescendant": e2.activeItemIndex.value === null || (u2 = e2.items.value[e2.activeItemIndex.value]) == null ? void 0 : u2.id, "aria-labelledby": (n2 = o$3(e2.buttonRef)) == null ? void 0 : n2.id, id: p2, onKeydown: s3, onKeyup: g2, role: "menu", tabIndex: 0, ref: e2.itemsRef };
+    return A$3({ ourProps: i2, theirProps: a2, slot: t2, attrs: b2, slots: l2, features: N$4.RenderStrategy | N$4.Static, visible: o2.value, name: "MenuItems" });
+  };
+} }), be = /* @__PURE__ */ defineComponent({ name: "MenuItem", inheritAttrs: false, props: { as: { type: [Object, String], default: "template" }, disabled: { type: Boolean, default: false }, id: { type: String, default: () => `headlessui-menu-item-${t$6()}` } }, setup(r2, { slots: b2, attrs: l2, expose: I2 }) {
+  let e2 = O("MenuItem"), f2 = ref(null);
+  I2({ el: f2, $el: f2 });
+  let s3 = computed(() => e2.activeItemIndex.value !== null ? e2.items.value[e2.activeItemIndex.value].id === r2.id : false), g2 = p(f2), d2 = computed(() => ({ disabled: r2.disabled, get textValue() {
+    return g2();
+  }, domRef: f2 }));
+  onMounted(() => e2.registerItem(r2.id, d2)), onUnmounted(() => e2.unregisterItem(r2.id)), watchEffect(() => {
+    e2.menuState.value === 0 && s3.value && e2.activationTrigger.value !== 0 && nextTick(() => {
+      var n2, v2;
+      return (v2 = (n2 = o$3(f2)) == null ? void 0 : n2.scrollIntoView) == null ? void 0 : v2.call(n2, { block: "nearest" });
+    });
+  });
+  function o2(n2) {
+    if (r2.disabled)
+      return n2.preventDefault();
+    e2.closeMenu(), _$1(o$3(e2.buttonRef));
+  }
+  function t2() {
+    if (r2.disabled)
+      return e2.goToItem(c$1.Nothing);
+    e2.goToItem(c$1.Specific, r2.id);
+  }
+  let p$12 = u$4();
+  function a2(n2) {
+    p$12.update(n2);
+  }
+  function i2(n2) {
+    p$12.wasMoved(n2) && (r2.disabled || s3.value || e2.goToItem(c$1.Specific, r2.id, 0));
+  }
+  function u2(n2) {
+    p$12.wasMoved(n2) && (r2.disabled || s3.value && e2.goToItem(c$1.Nothing));
+  }
+  return () => {
+    let { disabled: n2 } = r2, v2 = { active: s3.value, disabled: n2, close: e2.closeMenu }, { id: M, ...x2 } = r2;
+    return A$3({ ourProps: { id: M, ref: f2, role: "menuitem", tabIndex: n2 === true ? void 0 : -1, "aria-disabled": n2 === true ? true : void 0, disabled: void 0, onClick: o2, onFocus: t2, onPointerenter: a2, onMouseenter: a2, onPointermove: i2, onMousemove: i2, onPointerleave: u2, onMouseleave: u2 }, theirProps: { ...l2, ...x2 }, slot: v2, attrs: l2, slots: b2, name: "MenuItem" });
+  };
+} });
+function l(r2) {
+  let e2 = { called: false };
+  return (...t2) => {
+    if (!e2.called)
+      return e2.called = true, r2(...t2);
+  };
+}
+function m(e2, ...t2) {
+  e2 && t2.length > 0 && e2.classList.add(...t2);
+}
+function d(e2, ...t2) {
+  e2 && t2.length > 0 && e2.classList.remove(...t2);
+}
+var g$1 = ((i2) => (i2.Finished = "finished", i2.Cancelled = "cancelled", i2))(g$1 || {});
+function F(e2, t2) {
+  let i2 = o$1();
+  if (!e2)
+    return i2.dispose;
+  let { transitionDuration: n2, transitionDelay: a2 } = getComputedStyle(e2), [l2, s3] = [n2, a2].map((o2) => {
+    let [u2 = 0] = o2.split(",").filter(Boolean).map((r2) => r2.includes("ms") ? parseFloat(r2) : parseFloat(r2) * 1e3).sort((r2, c2) => c2 - r2);
+    return u2;
+  });
+  return l2 !== 0 ? i2.setTimeout(() => t2("finished"), l2 + s3) : t2("finished"), i2.add(() => t2("cancelled")), i2.dispose;
+}
+function L$1(e2, t2, i2, n2, a2, l$12) {
+  let s3 = o$1(), o2 = l$12 !== void 0 ? l(l$12) : () => {
+  };
+  return d(e2, ...a2), m(e2, ...t2, ...i2), s3.nextFrame(() => {
+    d(e2, ...i2), m(e2, ...n2), s3.add(F(e2, (u2) => (d(e2, ...n2, ...t2), m(e2, ...a2), o2(u2))));
+  }), s3.add(() => d(e2, ...t2, ...i2, ...n2, ...a2)), s3.add(() => o2("cancelled")), s3.dispose;
+}
+function g(e2 = "") {
+  return e2.split(/\s+/).filter((t2) => t2.length > 1);
+}
+let R = Symbol("TransitionContext");
+var pe = ((a2) => (a2.Visible = "visible", a2.Hidden = "hidden", a2))(pe || {});
+function me() {
+  return inject(R, null) !== null;
+}
+function Te() {
+  let e2 = inject(R, null);
+  if (e2 === null)
+    throw new Error("A <TransitionChild /> is used but it is missing a parent <TransitionRoot />.");
+  return e2;
+}
+function ge() {
+  let e2 = inject(N, null);
+  if (e2 === null)
+    throw new Error("A <TransitionChild /> is used but it is missing a parent <TransitionRoot />.");
+  return e2;
+}
+let N = Symbol("NestingContext");
+function L(e2) {
+  return "children" in e2 ? L(e2.children) : e2.value.filter(({ state: t2 }) => t2 === "visible").length > 0;
+}
+function Q(e2) {
+  let t2 = ref([]), a2 = ref(false);
+  onMounted(() => a2.value = true), onUnmounted(() => a2.value = false);
+  function s3(n2, r2 = S$1.Hidden) {
+    let l2 = t2.value.findIndex(({ id: f2 }) => f2 === n2);
+    l2 !== -1 && (u$6(r2, { [S$1.Unmount]() {
+      t2.value.splice(l2, 1);
+    }, [S$1.Hidden]() {
+      t2.value[l2].state = "hidden";
+    } }), !L(t2) && a2.value && (e2 == null || e2()));
+  }
+  function h2(n2) {
+    let r2 = t2.value.find(({ id: l2 }) => l2 === n2);
+    return r2 ? r2.state !== "visible" && (r2.state = "visible") : t2.value.push({ id: n2, state: "visible" }), () => s3(n2, S$1.Unmount);
+  }
+  return { children: t2, register: h2, unregister: s3 };
+}
+let W = N$4.RenderStrategy, he = /* @__PURE__ */ defineComponent({ props: { as: { type: [Object, String], default: "div" }, show: { type: [Boolean], default: null }, unmount: { type: [Boolean], default: true }, appear: { type: [Boolean], default: false }, enter: { type: [String], default: "" }, enterFrom: { type: [String], default: "" }, enterTo: { type: [String], default: "" }, entered: { type: [String], default: "" }, leave: { type: [String], default: "" }, leaveFrom: { type: [String], default: "" }, leaveTo: { type: [String], default: "" } }, emits: { beforeEnter: () => true, afterEnter: () => true, beforeLeave: () => true, afterLeave: () => true }, setup(e2, { emit: t2, attrs: a2, slots: s3, expose: h2 }) {
+  let n2 = ref(0);
+  function r2() {
+    n2.value |= i$1.Opening, t2("beforeEnter");
+  }
+  function l2() {
+    n2.value &= ~i$1.Opening, t2("afterEnter");
+  }
+  function f2() {
+    n2.value |= i$1.Closing, t2("beforeLeave");
+  }
+  function S2() {
+    n2.value &= ~i$1.Closing, t2("afterLeave");
+  }
+  if (!me() && s$2())
+    return () => h$1(Se, { ...e2, onBeforeEnter: r2, onAfterEnter: l2, onBeforeLeave: f2, onAfterLeave: S2 }, s3);
+  let d2 = ref(null), y2 = computed(() => e2.unmount ? S$1.Unmount : S$1.Hidden);
+  h2({ el: d2, $el: d2 });
+  let { show: v2, appear: A2 } = Te(), { register: D, unregister: H2 } = ge(), i2 = ref(v2.value ? "visible" : "hidden"), I2 = { value: true }, c2 = t$6(), b2 = { value: false }, P2 = Q(() => {
+    !b2.value && i2.value !== "hidden" && (i2.value = "hidden", H2(c2), S2());
+  });
+  onMounted(() => {
+    let o2 = D(c2);
+    onUnmounted(o2);
+  }), watchEffect(() => {
+    if (y2.value === S$1.Hidden && c2) {
+      if (v2.value && i2.value !== "visible") {
+        i2.value = "visible";
+        return;
+      }
+      u$6(i2.value, { ["hidden"]: () => H2(c2), ["visible"]: () => D(c2) });
+    }
+  });
+  let j2 = g(e2.enter), M = g(e2.enterFrom), X = g(e2.enterTo), _2 = g(e2.entered), Y2 = g(e2.leave), Z2 = g(e2.leaveFrom), ee2 = g(e2.leaveTo);
+  onMounted(() => {
+    watchEffect(() => {
+      if (i2.value === "visible") {
+        let o2 = o$3(d2);
+        if (o2 instanceof Comment && o2.data === "")
+          throw new Error("Did you forget to passthrough the `ref` to the actual DOM node?");
+      }
+    });
+  });
+  function te(o2) {
+    let E2 = I2.value && !A2.value, p2 = o$3(d2);
+    !p2 || !(p2 instanceof HTMLElement) || E2 || (b2.value = true, v2.value && r2(), v2.value || f2(), o2(v2.value ? L$1(p2, j2, M, X, _2, (V) => {
+      b2.value = false, V === g$1.Finished && l2();
+    }) : L$1(p2, Y2, Z2, ee2, _2, (V) => {
+      b2.value = false, V === g$1.Finished && (L(P2) || (i2.value = "hidden", H2(c2), S2()));
+    })));
+  }
+  return onMounted(() => {
+    watch([v2], (o2, E2, p2) => {
+      te(p2), I2.value = false;
+    }, { immediate: true });
+  }), provide(N, P2), t$4(computed(() => u$6(i2.value, { ["visible"]: i$1.Open, ["hidden"]: i$1.Closed }) | n2.value)), () => {
+    let { appear: o2, show: E2, enter: p2, enterFrom: V, enterTo: Ce, entered: ye, leave: be2, leaveFrom: Ee, leaveTo: Ve, ...U } = e2, ne = { ref: d2 }, re = { ...U, ...A2.value && v2.value && c$3.isServer ? { class: normalizeClass([a2.class, U.class, ...j2, ...M]) } : {} };
+    return A$3({ theirProps: re, ourProps: ne, slot: {}, slots: s3, attrs: a2, features: W, visible: i2.value === "visible", name: "TransitionChild" });
+  };
+} }), ce = he, Se = /* @__PURE__ */ defineComponent({ inheritAttrs: false, props: { as: { type: [Object, String], default: "div" }, show: { type: [Boolean], default: null }, unmount: { type: [Boolean], default: true }, appear: { type: [Boolean], default: false }, enter: { type: [String], default: "" }, enterFrom: { type: [String], default: "" }, enterTo: { type: [String], default: "" }, entered: { type: [String], default: "" }, leave: { type: [String], default: "" }, leaveFrom: { type: [String], default: "" }, leaveTo: { type: [String], default: "" } }, emits: { beforeEnter: () => true, afterEnter: () => true, beforeLeave: () => true, afterLeave: () => true }, setup(e2, { emit: t2, attrs: a2, slots: s3 }) {
+  let h2 = l$2(), n2 = computed(() => e2.show === null && h2 !== null ? (h2.value & i$1.Open) === i$1.Open : e2.show);
+  watchEffect(() => {
+    if (![true, false].includes(n2.value))
+      throw new Error('A <Transition /> is used but it is missing a `:show="true | false"` prop.');
+  });
+  let r2 = ref(n2.value ? "visible" : "hidden"), l2 = Q(() => {
+    r2.value = "hidden";
+  }), f2 = ref(true), S2 = { show: n2, appear: computed(() => e2.appear || !f2.value) };
+  return onMounted(() => {
+    watchEffect(() => {
+      f2.value = false, n2.value ? r2.value = "visible" : L(l2) || (r2.value = "hidden");
+    });
+  }), provide(N, l2), provide(R, S2), () => {
+    let d2 = T$1(e2, ["show", "appear", "unmount", "onBeforeEnter", "onBeforeLeave", "onAfterEnter", "onAfterLeave"]), y2 = { unmount: e2.unmount };
+    return A$3({ ourProps: { ...y2, as: "template" }, theirProps: {}, slot: {}, slots: { ...s3, default: () => [h$1(ce, { onBeforeEnter: () => t2("beforeEnter"), onAfterEnter: () => t2("afterEnter"), onBeforeLeave: () => t2("beforeLeave"), onAfterLeave: () => t2("afterLeave"), ...a2, ...y2, ...d2 }, s3.default)] }, attrs: {}, features: W, visible: r2.value === "visible", name: "Transition" });
+  };
+} });
 var OverlayEventBus = primebus();
-var script$i = {
+var script$j = {
   name: "Portal",
   props: {
     appendTo: {
@@ -21781,12 +19931,12 @@ var script$i = {
       "default": false
     }
   },
-  data: function data3() {
+  data: function data2() {
     return {
       mounted: false
     };
   },
-  mounted: function mounted5() {
+  mounted: function mounted4() {
     this.mounted = DomHandler.isClient();
   },
   computed: {
@@ -21795,7 +19945,7 @@ var script$i = {
     }
   }
 };
-function render$j(_ctx, _cache, $props, $setup, $data, $options) {
+function render$k(_ctx, _cache, $props, $setup, $data, $options) {
   return $options.inline ? renderSlot(_ctx.$slots, "default", {
     key: 0
   }) : $data.mounted ? (openBlock(), createBlock(Teleport, {
@@ -21803,7 +19953,7 @@ function render$j(_ctx, _cache, $props, $setup, $data, $options) {
     to: $props.appendTo
   }, [renderSlot(_ctx.$slots, "default")], 8, ["to"])) : createCommentVNode("", true);
 }
-script$i.render = render$j;
+script$j.render = render$k;
 var classes$7 = {
   root: function root5(_ref) {
     var instance = _ref.instance, props = _ref.props;
@@ -22026,12 +20176,12 @@ function _arrayLikeToArray$5(arr, len) {
     arr2[i2] = arr[i2];
   return arr2;
 }
-var script$h = {
+var script$i = {
   name: "Menu",
   "extends": script$2$2,
   inheritAttrs: false,
   emits: ["show", "hide", "focus", "blur"],
-  data: function data4() {
+  data: function data3() {
     return {
       id: this.$attrs.id,
       overlayVisible: false,
@@ -22051,14 +20201,14 @@ var script$h = {
   resizeListener: null,
   container: null,
   list: null,
-  mounted: function mounted6() {
+  mounted: function mounted5() {
     this.id = this.id || UniqueComponentId();
     if (!this.popup) {
       this.bindResizeListener();
       this.bindOutsideClickListener();
     }
   },
-  beforeUnmount: function beforeUnmount3() {
+  beforeUnmount: function beforeUnmount2() {
     this.unbindResizeListener();
     this.unbindOutsideClickListener();
     if (this.scrollHandler) {
@@ -22258,7 +20408,7 @@ var script$h = {
         this.outsideClickListener = null;
       }
     },
-    bindScrollListener: function bindScrollListener2() {
+    bindScrollListener: function bindScrollListener() {
       var _this2 = this;
       if (!this.scrollHandler) {
         this.scrollHandler = new ConnectedOverlayScrollHandler(this.target, function() {
@@ -22269,7 +20419,7 @@ var script$h = {
       }
       this.scrollHandler.bindScrollListener();
     },
-    unbindScrollListener: function unbindScrollListener2() {
+    unbindScrollListener: function unbindScrollListener() {
       if (this.scrollHandler) {
         this.scrollHandler.unbindScrollListener();
       }
@@ -22320,7 +20470,7 @@ var script$h = {
   },
   components: {
     PVMenuitem: script$1$8,
-    Portal: script$i
+    Portal: script$j
   }
 };
 function _typeof$7(o2) {
@@ -22377,10 +20527,10 @@ function _toPrimitive$7(t2, r2) {
   }
   return ("string" === r2 ? String : Number)(t2);
 }
-var _hoisted_1$t = ["id"];
-var _hoisted_2$o = ["id", "tabindex", "aria-activedescendant", "aria-label", "aria-labelledby"];
-var _hoisted_3$g = ["id"];
-function render$i(_ctx, _cache, $props, $setup, $data, $options) {
+var _hoisted_1$w = ["id"];
+var _hoisted_2$r = ["id", "tabindex", "aria-activedescendant", "aria-label", "aria-labelledby"];
+var _hoisted_3$j = ["id"];
+function render$j(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_PVMenuitem = resolveComponent("PVMenuitem");
   var _component_Portal = resolveComponent("Portal");
   return openBlock(), createBlock(_component_Portal, {
@@ -22438,7 +20588,7 @@ function render$i(_ctx, _cache, $props, $setup, $data, $options) {
               item
             }, function() {
               return [createTextVNode(toDisplayString($options.label(item)), 1)];
-            })], 16, _hoisted_3$g)) : createCommentVNode("", true), (openBlock(true), createElementBlock(Fragment, null, renderList(item.items, function(child, j2) {
+            })], 16, _hoisted_3$j)) : createCommentVNode("", true), (openBlock(true), createElementBlock(Fragment, null, renderList(item.items, function(child, j2) {
               return openBlock(), createElementBlock(Fragment, {
                 key: child.label + i2 + "_" + j2
               }, [$options.visible(child) && !child.separator ? (openBlock(), createBlock(_component_PVMenuitem, {
@@ -22470,10 +20620,10 @@ function render$i(_ctx, _cache, $props, $setup, $data, $options) {
               onItemClick: $options.itemClick,
               pt: _ctx.pt
             }, null, 8, ["id", "item", "index", "templates", "focusedOptionId", "onItemClick", "pt"]))], 64);
-          }), 128))], 16, _hoisted_2$o), _ctx.$slots.end ? (openBlock(), createElementBlock("div", mergeProps({
+          }), 128))], 16, _hoisted_2$r), _ctx.$slots.end ? (openBlock(), createElementBlock("div", mergeProps({
             key: 1,
             "class": _ctx.cx("end")
-          }, _ctx.ptm("end")), [renderSlot(_ctx.$slots, "end")], 16)) : createCommentVNode("", true)], 16, _hoisted_1$t)) : createCommentVNode("", true)];
+          }, _ctx.ptm("end")), [renderSlot(_ctx.$slots, "end")], 16)) : createCommentVNode("", true)], 16, _hoisted_1$w)) : createCommentVNode("", true)];
         }),
         _: 3
       }, 16, ["onEnter", "onLeave", "onAfterLeave"])];
@@ -22481,9 +20631,9 @@ function render$i(_ctx, _cache, $props, $setup, $data, $options) {
     _: 3
   }, 8, ["appendTo", "disabled"]);
 }
-script$h.render = render$i;
-const _hoisted_1$s = { class: "sgm-pt-2 sgm-w-full" };
-const _sfc_main$h = {
+script$i.render = render$j;
+const _hoisted_1$v = { class: "sgm-pt-2 sgm-w-full" };
+const _sfc_main$k = {
   __name: "MobileSortAccordion",
   props: {
     label: String,
@@ -22491,7 +20641,7 @@ const _sfc_main$h = {
   },
   setup(__props) {
     return (_ctx, _cache) => {
-      return openBlock(), createBlock(unref(script$k), {
+      return openBlock(), createBlock(unref(script$l), {
         pt: {
           root: {
             class: "sgm-flex sgm-flex-col sgm-space-y-6 sgm-px-4 lg:sgm-px-0"
@@ -22508,7 +20658,7 @@ const _sfc_main$h = {
         ]),
         default: withCtx(() => [
           createBaseVNode("template", null, [
-            createVNode(unref(script$j), { pt: {
+            createVNode(unref(script$k), { pt: {
               root: { class: "sgm-border" },
               headeraction: {
                 class: "sgm-flex sgm-flex-row-reverse sgm-items-center sgm-justify-between"
@@ -22521,7 +20671,7 @@ const _sfc_main$h = {
                 }, null, 8, ["subtitle"])
               ]),
               default: withCtx(() => [
-                createBaseVNode("div", _hoisted_1$s, [
+                createBaseVNode("div", _hoisted_1$v, [
                   (openBlock(true), createElementBlock(Fragment, null, renderList(__props.options, (option) => {
                     return renderSlot(_ctx.$slots, "default", normalizeProps(guardReactiveProps(option)));
                   }), 256))
@@ -22536,10 +20686,10 @@ const _sfc_main$h = {
     };
   }
 };
-const MobileSortAccordion = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["__file", "MobileSortAccordion.vue"]]);
-const _hoisted_1$r = { class: "sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3" };
-const _hoisted_2$n = { class: "sgm-text-black" };
-const _sfc_main$g = {
+const MobileSortAccordion = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["__file", "MobileSortAccordion.vue"]]);
+const _hoisted_1$u = { class: "sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3" };
+const _hoisted_2$q = { class: "sgm-text-black" };
+const _sfc_main$j = {
   __name: "SortMenu",
   props: {
     label: String,
@@ -22547,7 +20697,7 @@ const _sfc_main$g = {
   },
   setup(__props) {
     return (_ctx, _cache) => {
-      return openBlock(), createElementBlock("div", _hoisted_1$r, [
+      return openBlock(), createElementBlock("div", _hoisted_1$u, [
         createVNode(unref(Ie), {
           as: "div",
           class: "sgm-relative sgm-inline-block sgm-text-left sgm-rounded-full sgm-border sgm-border-gray-950"
@@ -22559,12 +20709,12 @@ const _sfc_main$g = {
                 class: "sgm-group sgm-inline-flex sgm-justify-center sgm-text-sm sgm-text-gray-700 sgm-hover:text-gray-900"
               }, {
                 default: withCtx(() => [
-                  createVNode(unref(script$o), {
+                  createVNode(unref(script$p), {
                     severity: "secondary",
                     outlined: ""
                   }, {
                     default: withCtx(() => [
-                      createBaseVNode("span", _hoisted_2$n, toDisplayString(__props.label), 1),
+                      createBaseVNode("span", _hoisted_2$q, toDisplayString(__props.label), 1),
                       createVNode(ChevronDownIcon, {
                         class: "sgm--mr-1 sgm-ml-1 sgm-h-4 sgm-w-4 sgm-flex-shrink-0 sgm-text-secondary-color sgm-group-hover:text-gray-500",
                         "aria-hidden": "true"
@@ -22587,7 +20737,7 @@ const _sfc_main$g = {
               default: withCtx(() => [
                 createVNode(unref(Se$1), { class: "sgm-absolute sgm-left-0 sgm-z-10 sgm-mt-2 sgm-w-40 sgm-origin-top-right sgm-rounded-md sgm-bg-white sgm-shadow-2xl sgm-ring-1 sgm-ring-black sgm-ring-opacity-5 sgm-focus:outline-none" }, {
                   default: withCtx(() => [
-                    createVNode(unref(script$h), { model: __props.options }, {
+                    createVNode(unref(script$i), { model: __props.options }, {
                       item: withCtx(({ item, props }) => [
                         createVNode(unref(be), null, {
                           default: withCtx(({ active }) => [
@@ -22611,7 +20761,7 @@ const _sfc_main$g = {
     };
   }
 };
-const SortMenu = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["__file", "SortMenu.vue"]]);
+const SortMenu = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["__file", "SortMenu.vue"]]);
 const namespaces = {
   svg: "http://www.w3.org/2000/svg",
   xmlns: "http://www.w3.org/2000/xmlns/",
@@ -24439,16 +22589,16 @@ var script$1$7 = {
     };
   }
 };
-var script$g = {
+var script$h = {
   name: "InputGroup",
   "extends": script$1$7
 };
-function render$h(_ctx, _cache, $props, $setup, $data, $options) {
+function render$i(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("div", mergeProps({
     "class": _ctx.cx("root")
   }, _ctx.ptm("root")), [renderSlot(_ctx.$slots, "default")], 16);
 }
-script$g.render = render$h;
+script$h.render = render$i;
 var classes$5 = {
   root: "p-inputgroup-addon"
 };
@@ -24466,25 +22616,44 @@ var script$1$6 = {
     };
   }
 };
-var script$f = {
+var script$g = {
   name: "InputGroupAddon",
   "extends": script$1$6
 };
-function render$g(_ctx, _cache, $props, $setup, $data, $options) {
+function render$h(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("div", mergeProps({
     "class": _ctx.cx("root")
   }, _ctx.ptm("root")), [renderSlot(_ctx.$slots, "default")], 16);
 }
-script$f.render = render$g;
-var script$e = {
+script$g.render = render$h;
+var script$f = {
   name: "AngleDownIcon",
-  "extends": script$q
+  "extends": script$r
 };
-var _hoisted_1$q = /* @__PURE__ */ createBaseVNode("path", {
+var _hoisted_1$t = /* @__PURE__ */ createBaseVNode("path", {
   d: "M3.58659 4.5007C3.68513 4.50023 3.78277 4.51945 3.87379 4.55723C3.9648 4.59501 4.04735 4.65058 4.11659 4.7207L7.11659 7.7207L10.1166 4.7207C10.2619 4.65055 10.4259 4.62911 10.5843 4.65956C10.7427 4.69002 10.8871 4.77074 10.996 4.88976C11.1049 5.00877 11.1726 5.15973 11.1889 5.32022C11.2052 5.48072 11.1693 5.6422 11.0866 5.7807L7.58659 9.2807C7.44597 9.42115 7.25534 9.50004 7.05659 9.50004C6.85784 9.50004 6.66722 9.42115 6.52659 9.2807L3.02659 5.7807C2.88614 5.64007 2.80725 5.44945 2.80725 5.2507C2.80725 5.05195 2.88614 4.86132 3.02659 4.7207C3.09932 4.64685 3.18675 4.58911 3.28322 4.55121C3.37969 4.51331 3.48305 4.4961 3.58659 4.5007Z",
   fill: "currentColor"
 }, null, -1);
-var _hoisted_2$m = [_hoisted_1$q];
+var _hoisted_2$p = [_hoisted_1$t];
+function render$g(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("svg", mergeProps({
+    width: "14",
+    height: "14",
+    viewBox: "0 0 14 14",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
+  }, _ctx.pti()), _hoisted_2$p, 16);
+}
+script$f.render = render$g;
+var script$e = {
+  name: "AngleUpIcon",
+  "extends": script$r
+};
+var _hoisted_1$s = /* @__PURE__ */ createBaseVNode("path", {
+  d: "M10.4134 9.49931C10.3148 9.49977 10.2172 9.48055 10.1262 9.44278C10.0352 9.405 9.95263 9.34942 9.88338 9.27931L6.88338 6.27931L3.88338 9.27931C3.73811 9.34946 3.57409 9.3709 3.41567 9.34044C3.25724 9.30999 3.11286 9.22926 3.00395 9.11025C2.89504 8.99124 2.82741 8.84028 2.8111 8.67978C2.79478 8.51928 2.83065 8.35781 2.91338 8.21931L6.41338 4.71931C6.55401 4.57886 6.74463 4.49997 6.94338 4.49997C7.14213 4.49997 7.33276 4.57886 7.47338 4.71931L10.9734 8.21931C11.1138 8.35994 11.1927 8.55056 11.1927 8.74931C11.1927 8.94806 11.1138 9.13868 10.9734 9.27931C10.9007 9.35315 10.8132 9.41089 10.7168 9.44879C10.6203 9.48669 10.5169 9.5039 10.4134 9.49931Z",
+  fill: "currentColor"
+}, null, -1);
+var _hoisted_2$o = [_hoisted_1$s];
 function render$f(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("svg", mergeProps({
     width: "14",
@@ -24492,28 +22661,9 @@ function render$f(_ctx, _cache, $props, $setup, $data, $options) {
     viewBox: "0 0 14 14",
     fill: "none",
     xmlns: "http://www.w3.org/2000/svg"
-  }, _ctx.pti()), _hoisted_2$m, 16);
+  }, _ctx.pti()), _hoisted_2$o, 16);
 }
 script$e.render = render$f;
-var script$d = {
-  name: "AngleUpIcon",
-  "extends": script$q
-};
-var _hoisted_1$p = /* @__PURE__ */ createBaseVNode("path", {
-  d: "M10.4134 9.49931C10.3148 9.49977 10.2172 9.48055 10.1262 9.44278C10.0352 9.405 9.95263 9.34942 9.88338 9.27931L6.88338 6.27931L3.88338 9.27931C3.73811 9.34946 3.57409 9.3709 3.41567 9.34044C3.25724 9.30999 3.11286 9.22926 3.00395 9.11025C2.89504 8.99124 2.82741 8.84028 2.8111 8.67978C2.79478 8.51928 2.83065 8.35781 2.91338 8.21931L6.41338 4.71931C6.55401 4.57886 6.74463 4.49997 6.94338 4.49997C7.14213 4.49997 7.33276 4.57886 7.47338 4.71931L10.9734 8.21931C11.1138 8.35994 11.1927 8.55056 11.1927 8.74931C11.1927 8.94806 11.1138 9.13868 10.9734 9.27931C10.9007 9.35315 10.8132 9.41089 10.7168 9.44879C10.6203 9.48669 10.5169 9.5039 10.4134 9.49931Z",
-  fill: "currentColor"
-}, null, -1);
-var _hoisted_2$l = [_hoisted_1$p];
-function render$e(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("svg", mergeProps({
-    width: "14",
-    height: "14",
-    viewBox: "0 0 14 14",
-    fill: "none",
-    xmlns: "http://www.w3.org/2000/svg"
-  }, _ctx.pti()), _hoisted_2$l, 16);
-}
-script$d.render = render$e;
 var classes$4 = {
   root: function root6(_ref) {
     var instance = _ref.instance, props = _ref.props;
@@ -24555,7 +22705,7 @@ var script$1$5 = {
     };
   }
 };
-var script$c = {
+var script$d = {
   name: "InputText",
   "extends": script$1$5,
   emits: ["update:modelValue"],
@@ -24578,17 +22728,17 @@ var script$c = {
     }
   }
 };
-var _hoisted_1$o = ["value"];
-function render$d(_ctx, _cache, $props, $setup, $data, $options) {
+var _hoisted_1$r = ["value"];
+function render$e(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("input", mergeProps({
     "class": _ctx.cx("root"),
     value: _ctx.modelValue,
     onInput: _cache[0] || (_cache[0] = function() {
       return $options.onInput && $options.onInput.apply($options, arguments);
     })
-  }, $options.getPTOptions("root")), null, 16, _hoisted_1$o);
+  }, $options.getPTOptions("root")), null, 16, _hoisted_1$r);
 }
-script$c.render = render$d;
+script$d.render = render$e;
 var classes$3 = {
   root: function root7(_ref) {
     var instance = _ref.instance, props = _ref.props;
@@ -24876,7 +23026,7 @@ function _arrayLikeToArray$4(arr, len) {
     arr2[i2] = arr[i2];
   return arr2;
 }
-var script$b = {
+var script$c = {
   name: "InputNumber",
   "extends": script$1$4,
   emits: ["update:modelValue", "input", "focus", "blur"],
@@ -24894,7 +23044,7 @@ var script$b = {
   prefixChar: null,
   suffixChar: null,
   timer: null,
-  data: function data5() {
+  data: function data4() {
     return {
       d_modelValue: this.modelValue,
       focused: false
@@ -25702,13 +23852,13 @@ var script$b = {
     }
   },
   components: {
-    INInputText: script$c,
-    INButton: script$o,
-    AngleUpIcon: script$d,
-    AngleDownIcon: script$e
+    INInputText: script$d,
+    INButton: script$p,
+    AngleUpIcon: script$e,
+    AngleDownIcon: script$f
   }
 };
-function render$c(_ctx, _cache, $props, $setup, $data, $options) {
+function render$d(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_INInputText = resolveComponent("INInputText");
   var _component_INButton = resolveComponent("INButton");
   return openBlock(), createElementBlock("span", mergeProps({
@@ -25825,7 +23975,7 @@ function render$c(_ctx, _cache, $props, $setup, $data, $options) {
     _: 3
   }, 16, ["class", "disabled", "pt", "unstyled"])) : createCommentVNode("", true)], 16);
 }
-script$b.render = render$c;
+script$c.render = render$d;
 var inlineStyles = {
   handle: {
     position: "absolute"
@@ -25934,7 +24084,7 @@ function _arrayLikeToArray$3(arr, len) {
     arr2[i2] = arr[i2];
   return arr2;
 }
-var script$a = {
+var script$b = {
   name: "Slider",
   "extends": script$1$3,
   emits: ["update:modelValue", "change", "slideend"],
@@ -25946,7 +24096,7 @@ var script$a = {
   barHeight: null,
   dragListener: null,
   dragEndListener: null,
-  beforeUnmount: function beforeUnmount4() {
+  beforeUnmount: function beforeUnmount3() {
     this.unbindDragListeners();
   },
   methods: {
@@ -26231,10 +24381,10 @@ var script$a = {
     }
   }
 };
-var _hoisted_1$n = ["tabindex", "aria-valuemin", "aria-valuenow", "aria-valuemax", "aria-labelledby", "aria-label", "aria-orientation"];
-var _hoisted_2$k = ["tabindex", "aria-valuemin", "aria-valuenow", "aria-valuemax", "aria-labelledby", "aria-label", "aria-orientation"];
-var _hoisted_3$f = ["tabindex", "aria-valuemin", "aria-valuenow", "aria-valuemax", "aria-labelledby", "aria-label", "aria-orientation"];
-function render$b(_ctx, _cache, $props, $setup, $data, $options) {
+var _hoisted_1$q = ["tabindex", "aria-valuemin", "aria-valuenow", "aria-valuemax", "aria-labelledby", "aria-label", "aria-orientation"];
+var _hoisted_2$n = ["tabindex", "aria-valuemin", "aria-valuenow", "aria-valuemax", "aria-labelledby", "aria-label", "aria-orientation"];
+var _hoisted_3$i = ["tabindex", "aria-valuemin", "aria-valuenow", "aria-valuemax", "aria-labelledby", "aria-label", "aria-orientation"];
+function render$c(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("div", mergeProps({
     "class": _ctx.cx("root"),
     onClick: _cache[15] || (_cache[15] = function() {
@@ -26272,7 +24422,7 @@ function render$b(_ctx, _cache, $props, $setup, $data, $options) {
     "aria-labelledby": _ctx.ariaLabelledby,
     "aria-label": _ctx.ariaLabel,
     "aria-orientation": _ctx.orientation
-  }, _ctx.ptm("handle")), null, 16, _hoisted_1$n)) : createCommentVNode("", true), _ctx.range ? (openBlock(), createElementBlock("span", mergeProps({
+  }, _ctx.ptm("handle")), null, 16, _hoisted_1$q)) : createCommentVNode("", true), _ctx.range ? (openBlock(), createElementBlock("span", mergeProps({
     key: 1,
     "class": _ctx.cx("handle"),
     style: [_ctx.sx("handle"), $options.rangeStartHandleStyle],
@@ -26299,7 +24449,7 @@ function render$b(_ctx, _cache, $props, $setup, $data, $options) {
     "aria-labelledby": _ctx.ariaLabelledby,
     "aria-label": _ctx.ariaLabel,
     "aria-orientation": _ctx.orientation
-  }, _ctx.ptm("startHandler")), null, 16, _hoisted_2$k)) : createCommentVNode("", true), _ctx.range ? (openBlock(), createElementBlock("span", mergeProps({
+  }, _ctx.ptm("startHandler")), null, 16, _hoisted_2$n)) : createCommentVNode("", true), _ctx.range ? (openBlock(), createElementBlock("span", mergeProps({
     key: 2,
     "class": _ctx.cx("handle"),
     style: [_ctx.sx("handle"), $options.rangeEndHandleStyle],
@@ -26326,12 +24476,12 @@ function render$b(_ctx, _cache, $props, $setup, $data, $options) {
     "aria-labelledby": _ctx.ariaLabelledby,
     "aria-label": _ctx.ariaLabel,
     "aria-orientation": _ctx.orientation
-  }, _ctx.ptm("endHandler")), null, 16, _hoisted_3$f)) : createCommentVNode("", true)], 16);
+  }, _ctx.ptm("endHandler")), null, 16, _hoisted_3$i)) : createCommentVNode("", true)], 16);
 }
-script$a.render = render$b;
-const _hoisted_1$m = { class: "sgm-relative sgm-w-full" };
-const _hoisted_2$j = { class: "sgm-flex sgm-flex-row sgm-justify-between sgm-items-center sgm-mt-3 sgm-space-x-3" };
-const _hoisted_3$e = { class: "sgm-text-black sgm-leading-3" };
+script$b.render = render$c;
+const _hoisted_1$p = { class: "sgm-relative sgm-w-full" };
+const _hoisted_2$m = { class: "sgm-flex sgm-flex-row sgm-justify-between sgm-items-center sgm-mt-3 sgm-space-x-3" };
+const _hoisted_3$h = { class: "sgm-text-black sgm-leading-3" };
 const _hoisted_4$a = { class: "sgm-text-black sgm-leading-3" };
 const _hoisted_5$9 = { class: "sgm-text-black sgm-leading-3" };
 const _hoisted_6$6 = { class: "sgm-text-black sgm-leading-3" };
@@ -26341,7 +24491,7 @@ const _hoisted_8$5 = {
   class: "sgm-hidden lg:sgm-block sgm-h-12 ct-chart sgm-ct-chart-pie sgm-ct-perfect-fourth"
 };
 const _hoisted_9$5 = { class: "sgm-px-2" };
-const _sfc_main$f = {
+const _sfc_main$i = {
   __name: "PriceSlider",
   props: {
     label: {
@@ -26502,22 +24652,22 @@ const _sfc_main$f = {
       createChart();
     });
     return (_ctx, _cache) => {
-      return openBlock(), createElementBlock("div", _hoisted_1$m, [
-        createBaseVNode("div", _hoisted_2$j, [
-          createVNode(unref(script$g), null, {
+      return openBlock(), createElementBlock("div", _hoisted_1$p, [
+        createBaseVNode("div", _hoisted_2$m, [
+          createVNode(unref(script$h), null, {
             default: withCtx(() => [
-              currencySymbolPosition.value === "before" ? (openBlock(), createBlock(unref(script$f), { key: 0 }, {
+              currencySymbolPosition.value === "before" ? (openBlock(), createBlock(unref(script$g), { key: 0 }, {
                 default: withCtx(() => [
-                  createBaseVNode("span", _hoisted_3$e, toDisplayString(__props.currency), 1)
+                  createBaseVNode("span", _hoisted_3$h, toDisplayString(__props.currency), 1)
                 ]),
                 _: 1
               })) : createCommentVNode("", true),
-              createVNode(unref(script$b), {
+              createVNode(unref(script$c), {
                 "input-id": "min-price",
                 modelValue: __props.range[0],
                 "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => __props.range[0] = $event)
               }, null, 8, ["modelValue"]),
-              currencySymbolPosition.value === "after" ? (openBlock(), createBlock(unref(script$f), { key: 1 }, {
+              currencySymbolPosition.value === "after" ? (openBlock(), createBlock(unref(script$g), { key: 1 }, {
                 default: withCtx(() => [
                   createBaseVNode("span", _hoisted_4$a, toDisplayString(__props.currency), 1)
                 ]),
@@ -26526,20 +24676,20 @@ const _sfc_main$f = {
             ]),
             _: 1
           }),
-          createVNode(unref(script$g), null, {
+          createVNode(unref(script$h), null, {
             default: withCtx(() => [
-              currencySymbolPosition.value === "before" ? (openBlock(), createBlock(unref(script$f), { key: 0 }, {
+              currencySymbolPosition.value === "before" ? (openBlock(), createBlock(unref(script$g), { key: 0 }, {
                 default: withCtx(() => [
                   createBaseVNode("span", _hoisted_5$9, toDisplayString(__props.currency), 1)
                 ]),
                 _: 1
               })) : createCommentVNode("", true),
-              createVNode(unref(script$b), {
+              createVNode(unref(script$c), {
                 "input-id": "max-price",
                 modelValue: __props.range[1],
                 "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => __props.range[1] = $event)
               }, null, 8, ["modelValue"]),
-              currencySymbolPosition.value === "after" ? (openBlock(), createBlock(unref(script$f), { key: 1 }, {
+              currencySymbolPosition.value === "after" ? (openBlock(), createBlock(unref(script$g), { key: 1 }, {
                 default: withCtx(() => [
                   createBaseVNode("span", _hoisted_6$6, toDisplayString(__props.currency), 1)
                 ]),
@@ -26552,7 +24702,7 @@ const _sfc_main$f = {
         createBaseVNode("div", _hoisted_7$6, [
           __props.showChart ? (openBlock(), createElementBlock("div", _hoisted_8$5)) : createCommentVNode("", true),
           createBaseVNode("div", _hoisted_9$5, [
-            createVNode(unref(script$a), {
+            createVNode(unref(script$b), {
               range: true,
               min: min.value,
               max: max.value,
@@ -26567,8 +24717,8 @@ const _sfc_main$f = {
     };
   }
 };
-const PriceSlider = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["__file", "PriceSlider.vue"]]);
-function render$a(_ctx, _cache) {
+const PriceSlider = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["__file", "PriceSlider.vue"]]);
+function render$b(_ctx, _cache) {
   return openBlock(), createElementBlock("svg", {
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 20 20",
@@ -26583,7 +24733,7 @@ function render$a(_ctx, _cache) {
     })
   ]);
 }
-function render$9(_ctx, _cache) {
+function render$a(_ctx, _cache) {
   return openBlock(), createElementBlock("svg", {
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 20 20",
@@ -26598,9 +24748,9 @@ function render$9(_ctx, _cache) {
     })
   ]);
 }
-const _hoisted_1$l = { class: "sgm-flex sgm-flex-row sgm-w-full sgm-justify-end sgm-max-w-7xl sgm-mx-auto" };
-const _hoisted_2$i = { class: "sgm-flex sgm-flex-row sgm-justify-between sgm-w-full sgm-items-center sgm-bg-white" };
-const _hoisted_3$d = ["disabled"];
+const _hoisted_1$o = { class: "sgm-flex sgm-flex-row sgm-w-full sgm-justify-end sgm-max-w-7xl sgm-mx-auto" };
+const _hoisted_2$l = { class: "sgm-flex sgm-flex-row sgm-justify-between sgm-w-full sgm-items-center sgm-bg-white" };
+const _hoisted_3$g = ["disabled"];
 const _hoisted_4$9 = /* @__PURE__ */ createBaseVNode("span", { class: "sgm-sr-only" }, "Previous", -1);
 const _hoisted_5$8 = {
   key: 0,
@@ -26613,7 +24763,7 @@ const _hoisted_7$5 = {
 };
 const _hoisted_8$4 = ["disabled"];
 const _hoisted_9$4 = /* @__PURE__ */ createBaseVNode("span", { class: "sgm-sr-only" }, "Next", -1);
-const _sfc_main$e = {
+const _sfc_main$h = {
   __name: "Pagination",
   props: {
     total: {
@@ -26630,19 +24780,19 @@ const _sfc_main$e = {
     const props = __props;
     const totalPages = computed(() => Math.ceil(props.total / props.perPage));
     return (_ctx, _cache) => {
-      return openBlock(), createElementBlock("div", _hoisted_1$l, [
-        createBaseVNode("div", _hoisted_2$i, [
+      return openBlock(), createElementBlock("div", _hoisted_1$o, [
+        createBaseVNode("div", _hoisted_2$l, [
           createBaseVNode("div", {
             disabled: __props.currentPage <= 1,
             onClick: _cache[0] || (_cache[0] = ($event) => __props.currentPage <= 1 ? null : _ctx.$emit("changePage", __props.currentPage - 1)),
             class: "sgm-cursor-pointer sgm-relative sgm-inline-flex sgm-items-center sgm-px-2 sgm-py-2 sgm-text-sm sgm-font-semibold sgm-text-gray-900 sgm-hover:bg-gray-50 sgm-focus:z-20 sgm-focus:outline-offset-0 sgm-rounded-l-md"
           }, [
             _hoisted_4$9,
-            createVNode(unref(render$a), {
+            createVNode(unref(render$b), {
               class: "sgm-h-5 sgm-w-5",
               "aria-hidden": "true"
             })
-          ], 8, _hoisted_3$d),
+          ], 8, _hoisted_3$g),
           createBaseVNode("div", null, [
             createBaseVNode("div", {
               onClick: _cache[1] || (_cache[1] = ($event) => _ctx.$emit("changePage", 1)),
@@ -26680,7 +24830,7 @@ const _sfc_main$e = {
             class: "sgm-cursor-pointer sgm-relative sgm-inline-flex sgm-items-center sgm-px-2 sgm-py-2 sgm-text-sm sgm-font-semibold sgm-text-gray-900 sgm-hover:bg-gray-50 sgm-focus:z-20 sgm-focus:outline-offset-0 sgm-rounded-r-md"
           }, [
             _hoisted_9$4,
-            createVNode(unref(render$9), {
+            createVNode(unref(render$a), {
               class: "sgm-h-5 sgm-w-5",
               "aria-hidden": "true"
             })
@@ -26690,7 +24840,7 @@ const _sfc_main$e = {
     };
   }
 };
-const Pagination = /* @__PURE__ */ _export_sfc(_sfc_main$e, [["__file", "Pagination.vue"]]);
+const Pagination = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["__file", "Pagination.vue"]]);
 var css = "\n@layer primevue {\n    .p-virtualscroller {\n        position: relative;\n        overflow: auto;\n        contain: strict;\n        transform: translateZ(0);\n        will-change: scroll-position;\n        outline: 0 none;\n    }\n\n    .p-virtualscroller-content {\n        position: absolute;\n        top: 0;\n        left: 0;\n        /* contain: content; */\n        min-height: 100%;\n        min-width: 100%;\n        will-change: transform;\n    }\n\n    .p-virtualscroller-spacer {\n        position: absolute;\n        top: 0;\n        left: 0;\n        height: 1px;\n        width: 1px;\n        transform-origin: 0 0;\n        pointer-events: none;\n    }\n\n    .p-virtualscroller .p-virtualscroller-loader {\n        position: sticky;\n        top: 0;\n        left: 0;\n        width: 100%;\n        height: 100%;\n    }\n\n    .p-virtualscroller-loader.p-component-overlay {\n        display: flex;\n        align-items: center;\n        justify-content: center;\n    }\n\n    .p-virtualscroller-loading-icon {\n        font-size: 2rem;\n    }\n\n    .p-virtualscroller-loading-icon.p-icon {\n        width: 2rem;\n        height: 2rem;\n    }\n\n    .p-virtualscroller-horizontal > .p-virtualscroller-content {\n        display: flex;\n    }\n\n    /* Inline */\n    .p-virtualscroller-inline .p-virtualscroller-content {\n        position: static;\n    }\n}\n";
 var VirtualScrollerStyle = BaseStyle.extend({
   name: "virtualscroller",
@@ -26848,11 +24998,11 @@ function _toPrimitive$5(t2, r2) {
   }
   return ("string" === r2 ? String : Number)(t2);
 }
-var script$9 = {
+var script$a = {
   name: "VirtualScroller",
   "extends": script$1$2,
   emits: ["update:numToleratedItems", "scroll", "scroll-index-change", "lazy-load"],
-  data: function data6() {
+  data: function data5() {
     return {
       first: this.isBoth() ? {
         rows: 0,
@@ -26928,7 +25078,7 @@ var script$9 = {
       this.calculateAutoSize();
     }
   },
-  mounted: function mounted7() {
+  mounted: function mounted6() {
     this.viewInit();
     this.lastScrollPos = this.isBoth() ? {
       top: 0,
@@ -27552,11 +25702,11 @@ var script$9 = {
     }
   },
   components: {
-    SpinnerIcon: script$p
+    SpinnerIcon: script$q
   }
 };
-var _hoisted_1$k = ["tabindex"];
-function render$8(_ctx, _cache, $props, $setup, $data, $options) {
+var _hoisted_1$n = ["tabindex"];
+function render$9(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_SpinnerIcon = resolveComponent("SpinnerIcon");
   return !_ctx.disabled ? (openBlock(), createElementBlock("div", mergeProps({
     key: 0,
@@ -27615,7 +25765,7 @@ function render$8(_ctx, _cache, $props, $setup, $data, $options) {
       spin: "",
       "class": "p-virtualscroller-loading-icon"
     }, _ctx.ptm("loadingIcon")), null, 16)];
-  })], 16)) : createCommentVNode("", true)], 16, _hoisted_1$k)) : (openBlock(), createElementBlock(Fragment, {
+  })], 16)) : createCommentVNode("", true)], 16, _hoisted_1$n)) : (openBlock(), createElementBlock(Fragment, {
     key: 1
   }, [renderSlot(_ctx.$slots, "default"), renderSlot(_ctx.$slots, "content", {
     items: _ctx.items,
@@ -27623,7 +25773,175 @@ function render$8(_ctx, _cache, $props, $setup, $data, $options) {
     columns: $options.loadedColumns
   })], 64));
 }
+script$a.render = render$9;
+var DeferredContentStyle = {};
+var script$9 = {
+  name: "DeferredContent",
+  "extends": script$t,
+  emits: ["load"],
+  style: DeferredContentStyle,
+  data: function data6() {
+    return {
+      loaded: false
+    };
+  },
+  mounted: function mounted7() {
+    if (!this.loaded) {
+      if (this.shouldLoad())
+        this.load();
+      else
+        this.bindScrollListener();
+    }
+  },
+  beforeUnmount: function beforeUnmount4() {
+    this.unbindScrollListener();
+  },
+  methods: {
+    bindScrollListener: function bindScrollListener2() {
+      var _this = this;
+      this.documentScrollListener = function() {
+        if (_this.shouldLoad()) {
+          _this.load();
+          _this.unbindScrollListener();
+        }
+      };
+      window.addEventListener("scroll", this.documentScrollListener);
+    },
+    unbindScrollListener: function unbindScrollListener2() {
+      if (this.documentScrollListener) {
+        window.removeEventListener("scroll", this.documentScrollListener);
+        this.documentScrollListener = null;
+      }
+    },
+    shouldLoad: function shouldLoad() {
+      if (this.loaded) {
+        return false;
+      } else {
+        var rect = this.$refs.container.getBoundingClientRect();
+        var docElement = document.documentElement;
+        var winHeight = docElement.clientHeight;
+        return winHeight >= rect.top;
+      }
+    },
+    load: function load(event) {
+      this.loaded = true;
+      this.$emit("load", event);
+    }
+  }
+};
+function render$8(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("div", mergeProps({
+    ref: "container"
+  }, _ctx.ptm("root")), [$data.loaded ? renderSlot(_ctx.$slots, "default", {
+    key: 0
+  }) : createCommentVNode("", true)], 16);
+}
 script$9.render = render$8;
+const _sfc_main$g = {};
+const _hoisted_1$m = {
+  width: "24px",
+  height: "24px",
+  viewBox: "0 0 24 24",
+  version: "1.1",
+  xmlns: "http://www.w3.org/2000/svg",
+  "xmlns:xlink": "http://www.w3.org/1999/xlink"
+};
+const _hoisted_2$k = /* @__PURE__ */ createBaseVNode("g", {
+  stroke: "currentColor",
+  "stroke-width": "1",
+  fill: "none",
+  "fill-rule": "evenodd",
+  "stroke-linecap": "round",
+  "stroke-linejoin": "round"
+}, [
+  /* @__PURE__ */ createBaseVNode("g", {
+    id: "Star",
+    transform: "translate(3.000000, 3.500000)",
+    stroke: "currentColor",
+    "stroke-width": "1"
+  }, [
+    /* @__PURE__ */ createBaseVNode("path", {
+      d: "M10.1042564,0.67700614 L11.9316681,4.32775597 C12.1107648,4.68615589 12.4564632,4.93467388 12.8573484,4.99218218 L16.9453359,5.58061527 C17.9553583,5.72643988 18.3572847,6.95054503 17.6263201,7.65194084 L14.6701824,10.4924399 C14.3796708,10.7717659 14.2474307,11.173297 14.3161539,11.5676396 L15.0137982,15.5778163 C15.1856062,16.5698344 14.1297683,17.3266846 13.2269958,16.8573759 L9.57321374,14.9626829 C9.21502023,14.7768079 8.78602103,14.7768079 8.42678626,14.9626829 L4.77300425,16.8573759 C3.87023166,17.3266846 2.81439382,16.5698344 2.98724301,15.5778163 L3.68384608,11.5676396 C3.75256926,11.173297 3.62032921,10.7717659 3.32981762,10.4924399 L0.373679928,7.65194084 C-0.357284727,6.95054503 0.0446417073,5.72643988 1.05466409,5.58061527 L5.14265161,4.99218218 C5.54353679,4.93467388 5.89027643,4.68615589 6.06937319,4.32775597 L7.89574356,0.67700614 C8.34765049,-0.225668713 9.65234951,-0.225668713 10.1042564,0.67700614 Z",
+      id: "Stroke-1"
+    })
+  ])
+], -1);
+const _hoisted_3$f = [
+  _hoisted_2$k
+];
+function _sfc_render$6(_ctx, _cache) {
+  return openBlock(), createElementBlock("svg", _hoisted_1$m, _hoisted_3$f);
+}
+const EmptyStart = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["render", _sfc_render$6], ["__file", "EmptyStart.vue"]]);
+const _sfc_main$f = {};
+const _hoisted_1$l = {
+  width: "24px",
+  height: "24px",
+  viewBox: "0 0 24 24",
+  version: "1.1",
+  xmlns: "http://www.w3.org/2000/svg",
+  "xmlns:xlink": "http://www.w3.org/1999/xlink"
+};
+const _hoisted_2$j = /* @__PURE__ */ createBaseVNode("g", {
+  stroke: "none",
+  "stroke-width": "1",
+  fill: "none",
+  "fill-rule": "evenodd"
+}, [
+  /* @__PURE__ */ createBaseVNode("g", {
+    transform: "translate(1.999624, 2.500100)",
+    fill: "currentColor",
+    "fill-rule": "nonzero"
+  }, [
+    /* @__PURE__ */ createBaseVNode("path", { d: "M15.9188758,11.82 C15.6598758,12.071 15.5408758,12.434 15.5998758,12.79 L16.4888758,17.71 C16.5638758,18.127 16.3878758,18.549 16.0388758,18.79 C15.6968758,19.04 15.2418758,19.07 14.8688758,18.87 L10.4398758,16.56 C10.2858758,16.478 10.1148758,16.434 9.93987581,16.429 L9.66887581,16.429 C9.57487581,16.443 9.48287581,16.473 9.39887581,16.519 L4.96887581,18.84 C4.74987581,18.95 4.50187581,18.989 4.25887581,18.95 C3.66687581,18.838 3.27187581,18.274 3.36887581,17.679 L4.25887581,12.759 C4.31787581,12.4 4.19887581,12.035 3.93987581,11.78 L0.32887581,8.28 C0.0268758104,7.987 -0.0781241896,7.547 0.0598758104,7.15 C0.19387581,6.754 0.53587581,6.465 0.94887581,6.4 L5.91887581,5.679 C6.29687581,5.64 6.62887581,5.41 6.79887581,5.07 L8.98887581,0.58 C9.04087581,0.48 9.10787581,0.388 9.18887581,0.31 L9.27887581,0.24 C9.32587581,0.188 9.37987581,0.145 9.43987581,0.11 L9.54887581,0.07 L9.71887581,5.32907052e-15 L10.1398758,5.32907052e-15 C10.5158758,0.039 10.8468758,0.264 11.0198758,0.6 L13.2388758,5.07 C13.3988758,5.397 13.7098758,5.624 14.0688758,5.679 L19.0388758,6.4 C19.4588758,6.46 19.8098758,6.75 19.9488758,7.15 C20.0798758,7.551 19.9668758,7.991 19.6588758,8.28 L15.9188758,11.82 Z" })
+  ])
+], -1);
+const _hoisted_3$e = [
+  _hoisted_2$j
+];
+function _sfc_render$5(_ctx, _cache) {
+  return openBlock(), createElementBlock("svg", _hoisted_1$l, _hoisted_3$e);
+}
+const FullStart = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["render", _sfc_render$5], ["__file", "FullStart.vue"]]);
+const _sfc_main$e = {};
+const _hoisted_1$k = {
+  width: "24px",
+  height: "24px",
+  viewBox: "0 0 24 24",
+  version: "1.1",
+  xmlns: "http://www.w3.org/2000/svg",
+  "xmlns:xlink": "http://www.w3.org/1999/xlink"
+};
+const _hoisted_2$i = /* @__PURE__ */ createBaseVNode("g", {
+  stroke: "none",
+  "stroke-width": "1",
+  fill: "none",
+  "fill-rule": "evenodd"
+}, [
+  /* @__PURE__ */ createBaseVNode("g", {
+    id: "Star",
+    transform: "translate(2.000000, 2.500000)",
+    fill: "currentColor",
+    "fill-rule": "nonzero"
+  }, [
+    /* @__PURE__ */ createBaseVNode("path", {
+      d: "M10.9763014,0.613614058 L13.2027793,5.0878891 C13.3668145,5.41205393 13.6798817,5.63716839 14.0409592,5.68719383 L19.0420326,6.41556418 C19.3340953,6.45658504 19.5991522,6.61066339 19.7781906,6.84578294 C19.9552286,7.07790096 20.031245,7.37205053 19.9882357,7.66119755 C19.9532282,7.90131965 19.8402039,8.12343259 19.6671668,8.29351907 L16.043389,11.8063052 C15.7783321,12.0514299 15.6583063,12.4146145 15.7223201,12.7697951 L16.6145116,17.7083062 C16.709532,18.3046094 16.3144472,18.8668953 15.7223201,18.9799528 C15.4782677,19.0189727 15.228214,18.9779518 15.0081668,18.8658948 L10.5472093,16.541713 C10.2161382,16.3746281 9.8250543,16.3746281 9.49398324,16.541713 L5.03302574,18.8658948 C4.4849081,19.1570429 3.80576233,18.9589421 3.50069685,18.4186674 C3.38767259,18.203558 3.347664,17.9584334 3.38467194,17.7193118 L4.27686344,12.7798002 C4.34087718,12.4256201 4.21985121,12.0604344 3.95579453,11.8153098 L0.332016723,8.30452467 C-0.0990758059,7.88831304 -0.112078597,7.20296455 0.303010498,6.77174529 C0.31201243,6.76274071 0.322014577,6.75273563 0.332016723,6.74273054 C0.504053649,6.56764151 0.730102168,6.45658504 0.974154551,6.42757029 L5.97522798,5.69819942 C6.33530526,5.64717348 6.64837246,5.42406003 6.81340788,5.09789419 L8.9598686,0.613614058 C9.1509096,0.229418705 9.54699462,-0.00970288141 9.97708693,0.000302205888 L10.1111157,0.000302205888 C10.4841958,0.0453250987 10.8092656,0.276442615 10.9763014,0.613614058",
+      id: "Fill-1",
+      opacity: "0.400000006"
+    }),
+    /* @__PURE__ */ createBaseVNode("path", {
+      d: "M9.99201234,16.4171164 C9.79831148,16.4231213 9.60960292,16.475164 9.43986505,16.5682403 L5.00072073,18.8871415 C4.45755957,19.146354 3.80756341,18.9451891 3.50303371,18.4257632 C3.39020796,18.2135893 3.34927118,17.9703899 3.38721258,17.7321946 L4.2738433,12.8031534 C4.33375078,12.4448597 4.21393582,12.080561 3.95333828,11.8283542 L0.327937233,8.31847657 C-0.102398171,7.89713112 -0.110385835,7.20556413 0.310963446,6.77421048 C0.316954194,6.76820555 0.321946485,6.76320145 0.327937233,6.75819735 C0.499672011,6.58805786 0.72132969,6.47596595 0.959961155,6.44093724 L5.96523117,5.70433332 C6.32767143,5.65829557 6.6421857,5.43211013 6.80193899,5.10384099 L8.977579,0.563118196 C9.1842598,0.196817877 9.58064763,-0.0213610007 10,0.00165787172 C9.99201234,0.298901573 9.99201234,16.2149506 9.99201234,16.4171164",
+      id: "Fill-4"
+    })
+  ])
+], -1);
+const _hoisted_3$d = [
+  _hoisted_2$i
+];
+function _sfc_render$4(_ctx, _cache) {
+  return openBlock(), createElementBlock("svg", _hoisted_1$k, _hoisted_3$d);
+}
+const HalfStart = /* @__PURE__ */ _export_sfc(_sfc_main$e, [["render", _sfc_render$4], ["__file", "HalfStart.vue"]]);
 const _hoisted_1$j = { class: "sgm-flex sgm-flex-row" };
 const _sfc_main$d = {
   __name: "Stars",
@@ -27692,7 +26010,7 @@ const _sfc_main$c = {
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock("div", _hoisted_1$i, [
         createBaseVNode("div", _hoisted_2$h, [
-          createVNode(unref(script$s), null, {
+          createVNode(unref(script$9), null, {
             default: withCtx(() => [
               createBaseVNode("img", {
                 src: __props.hit.image,
@@ -27826,7 +26144,7 @@ const _sfc_main$9 = {
             createVNode(ChevronLeftIcon, { class: "sgm-h-6 sgm-w-6" })
           ])) : createCommentVNode("", true),
           createBaseVNode("div", null, [
-            createVNode(unref(script$9), {
+            createVNode(unref(script$a), {
               class: normalizeClass([id.value, "sgm-h-32 sgm-w-auto"]),
               items: Object.values(__props.hits ?? {}),
               itemSize: 240,
@@ -28094,7 +26412,7 @@ var GalleriaStyle = BaseStyle.extend({
 });
 var script$8 = {
   name: "TimesIcon",
-  "extends": script$q
+  "extends": script$r
 };
 var _hoisted_1$e = /* @__PURE__ */ createBaseVNode("path", {
   d: "M8.01186 7.00933L12.27 2.75116C12.341 2.68501 12.398 2.60524 12.4375 2.51661C12.4769 2.42798 12.4982 2.3323 12.4999 2.23529C12.5016 2.13827 12.4838 2.0419 12.4474 1.95194C12.4111 1.86197 12.357 1.78024 12.2884 1.71163C12.2198 1.64302 12.138 1.58893 12.0481 1.55259C11.9581 1.51625 11.8617 1.4984 11.7647 1.50011C11.6677 1.50182 11.572 1.52306 11.4834 1.56255C11.3948 1.60204 11.315 1.65898 11.2488 1.72997L6.99067 5.98814L2.7325 1.72997C2.59553 1.60234 2.41437 1.53286 2.22718 1.53616C2.03999 1.53946 1.8614 1.61529 1.72901 1.74767C1.59663 1.88006 1.5208 2.05865 1.5175 2.24584C1.5142 2.43303 1.58368 2.61419 1.71131 2.75116L5.96948 7.00933L1.71131 11.2675C1.576 11.403 1.5 11.5866 1.5 11.7781C1.5 11.9696 1.576 12.1532 1.71131 12.2887C1.84679 12.424 2.03043 12.5 2.2219 12.5C2.41338 12.5 2.59702 12.424 2.7325 12.2887L6.99067 8.03052L11.2488 12.2887C11.3843 12.424 11.568 12.5 11.7594 12.5C11.9509 12.5 12.1346 12.424 12.27 12.2887C12.4053 12.1532 12.4813 11.9696 12.4813 11.7781C12.4813 11.5866 12.4053 11.403 12.27 11.2675L8.01186 7.00933Z",
@@ -28113,7 +26431,7 @@ function render$7(_ctx, _cache, $props, $setup, $data, $options) {
 script$8.render = render$7;
 var script$7 = {
   name: "ChevronLeftIcon",
-  "extends": script$q
+  "extends": script$r
 };
 var _hoisted_1$d = /* @__PURE__ */ createBaseVNode("path", {
   d: "M9.61296 13C9.50997 13.0005 9.40792 12.9804 9.3128 12.9409C9.21767 12.9014 9.13139 12.8433 9.05902 12.7701L3.83313 7.54416C3.68634 7.39718 3.60388 7.19795 3.60388 6.99022C3.60388 6.78249 3.68634 6.58325 3.83313 6.43628L9.05902 1.21039C9.20762 1.07192 9.40416 0.996539 9.60724 1.00012C9.81032 1.00371 10.0041 1.08597 10.1477 1.22959C10.2913 1.37322 10.3736 1.56698 10.3772 1.77005C10.3808 1.97313 10.3054 2.16968 10.1669 2.31827L5.49496 6.99022L10.1669 11.6622C10.3137 11.8091 10.3962 12.0084 10.3962 12.2161C10.3962 12.4238 10.3137 12.6231 10.1669 12.7701C10.0945 12.8433 10.0083 12.9014 9.91313 12.9409C9.81801 12.9804 9.71596 13.0005 9.61296 13Z",
@@ -28132,7 +26450,7 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
 script$7.render = render$6;
 var script$6 = {
   name: "ChevronUpIcon",
-  "extends": script$q
+  "extends": script$r
 };
 var _hoisted_1$c = /* @__PURE__ */ createBaseVNode("path", {
   d: "M12.2097 10.4113C12.1057 10.4118 12.0027 10.3915 11.9067 10.3516C11.8107 10.3118 11.7237 10.2532 11.6506 10.1792L6.93602 5.46461L2.22139 10.1476C2.07272 10.244 1.89599 10.2877 1.71953 10.2717C1.54307 10.2556 1.3771 10.1808 1.24822 10.0593C1.11933 9.93766 1.035 9.77633 1.00874 9.6011C0.982477 9.42587 1.0158 9.2469 1.10338 9.09287L6.37701 3.81923C6.52533 3.6711 6.72639 3.58789 6.93602 3.58789C7.14565 3.58789 7.3467 3.6711 7.49502 3.81923L12.7687 9.09287C12.9168 9.24119 13 9.44225 13 9.65187C13 9.8615 12.9168 10.0626 12.7687 10.2109C12.616 10.3487 12.4151 10.4207 12.2097 10.4113Z",
@@ -28513,7 +26831,7 @@ var script$3 = {
   },
   components: {
     ChevronLeftIcon: script$7,
-    ChevronRightIcon: script$l
+    ChevronRightIcon: script$m
   },
   directives: {
     ripple: Ripple
@@ -29032,9 +27350,9 @@ var script$2$1 = {
   },
   components: {
     ChevronLeftIcon: script$7,
-    ChevronRightIcon: script$l,
+    ChevronRightIcon: script$m,
     ChevronUpIcon: script$6,
-    ChevronDownIcon: script$m
+    ChevronDownIcon: script$n
   },
   directives: {
     ripple: Ripple
@@ -29539,7 +27857,7 @@ var script$5 = {
   },
   components: {
     GalleriaContent: script$1$1,
-    Portal: script$i
+    Portal: script$j
   },
   directives: {
     focustrap: FocusTrap
@@ -29671,7 +27989,7 @@ const _sfc_main$8 = {
               transitionInterval: 900
             }, {
               item: withCtx((slotProps) => [
-                createVNode(unref(script$s), { class: "sgm-aspect-h-1 sgm-aspect-w-1 sgm-w-full sgm-overflow-hidden sgm-rounded-md sgm-bg-gray-200 sgm-lg:aspect-none sgm-group-hover:opacity-75 sgm-h-60" }, {
+                createVNode(unref(script$9), { class: "sgm-aspect-h-1 sgm-aspect-w-1 sgm-w-full sgm-overflow-hidden sgm-rounded-md sgm-bg-gray-200 sgm-lg:aspect-none sgm-group-hover:opacity-75 sgm-h-60" }, {
                   default: withCtx(() => [
                     createBaseVNode("img", {
                       class: "sgm-h-full sgm-w-full sgm-object-cover sgm-object-center lg:sgm-h-full lg:sgm-w-full",
@@ -29683,7 +28001,7 @@ const _sfc_main$8 = {
                 }, 1024)
               ]),
               thumbnail: withCtx((slotProps) => [
-                createVNode(unref(script$s), null, {
+                createVNode(unref(script$9), null, {
                   default: withCtx(() => [
                     createBaseVNode("img", {
                       src: slotProps.item.thumbnailImageSrc,
@@ -29730,7 +28048,7 @@ const _sfc_main$8 = {
 const ProductHit = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["__file", "ProductHit.vue"]]);
 var script$2 = {
   name: "CheckIcon",
-  "extends": script$q
+  "extends": script$r
 };
 var _hoisted_1$9 = /* @__PURE__ */ createBaseVNode("path", {
   d: "M4.86199 11.5948C4.78717 11.5923 4.71366 11.5745 4.64596 11.5426C4.57826 11.5107 4.51779 11.4652 4.46827 11.4091L0.753985 7.69483C0.683167 7.64891 0.623706 7.58751 0.580092 7.51525C0.536478 7.44299 0.509851 7.36177 0.502221 7.27771C0.49459 7.19366 0.506156 7.10897 0.536046 7.03004C0.565935 6.95111 0.613367 6.88 0.674759 6.82208C0.736151 6.76416 0.8099 6.72095 0.890436 6.69571C0.970973 6.67046 1.05619 6.66385 1.13966 6.67635C1.22313 6.68886 1.30266 6.72017 1.37226 6.76792C1.44186 6.81567 1.4997 6.8786 1.54141 6.95197L4.86199 10.2503L12.6397 2.49483C12.7444 2.42694 12.8689 2.39617 12.9932 2.40745C13.1174 2.41873 13.2343 2.47141 13.3251 2.55705C13.4159 2.64268 13.4753 2.75632 13.4938 2.87973C13.5123 3.00315 13.4888 3.1292 13.4271 3.23768L5.2557 11.4091C5.20618 11.4652 5.14571 11.5107 5.07801 11.5426C5.01031 11.5745 4.9368 11.5923 4.86199 11.5948Z",
@@ -30301,7 +28619,7 @@ const _sfc_main$2 = {
           }, {
             actions: withCtx(() => [
               createBaseVNode("div", _hoisted_3$2, [
-                createVNode(unref(script$o), {
+                createVNode(unref(script$p), {
                   class: "sgm-w-[48%] sgm-h-full",
                   outlined: "",
                   severity: "secondary",
@@ -30357,7 +28675,7 @@ const _sfc_main$2 = {
                       __props.total > 0 ? renderSlot(_ctx.$slots, "pagination", { key: 0 }) : createCommentVNode("", true)
                     ]),
                     createBaseVNode("div", _hoisted_21, [
-                      createVNode(unref(script$o), {
+                      createVNode(unref(script$p), {
                         outlined: "",
                         severity: "secondary",
                         onClick: _cache[2] || (_cache[2] = ($event) => mobileFiltersOpen.value = true),
@@ -30697,7 +29015,7 @@ const _sfc_main = {
             total
           }, {
             "active-filter": withCtx(({ filterKey, filterValue }) => [
-              createVNode(unref(script$o), {
+              createVNode(unref(script$p), {
                 outlined: "",
                 severity: "secondary",
                 rounded: "",
@@ -30743,7 +29061,7 @@ const _sfc_main = {
               }, 8, ["label", "options"])
             ]),
             offers: withCtx(() => [
-              __props.showOffersFilter ? (openBlock(), createBlock(unref(script$o), {
+              __props.showOffersFilter ? (openBlock(), createBlock(unref(script$p), {
                 key: 0,
                 outlined: "",
                 severity: "secondary",
@@ -30801,7 +29119,7 @@ const _sfc_main = {
               }, 1032, ["apiKey", "facets", "search", "applicationId"])
             ]),
             "no-hits-action": withCtx(() => [
-              createVNode(unref(script$o), {
+              createVNode(unref(script$p), {
                 label: __props.resetFiltersText,
                 onClick: withModifiers(onResetFilters, ["prevent"])
               }, null, 8, ["label"])
@@ -30817,7 +29135,7 @@ const _sfc_main = {
                     onClick: withModifiers(($event) => onSortChange(item.value, item.name), ["prevent"])
                   }, [
                     createBaseVNode("span", _hoisted_7, toDisplayString(item.name), 1),
-                    createVNode(unref(script$n), {
+                    createVNode(unref(script$o), {
                       name: item.value,
                       value: item.value,
                       modelValue: sortBy.value
@@ -30828,7 +29146,7 @@ const _sfc_main = {
               }, 8, ["label", "options"])
             ]),
             "mobile-filters": withCtx(() => [
-              createVNode(unref(script$k), {
+              createVNode(unref(script$l), {
                 "active-index": accordionActiveKeys.value,
                 pt: {
                   root: {
@@ -30845,7 +29163,7 @@ const _sfc_main = {
                   createVNode(ChevronDownIcon, { class: "sgm-h-4 sgm-w-4 sgm-text-black" })
                 ]),
                 default: withCtx(() => [
-                  createVNode(unref(script$j), { pt: {
+                  createVNode(unref(script$k), { pt: {
                     headeraction: {
                       class: "sgm-flex sgm-flex-row-reverse sgm-items-center sgm-justify-between"
                     }
@@ -30875,7 +29193,7 @@ const _sfc_main = {
                     _: 2
                   }, 1024),
                   (openBlock(true), createElementBlock(Fragment, null, renderList(filterVals.value, (item, key) => {
-                    return openBlock(), createBlock(unref(script$j), { pt: {
+                    return openBlock(), createBlock(unref(script$k), { pt: {
                       headeraction: {
                         class: "sgm-flex sgm-flex-row-reverse sgm-items-center sgm-justify-between"
                       }
@@ -30903,7 +29221,7 @@ const _sfc_main = {
               }, 1032, ["active-index"])
             ]),
             "mobile-reset-action": withCtx(() => [
-              createVNode(unref(script$o), {
+              createVNode(unref(script$p), {
                 class: "sgm-w-[48%] sgm-text-center",
                 label: __props.resetFiltersText,
                 onClick: withModifiers(onResetFilters, ["prevent"])
@@ -30927,7 +29245,7 @@ const _sfc_main = {
                   "onRange:inited": onRangeInit,
                   histogram: (_b = facets.price_as_number) == null ? void 0 : _b.histogram
                 }, null, 8, ["show-chart", "currency", "label", "max", "range", "histogram"]),
-                createVNode(unref(script$k), {
+                createVNode(unref(script$l), {
                   "active-index": accordionActiveKeys.value,
                   pt: {
                     root: {
@@ -30945,7 +29263,7 @@ const _sfc_main = {
                   ]),
                   default: withCtx(() => [
                     (openBlock(true), createElementBlock(Fragment, null, renderList(filterVals.value, (item, key) => {
-                      return openBlock(), createBlock(unref(script$j), { pt: {
+                      return openBlock(), createBlock(unref(script$k), { pt: {
                         root: { class: "" },
                         headeraction: {
                           class: "sgm-flex sgm-flex-row-reverse sgm-items-center sgm-justify-between"
@@ -31228,10 +29546,6 @@ var PrimeVue = {
   }
 };
 document.addEventListener("DOMContentLoaded", function() {
-  const search = createApp({});
-  search.use(PrimeVue);
-  search.component("search", Search);
-  search.mount("#sigmie-search");
   const filters = createApp({});
   filters.use(PrimeVue);
   filters.component("product-listing", Filters);
