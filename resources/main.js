@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-// import Search from "@/Search.vue";
+import Search from "@/Search.vue";
 import Filters from "@/ProductListing.vue";
 
 import './main.css'

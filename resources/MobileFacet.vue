@@ -1,5 +1,5 @@
 <template>
-  <div class="sgm-pt-4 block xl:sgm-hidden">
+  <div class="sgm-pt-4 block xl:sgm-hidden sgm-mt-2">
     <div class="sgm-space-y-2">
       <div
         v-for="(count, facet) in options"

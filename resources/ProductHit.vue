@@ -91,7 +91,7 @@ let props = defineProps({
         <div
           class="sgm-mt-1 sgm-text-sm sgm-text-gray-500 sgm-text-left sgm-font-normal"
         >
-          {{ hit.categories.join(",") }}
+          {{ hit.categories.join(", ") }}
         </div>
 
         <h3 class="sgm-text-base sgm-mt-1 sgm-mb-0">

@@ -789,6 +789,8 @@ class Sigmie_Admin
 
 		return '<div class="" id="sigmie-filters">
 					<product-listing
+							:range-facets="[\'price_as_number\']"
+							:checkbox-facets="[\'categories\', \'brands\']"
 							filters="' . $predefinedFilters . '"
 							facets="' . $facets . '"
 							application="' . $options['sigmie_application_id'] . '" 

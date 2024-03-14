@@ -173,32 +173,6 @@
             ></ChevronDownIcon>
           </template>
 
-          <AccordionTab
-            :pt="{
-              headeraction: {
-                class:
-                  'sgm-flex sgm-flex-row-reverse sgm-items-center sgm-justify-between',
-              },
-            }"
-          >
-            <template v-slot:header>
-              <FilterLabel :title="priceRangeLabel" subtitle="Price label">
-              </FilterLabel>
-            </template>
-
-            <PriceSlider
-              :show-chart="showPriceRangeChart"
-              :currency="currencySymbol"
-              :label="priceRangeLabel"
-              :min="0"
-              :max="facets.price_as_number?.max"
-              :range="priceRange"
-              @update:range="onRangeChange"
-              @range:inited="onRangeInit"
-              :histogram="facets.price_as_number?.histogram"
-            ></PriceSlider>
-          </AccordionTab>
-
           <template v-for="(item, key) in filterVals">
             <AccordionTab
               :pt="{
@@ -215,13 +189,29 @@
                 >
                 </FilterLabel>
               </template>
-              <MobileFacet
-                v-if="key !== 'categories' && key !== 'price_as_number'"
+              <component
+                v-if="checkboxFacets.includes(key)"
+                :is="facetTypes.mobileCheckbox"
                 :label="filterLabels[key] ?? key"
                 :facets="facets[key] ?? []"
                 :modelValue="filterVals[key]"
                 @update:model-value="(value) => onTermChange(key, value)"
-              ></MobileFacet>
+              >
+              </component>
+              <component
+                v-if="rangeFacets.includes(key)"
+                :is="facetTypes.range"
+                :show-chart="showPriceRangeChart"
+                :currency="currencySymbol"
+                :label="priceRangeLabel"
+                :min="0"
+                :max="facets.price_as_number?.max"
+                :range="priceRange"
+                @update:range="onRangeChange"
+                @range:inited="onRangeInit"
+                :histogram="facets.price_as_number?.histogram"
+              >
+              </component>
             </AccordionTab>
           </template>
         </Accordion>
@@ -236,21 +226,6 @@
       </template>
 
       <template v-slot:filters>
-        <FilterLabel :title="priceRangeLabel" subtitle="Price label">
-        </FilterLabel>
-
-        <PriceSlider
-          :show-chart="showPriceRangeChart"
-          :currency="currencySymbol"
-          :label="priceRangeLabel"
-          :min="0"
-          :max="facets.price_as_number?.max"
-          :range="priceRange"
-          @update:range="onRangeChange"
-          @range:inited="onRangeInit"
-          :histogram="facets.price_as_number?.histogram"
-        ></PriceSlider>
-
         <Accordion
           :active-index="accordionActiveKeys"
           :pt="{
@@ -289,13 +264,29 @@
               </FilterLabel>
             </template>
 
-            <Facet
-              v-if="key !== 'categories' && key !== 'price_as_number'"
-              :label="filterLabels[key] ?? key"
-              :facets="facets[key] ?? []"
-              :modelValue="filterVals[key]"
-              @update:model-value="(value) => onTermChange(key, value)"
-            ></Facet>
+              <component
+                v-if="checkboxFacets.includes(key)"
+                :is="facetTypes.checkbox"
+                :label="filterLabels[key] ?? key"
+                :facets="facets[key] ?? []"
+                :modelValue="filterVals[key]"
+                @update:model-value="(value) => onTermChange(key, value)"
+              >
+              </component>
+              <component
+                v-if="rangeFacets.includes(key)"
+                :is="facetTypes.range"
+                :show-chart="showPriceRangeChart"
+                :currency="currencySymbol"
+                :label="priceRangeLabel"
+                :min="0"
+                :max="facets.price_as_number?.max"
+                :range="priceRange"
+                @update:range="onRangeChange"
+                @range:inited="onRangeInit"
+                :histogram="facets.price_as_number?.histogram"
+              >
+              </component>
           </AccordionTab>
         </Accordion>
       </template>
@@ -329,12 +320,20 @@ import Facet from "./Facet.vue";
 import Layout from "./ProductListingLayout.vue";
 import MobileFacet from "./MobileFacet.vue";
 
+const facetTypes = {
+  checkbox: Facet,
+  mobileCheckbox: MobileFacet,
+  range: PriceSlider,
+};
+
 const props = defineProps({
   application: String,
   apiKey: String,
   index: String,
   facets: String,
   filters: String,
+  rangeFacets: Array,
+  checkboxFacets: Array,
   showPriceRangeChart: Boolean,
   showCategoriesFilter: Boolean,
   showOffersFilter: Boolean,
@@ -517,11 +516,14 @@ onMounted(() => {
 
   filterString.value = props.filters;
 
-  filterVals.value = props.facets.split(" ").reduce((acc, key) => {
-    [key] = key.split(":");
-    acc[key] = [];
-    return acc;
-  }, {});
+  filterVals.value = props.facets
+    .split(" ")
+    .filter((value) => value.trim() !== "")
+    .reduce((acc, key) => {
+      [key] = key.split(":");
+      acc[key] = [];
+      return acc;
+    }, {});
 
   sortByLabel.value = props.sortByRelevanceLabel;
   sortOptions.value = [

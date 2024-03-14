@@ -78,7 +78,7 @@
                         <slot></slot>
                       </div>
 
-                      <div class="sgm-pb-12 px-4">
+                      <div class="sgm-py-4 sgm-px-4">
                         <slot name="actions"></slot>
                       </div>
                     </div>
