@@ -770,7 +770,8 @@ class Sigmie_Admin
 
 			'sigmie_filters_order',
 			'sigmie_range_attributes',
-			'sigmie_checkbox_attributes'
+			'sigmie_checkbox_attributes',
+			'sigmie_selectbutton_attributes'
 		]);
 
 		$attributes = [];
@@ -792,11 +793,13 @@ class Sigmie_Admin
 
 		$rangeFacets = ['price_as_number', ...json_decode($options['sigmie_range_attributes'], true)];
 		$checkboxFacets = ['categories', 'brands', ...json_decode($options['sigmie_checkbox_attributes'], true)];
+		$selectButton  = [...json_decode($options['sigmie_selectbutton_attributes'], true)];
 
 		return '<div class="" id="sigmie-filters">
 					<product-listing
 							range-facets="' . implode(',', $rangeFacets) . '"
 							checkbox-facets="' . implode(',', $checkboxFacets) . '"
+							selectbutton-facets="' . implode(',', $selectButton) . '"
 							filters="' . $predefinedFilters . '"
 							facets="' . $facets . '"
 							application="' . $options['sigmie_application_id'] . '" 

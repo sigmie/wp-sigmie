@@ -190,6 +190,12 @@
                 </FilterLabel>
               </template>
               <component
+                v-if="selectbuttonFacets.split(',').includes(key)"
+                :is="facetTypes.selectbutton"
+              >
+              </component>
+
+              <component
                 v-if="checkboxFacets.split(',').includes(key)"
                 :is="facetTypes.mobileCheckbox"
                 :label="filterLabels[key] ?? key"
@@ -264,6 +270,12 @@
               </FilterLabel>
             </template>
 
+              <component
+                v-if="selectbuttonFacets.split(',').includes(key)"
+                :is="facetTypes.selectbutton"
+              >
+              </component>
+
             <component
               v-if="checkboxFacets.split(',').includes(key)"
               :is="facetTypes.checkbox"
@@ -319,11 +331,13 @@ import ProductHit from "./ProductHit.vue";
 import Facet from "./Facet.vue";
 import Layout from "./ProductListingLayout.vue";
 import MobileFacet from "./MobileFacet.vue";
+import SelectbuttonFacet from "./SelectbuttonFacet.vue";
 
 const facetTypes = {
   checkbox: Facet,
   mobileCheckbox: MobileFacet,
   range: PriceSlider,
+  selectbutton: SelectbuttonFacet,
 };
 
 const props = defineProps({
@@ -332,6 +346,7 @@ const props = defineProps({
   index: String,
   facets: String,
   filters: String,
+  selectbuttonFacets: String,
   rangeFacets: String,
   checkboxFacets: String,
   showPriceRangeChart: Boolean,
