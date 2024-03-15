@@ -41,7 +41,7 @@
             class="sgm-flex sgm-flex-row lg:sgm-space-x-14 sgm-px-4 lg:sgm-px-0 sgm-mx-auto"
           >
             <!-- Filters -->
-            <form class="sgm-hidden lg:sgm-block sgm-w-[275px]">
+            <form class="sgm-hidden lg:sgm-block sgm-w-[290px]">
               <div class="sgm-flex sgm-flex-row sgm-space-x-3 sgm-items-center">
                 <h2
                   class="sgm-text-md sgm-font-normal sgm-tracking-tight sgm-text-gray-900 sgm-m-0"
