@@ -2,7 +2,7 @@
   <div class="sgm-pt-4 sgm-hidden xl:sgm-block">
     <div class="sgm-space-y-2">
       <div
-        v-for="(count, facet) in options"
+        v-for="[facet, count] in options"
         :key="facet"
         class="sgm-flex sgm-flex-row sgm-items-center"
       >

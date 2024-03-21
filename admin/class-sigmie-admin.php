@@ -85,6 +85,8 @@ class Sigmie_Admin
 
 	private $index;
 
+
+
 	/**
 	 * Initialize the class and set its properties.
 	 *
@@ -121,6 +123,7 @@ class Sigmie_Admin
 		 */
 
 		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/sigmie-admin.css', array(), $this->version, 'all');
+		wp_enqueue_style('wp-color-picker');
 	}
 
 	/**
@@ -158,6 +161,8 @@ class Sigmie_Admin
 			$this->version,
 			false
 		);
+
+		wp_enqueue_script('wp-color-picker');
 	}
 
 	/**
@@ -431,7 +436,7 @@ class Sigmie_Admin
 				?>
 			</div>
 		</div>
-<?php
+	<?php
 	}
 
 	function product_tab_fields($post_id, $post)
@@ -640,6 +645,7 @@ class Sigmie_Admin
 	 */
 	function map_product($product)
 	{
+
 		$data = $product->get_data();
 
 		$attributes = $product->get_attributes();
@@ -721,7 +727,6 @@ class Sigmie_Admin
 			if ($attribute instanceof WC_Product_Attribute) {
 				$options = $attribute->get_options();
 				$options_text = array_map(function ($option_id) use ($attribute) {
-					ray()->once($attribute->get_taxonomy())->red();
 					return get_term_by('id', $option_id, $attribute->get_taxonomy())->name;
 				}, $options);
 
@@ -730,8 +735,6 @@ class Sigmie_Admin
 
 			$res[$name] = $attribute;
 		}
-
-		ray()->once($res);
 
 		return $res;
 	}
@@ -771,8 +774,23 @@ class Sigmie_Admin
 			'sigmie_filters_order',
 			'sigmie_range_attributes',
 			'sigmie_checkbox_attributes',
-			'sigmie_selectbutton_attributes'
+			'sigmie_selectbutton_attributes',
+			'sigmie_color_attributes_color',
 		]);
+
+		$existingColors = (string) get_option('sigmie_color_attributes_color', '[]');
+
+		$existingColors = json_decode($existingColors, true);
+
+		$sortedAttributes = [];
+		foreach (wc_get_attribute_taxonomies() as $attribute) {
+			$sortedAttributes['pa_' . $attribute->attribute_name] = array_map(function (WP_Term $term) {
+				return $term->name;
+			}, get_terms([
+				'taxonomy' => 'pa_' . $attribute->attribute_name,
+				'hide_empty' => false,
+			]));
+		}
 
 		$attributes = [];
 
@@ -797,6 +815,8 @@ class Sigmie_Admin
 
 		return '<div class="" id="sigmie-filters">
 					<product-listing
+							:color-attributes-colors="' . htmlspecialchars(json_encode($existingColors)) . '"
+							:sorted-attributes="' . htmlspecialchars(json_encode($sortedAttributes)) . '"
 							range-facets="' . implode(',', $rangeFacets) . '"
 							checkbox-facets="' . implode(',', $checkboxFacets) . '"
 							selectbutton-facets="' . implode(',', $selectButton) . '"
@@ -910,5 +930,32 @@ class Sigmie_Admin
 		}
 
 		return $post_states;
+	}
+
+	function register_attribute_types($types)
+	{
+		$types = array_merge([
+			'sgm-buttonselect' => esc_html__('Button Select', 'sigmie'),
+			'sgm-number' => esc_html__('Number', 'sigmie'),
+			'sgm-color' => esc_html__('Color', 'sigmie'),
+		], $types);
+
+		return $types;
+	}
+
+	function attribute_orderby_field()
+	{
+
+	?>
+		<div class="form-field">
+			<label for="sigmie_attribute_facets_orderby"><?php esc_html_e('Facets sort order', 'sigmie'); ?></label>
+			<select name="sigmie_attribute_facets_orderby" id="sigmie_attribute_facets_orderby">
+				<option value="top"><?php esc_html_e('Top', 'sigmie'); ?></option>
+				<option value="asc"><?php esc_html_e('Ascending', 'sigmie'); ?></option>
+				<option value="desc"><?php esc_html_e('Descending', 'sigmie'); ?></option>
+			</select>
+			<p class="description"><?php esc_html_e('Determines the sort order of the facets on the frontend shop product pages.', 'sigmie'); ?></p>
+		</div>
+<?php
 	}
 }

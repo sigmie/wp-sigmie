@@ -1,7 +1,8 @@
 <template>
   <div class="">
     <SelectButton
-      v-model="value"
+      @update:model-value="onChange"
+      :modelValue="values"
       :options="options"
       optionLabel="name"
       multiple
@@ -22,9 +23,9 @@
     >
       <template #option="slotProps">
         <Button
-          :outlined="!value.some((v) => v.value === slotProps.option.value)"
+          :outlined="!values.some((v) => v.value === slotProps.option.value)"
           :severity="
-            !value.some((v) => v.value === slotProps.option.value)
+            !values.some((v) => v.value === slotProps.option.value)
               ? 'secondary'
               : 'primary'
           "
@@ -40,20 +41,35 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed, onMounted } from "vue";
 import SelectButton from "primevue/selectbutton";
 import Button from "primevue/button";
 
-const value = ref([]);
-const options = ref([
-  { name: "Option 1", value: 1 },
-  { name: "Option 2", value: 2 },
-  { name: "Option 4", value: 3 },
-  { name: "Option 5", value: 4 },
-  { name: "Option 6", value: 5 },
-  { name: "Option 8", value: 6 },
-  { name: "Option 2j8", value: 7 },
-  { name: "Option 323", value: 8 },
-  { name: "Option 302", value: 9 },
-]);
+const props = defineProps({
+  facets: {},
+  modelValue: Array,
+});
+
+const emit = defineEmits(["update:modelValue"]);
+
+const values = ref([]);
+const options = ref([]);
+
+onMounted(() => {
+  options.value = props.facets.map(([facet, count]) => {
+    return {
+      name: `${facet} (${count})`,
+      value: facet,
+    };
+  });
+});
+
+const onChange = (facet) => {
+  values.value = facet;
+
+  emit(
+    "update:modelValue",
+    facet.map((option) => option.value)
+  );
+};
 </script>

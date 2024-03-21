@@ -112,7 +112,7 @@ class Sigmie_Admin_Page_Filters
 
 		$fields = [
 			'theme' => esc_html__('Theme', 'sigmie'),
-			'filterable_attributes' => esc_html__('Filterable attributes', 'sigmie'),
+			// 'filterable_attributes' => esc_html__('Filterable attributes', 'sigmie'),
 			'products_per_page' => esc_html__('Products per page', 'sigmie'),
 			'filters_title_text' => esc_html__('Filters title text', 'sigmie'),
 			'products_title_text' => esc_html__('Products title text', 'sigmie'),
@@ -469,11 +469,11 @@ class Sigmie_Admin_Page_Filters
 
 		echo '</select>';
 
-	?>
+		?>
 		<p class="description">
 			<?php esc_html_e('Hold down the control CTRL / ⌘ command button to select multiple options.', 'sigmie'); ?>
 		</p>
-<?php
+		<?php
 	}
 
 	/**

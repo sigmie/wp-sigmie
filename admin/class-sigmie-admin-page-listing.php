@@ -116,6 +116,7 @@ class Sigmie_Admin_Page_Listing
 			'range_attributes' => esc_html__('Range attributes', 'sigmie'),
 			'checkbox_attributes' => esc_html__('Checkbox attributes', 'sigmie'),
 			'selectbutton_attributes' => esc_html__('Select button attributes', 'sigmie'),
+			'color_attributes_color' => esc_html__('Color attributes color', 'sigmie'),
 		];
 
 		foreach ($fields as $field_key => $field_label) {
@@ -133,6 +134,69 @@ class Sigmie_Admin_Page_Listing
 				array($this, 'sanitize_' . $field_key)
 			);
 		}
+	}
+
+	public function sanitize_color_attributes_color($value)
+	{
+		if (is_null($value)) {
+			return '[]';
+		}
+
+		return sanitize_text_field(json_encode($value));
+	}
+
+	public function color_attributes_color_callback()
+	{
+		$existingColors = (string) get_option('sigmie_color_attributes_color', '[]');
+
+		$existingColors = json_decode($existingColors, true);
+
+		$colorTerms = [];
+		foreach (wc_get_attribute_taxonomies() as $attribute) {
+			if ($attribute->attribute_type !== 'sgm-color') {
+				continue;
+			}
+
+			$colorTerms[$attribute->attribute_name] = array_map(function (WP_Term $term) {
+				return $term->name;
+			}, get_terms([
+				'taxonomy' => 'pa_' . $attribute->attribute_name,
+				'hide_empty' => false,
+			]));
+		}
+
+		$colorTerms = array_filter($colorTerms, fn ($terms) => count($terms) > 0);
+
+		echo '<ul>';
+		foreach ($colorTerms as $attribute_name => $terms) {
+
+			$attribute_name = 'pa_' . $attribute_name;
+
+			echo '<li class="ui-state-default">';
+			echo '<h4>' . $attribute_name . '</h4>';
+			echo '<ul>';
+			foreach ($terms as $term) {
+				$colorValue = isset($existingColors[$term]) ? $existingColors[$term] : '#bada55';
+				echo '<li class="ui-state-default">';
+				echo '<input type="text" id="sigmie_color_attributes_color_' . $term . '" name="sigmie_color_attributes_color[' . $attribute_name . '][' . $term . ']" value="' . $colorValue . '" class="my-color-field" data-default-color="#effeff" />';
+				echo '<label for="sigmie_color_attributes_color_' . $term . '">' . $term . '</label>';
+				echo '</li>';
+			}
+			echo '</ul>';
+			echo '</li>';
+		}
+		echo '</ul>';
+?>
+
+		<script>
+			jQuery(document).ready(function($) {
+				$('.my-color-field').wpColorPicker();
+			});
+		</script>
+		<p class="description">
+			<?php esc_html_e('Chose color', 'sigmie'); ?>
+		</p>
+	<?php
 	}
 
 	public function sanitize_checkbox_attributes($value)
@@ -279,7 +343,7 @@ class Sigmie_Admin_Page_Listing
 		echo '<input type="hidden" id="sigmie_ordered_attributes" name="sigmie_filters_order" value="' . esc_attr($attributesJson) . '">';
 
 		wp_enqueue_script('jquery-ui-sortable');
-?>
+	?>
 		<script>
 			function updateOrderedAttributes() {
 				var checkedAttributes = jQuery("#sigmie_attributes_sortable input:checked").map(function() {

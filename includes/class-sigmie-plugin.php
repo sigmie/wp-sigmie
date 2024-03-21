@@ -193,6 +193,10 @@ class Sigmie_Plugin
 		$this->loader->add_action('wp_trash_post', $plugin_admin, 'post_trashed', 10, 2);
 		$this->loader->add_action('untrashed_post', $plugin_admin, 'post_untrashed', 10, 2);
 
+		$this->loader->add_filter('product_attributes_type_selector', $plugin_admin, 'register_attribute_types');
+		$this->loader->add_action('woocommerce_after_add_attribute_fields', $plugin_admin, 'attribute_orderby_field');
+		$this->loader->add_action('woocommerce_after_edit_attribute_fields', $plugin_admin, 'attribute_orderby_field');
+
 		add_shortcode('sigmie_search_bar', [$plugin_admin, 'render_sigmie_search_bar']);
 
 		add_shortcode('sigmie_product_listing', [$plugin_admin, 'render_sigmie_product_listing']);
@@ -210,9 +214,11 @@ class Sigmie_Plugin
 			new Sigmie_Admin_Page_Listing();
 			new Sigmie_Admin_Page_Products();
 
+
 			add_action('wp_ajax_sigmie_re_index', array($plugin_admin, 're_index'), 10, 2);
 		}
 	}
+
 
 	/**
 	 * Register all of the hooks related to the public-facing functionality

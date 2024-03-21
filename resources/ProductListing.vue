@@ -189,24 +189,23 @@
                 >
                 </FilterLabel>
               </template>
-              <component
+              <SelectbuttonFacet
+                :facets="sortedFacetValues(key, facets[key])"
                 v-if="selectbuttonFacets.split(',').includes(key)"
-                :is="facetTypes.selectbutton"
               >
-              </component>
+              </SelectbuttonFacet>
 
-              <component
+              <MobileFacet
                 v-if="checkboxFacets.split(',').includes(key)"
-                :is="facetTypes.mobileCheckbox"
                 :label="filterLabels[key] ?? key"
-                :facets="facets[key] ?? []"
+                :facets="sortedFacetValues(key, facets[key])"
                 :modelValue="filterVals[key]"
                 @update:model-value="(value) => onTermChange(key, value)"
               >
-              </component>
-              <component
+              </MobileFacet>
+
+              <PriceSlider
                 v-if="rangeFacets.split(',').includes(key)"
-                :is="facetTypes.range"
                 :show-chart="showPriceRangeChart"
                 :currency="currencySymbol"
                 :label="priceRangeLabel"
@@ -217,7 +216,7 @@
                 @range:inited="onRangeInit"
                 :histogram="facets.price_as_number?.histogram"
               >
-              </component>
+              </PriceSlider>
             </AccordionTab>
           </template>
         </Accordion>
@@ -270,24 +269,24 @@
               </FilterLabel>
             </template>
 
-              <component
-                v-if="selectbuttonFacets.split(',').includes(key)"
-                :is="facetTypes.selectbutton"
-              >
-              </component>
-
-            <component
-              v-if="checkboxFacets.split(',').includes(key)"
-              :is="facetTypes.checkbox"
-              :label="filterLabels[key] ?? key"
-              :facets="facets[key] ?? []"
+            <SelectbuttonFacet
+              v-if="selectbuttonFacets.split(',').includes(key)"
+              :facets="sortedFacetValues(key, facets[key])"
               :modelValue="filterVals[key]"
               @update:model-value="(value) => onTermChange(key, value)"
             >
-            </component>
-            <component
-              v-if="rangeFacets.split(',').includes(key)"
-              :is="facetTypes.range"
+            </SelectbuttonFacet>
+
+            <Facet
+              v-else-if="checkboxFacets.split(',').includes(key)"
+              :label="filterLabels[key] ?? key"
+              :facets="sortedFacetValues(key, facets[key])"
+              :modelValue="filterVals[key]"
+              @update:model-value="(value) => onTermChange(key, value)"
+            >
+            </Facet>
+            <PriceSlider
+              v-else-if="rangeFacets.split(',').includes(key)"
               :show-chart="showPriceRangeChart"
               :currency="currencySymbol"
               :label="priceRangeLabel"
@@ -298,7 +297,7 @@
               @range:inited="onRangeInit"
               :histogram="facets.price_as_number?.histogram"
             >
-            </component>
+            </PriceSlider>
           </AccordionTab>
         </Accordion>
       </template>
@@ -333,13 +332,6 @@ import Layout from "./ProductListingLayout.vue";
 import MobileFacet from "./MobileFacet.vue";
 import SelectbuttonFacet from "./SelectbuttonFacet.vue";
 
-const facetTypes = {
-  checkbox: Facet,
-  mobileCheckbox: MobileFacet,
-  range: PriceSlider,
-  selectbutton: SelectbuttonFacet,
-};
-
 const props = defineProps({
   application: String,
   apiKey: String,
@@ -369,6 +361,8 @@ const props = defineProps({
   sortByRatingLabel: String,
   sortByProductSalesLabel: String,
   productsSubtitleTemplate: String,
+  sortedAttributes: Object,
+  colorAttributesColors: Object,
 });
 
 const currentPage = ref(1);
@@ -523,6 +517,22 @@ const updateFitlerString = () => {
 };
 
 const accordionActiveKeys = ref([]);
+
+const sortedFacetValues = (key, facets) => {
+  if (!props.sortedAttributes[key]) {
+    return Object.entries(facets);
+  }
+
+  let res = [];
+
+  for (let val of props.sortedAttributes[key]) {
+    if (facets[val]) {
+      res.push([val, facets[val]]);
+    }
+  }
+
+  return res;
+};
 
 onMounted(() => {
   accordionActiveKeys.value = Object.keys(Object.keys(filterVals)).map((d) =>
