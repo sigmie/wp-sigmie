@@ -269,6 +269,8 @@
               </FilterLabel>
             </template>
 
+            <ColorFacet></ColorFacet>
+
             <SelectbuttonFacet
               v-if="selectbuttonFacets.split(',').includes(key)"
               :facets="sortedFacetValues(key, facets[key])"
@@ -331,6 +333,7 @@ import Facet from "./Facet.vue";
 import Layout from "./ProductListingLayout.vue";
 import MobileFacet from "./MobileFacet.vue";
 import SelectbuttonFacet from "./SelectbuttonFacet.vue";
+import ColorFacet from "./ColorFacet.vue";
 
 const props = defineProps({
   application: String,

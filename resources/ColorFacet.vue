@@ -2,7 +2,7 @@
   <div class="">
     <SelectButton
       @update:model-value="onChange"
-      :modelValue="props.modelValue"
+      :modelValue="values"
       :options="options"
       optionLabel="name"
       multiple
@@ -11,7 +11,7 @@
       unstyled
       :pt="{
         root: {
-          class: 'sgm-grid sgm-grid-cols-3 sgm-gap-1 sgm-mt-3',
+          class: 'sgm-grid sgm-grid-cols-2 sgm-gap-1 sgm-mt-3',
         },
         button: {
           class: '',
@@ -23,17 +23,20 @@
     >
       <template #option="slotProps">
         <Button
-          :outlined="!props.modelValue.some((v) => v.value === slotProps.option.value)"
-          :severity="
-            !props.modelValue.some((v) => v.value === slotProps.option.value)
-              ? 'secondary'
-              : 'primary'
-          "
-          class="sgm-w-full"
+          :outlined="true"
+          severity="secondary"
+          class="sgm-w-full sgm-h-20"
         >
-          <span class="sgm-w-full sgm-text-center sgm-normal-case">
-            {{ slotProps.option.name }}
-          </span>
+          <div
+            class="sgm-flex sgm-flex-col sgm-items-center sgm-space-y-2 sgm-mx-auto"
+          >
+            <div
+              class="sgm-rounded-full sgm-border sgm-h-4 sgm-w-4 sgm-bg-red-600"
+            ></div>
+            <div>
+              {{ slotProps.option.name }}
+            </div>
+          </div>
         </Button>
       </template>
     </SelectButton>
@@ -46,7 +49,7 @@ import SelectButton from "primevue/selectbutton";
 import Button from "primevue/button";
 
 const props = defineProps({
-  facets: Object,
+  facets: {},
   modelValue: Array,
 });
 
@@ -56,12 +59,10 @@ const values = ref([]);
 const options = ref([]);
 
 onMounted(() => {
-  options.value = props.facets.map(([facet, count]) => {
-    return {
-      name: `${facet} (${count})`,
-      value: facet,
-    };
-  });
+  options.value = [
+    { name: "Foo re", value: "bar" },
+    { name: "Kokkino", value: "red" },
+  ];
 });
 
 const onChange = (facet) => {
