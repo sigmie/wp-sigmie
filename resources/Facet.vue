@@ -1,78 +1,56 @@
 <template>
-  <div class="sgm-pt-4 sgm-hidden xl:sgm-block">
-    <div class="sgm-space-y-2">
-      <div
-        v-for="[facet, count] in options"
-        :key="facet"
-        class="sgm-flex sgm-flex-row sgm-items-center"
-      >
-        <Checkbox
-          :input-id="`filter-${facet}`"
-          :name="facet"
-          :binary="true"
-          :modelValue="values.includes(facet)"
-          @update:model-value="(newVal) => onChange(facet, newVal)"
-        ></Checkbox>
+  <!-- <ColorFacet></ColorFacet>
 
-        <label :for="`filter-${facet}`" class="sgm-ml-3 sgm-text-sm"
-          ><span class="sgm-text-black">{{ facet }}</span>
-          <span class="sgm-text-gray-500 sgm-ml-1 sgm-tracking-wide">
-            ({{ count }})
-          </span>
-        </label>
-      </div>
-    </div>
-  </div>
+  <SelectbuttonFacet
+    v-if="selectbuttonFacets.split(',').includes(key)"
+    :facets="sortedFacetValues(key, facets[key])"
+    :modelValue="filterVals[key]"
+    @update:model-value="(value) => onTermChange(key, value)"
+  >
+  </SelectbuttonFacet>
+
+  <CheckboxFacet
+    v-else-if="checkboxFacets.split(',').includes(key)"
+    :label="filterLabels[key] ?? key"
+    :facets="sortedFacetValues(key, facets[key])"
+    :modelValue="filterVals[key]"
+    @update:model-value="(value) => onTermChange(key, value)"
+  >
+  </CheckboxFacet>
+  <NumberFacet
+    v-else-if="rangeFacets.split(',').includes(key)"
+    :show-chart="showPriceRangeChart"
+    :currency="currencySymbol"
+    :label="priceRangeLabel"
+    :min="0"
+    :max="facets.price_as_number?.max"
+    :range="priceRange"
+    @update:range="onRangeChange"
+    @range:inited="onRangeInit"
+    :histogram="facets.price_as_number?.histogram"
+  >
+  </NumberFacet> -->
 </template>
 
 <style scoped></style>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
-import Checkbox from "primevue/checkbox";
-
+const props = defineProps(["modelValue", "type", "options", "facets", "label"]);
 const emit = defineEmits(["update:modelValue"]);
 
-const props = defineProps({
-  facets: {
-    type: Object,
-    required: true,
-  },
-  label: String,
-  modelValue: Array,
-});
-
-const value = ref(false);
-const values = ref([]);
-const options = ref([]);
-
-onMounted(() => {});
-
-watch(
-  () => props.modelValue,
-  (newVal) => {
-    values.value = newVal;
-  },
-  { immediate: true }
-);
-
-watch(
-  () => props.facets,
-  (newVal) => {
-    if (options.value.length === 0) {
-      options.value = newVal;
-    }
-  },
-  { immediate: true }
-);
-
-const onChange = (facet, value) => {
-  if (value) {
-    values.value.push(facet);
-  } else {
-    values.value = values.value.filter((item) => item !== facet);
+const sortedFacetValues = (key, facets) => {
+  if (!props.sortedAttributes[key]) {
+    return Object.entries(facets);
   }
 
-  emit("update:modelValue", values.value);
+  let res = [];
+
+  for (let val of props.sortedAttributes[key]) {
+    if (facets[val]) {
+      res.push([val, facets[val]]);
+    }
+  }
+
+  return res;
 };
 </script>

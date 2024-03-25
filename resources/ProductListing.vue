@@ -1,5 +1,5 @@
 <template>
-  <SigmieSearch
+  <!-- <SigmieSearch
     :debounce-ms="200"
     :facets="props.facets"
     :apiKey="props.apiKey"
@@ -53,13 +53,13 @@
       </template>
 
       <template v-slot:sort>
-        <SortMenu :label="sortByLabel" :options="sortOptions">
+        <SortMenu :label="state.sort.label" :options="sort.options">
           <template v-slot:item="item">
             <div
               ole="button"
               tabindex="0"
               class="sgm-py-2 sgm-px-3 sgm-cursor-pointer"
-              @click.prevent="onSortChange(item.value, item.name)"
+              @click.prevent="state.sort = item"
             >
               <span class="sgm-text-black">
                 {{ item.name }}
@@ -130,13 +130,13 @@
 
       <template v-slot:mobile-sort>
         <MobileSortAccordion
-          :label="sortByLabel"
-          :options="sortOptions"
+          :label="state.sort.label"
+          :options="sort.options"
           v-slot="item"
         >
           <div
             class="sgm-py-2 sgm-cursor-pointer sgm-flex sgm-flex-row sgm-justify-between"
-            @click.prevent="onSortChange(item.value, item.name)"
+            @click.prevent="state.sort = item"
           >
             <span class="sgm-text-black">
               {{ item.name }}
@@ -153,7 +153,7 @@
 
       <template v-slot:mobile-filters>
         <Accordion
-          :active-index="accordionActiveKeys"
+          :active-index="state.expanded_filter_keys"
           :pt="{
             root: {
               class: 'sgm-flex sgm-flex-col sgm-space-y-4 sgm-px-4 lg:sgm-px-0',
@@ -184,39 +184,12 @@
             >
               <template v-slot:header>
                 <FilterLabel
-                  :title="filterLabels[key] ?? key"
+                  :title="facetProps[key].label"
                   :subtitle="filterVals[key].join(', ') ?? null"
                 >
                 </FilterLabel>
               </template>
-              <SelectbuttonFacet
-                :facets="sortedFacetValues(key, facets[key])"
-                v-if="selectbuttonFacets.split(',').includes(key)"
-              >
-              </SelectbuttonFacet>
 
-              <MobileFacet
-                v-if="checkboxFacets.split(',').includes(key)"
-                :label="filterLabels[key] ?? key"
-                :facets="sortedFacetValues(key, facets[key])"
-                :modelValue="filterVals[key]"
-                @update:model-value="(value) => onTermChange(key, value)"
-              >
-              </MobileFacet>
-
-              <PriceSlider
-                v-if="rangeFacets.split(',').includes(key)"
-                :show-chart="showPriceRangeChart"
-                :currency="currencySymbol"
-                :label="priceRangeLabel"
-                :min="0"
-                :max="facets.price_as_number?.max"
-                :range="priceRange"
-                @update:range="onRangeChange"
-                @range:inited="onRangeInit"
-                :histogram="facets.price_as_number?.histogram"
-              >
-              </PriceSlider>
             </AccordionTab>
           </template>
         </Accordion>
@@ -232,7 +205,7 @@
 
       <template v-slot:filters>
         <Accordion
-          :active-index="accordionActiveKeys"
+          :active-index="state.expanded_filter_keys"
           :pt="{
             root: {
               class: 'sgm-flex sgm-flex-col sgm-space-y-6 sgm-px-4 lg:sgm-px-0',
@@ -263,52 +236,40 @@
           >
             <template v-slot:header>
               <FilterLabel
-                :title="filterLabels[key] ?? key"
+                :title="facetProps[key].label"
                 :subtitle="filterVals[key].join(', ') ?? null"
               >
               </FilterLabel>
             </template>
 
-            <ColorFacet></ColorFacet>
+            <component
+              :v-bind="facetProps[key]"
+              :is="facetProps[key].component"
+              v-model="filterVals[key]"
+            ></component>
 
-            <SelectbuttonFacet
-              v-if="selectbuttonFacets.split(',').includes(key)"
-              :facets="sortedFacetValues(key, facets[key])"
-              :modelValue="filterVals[key]"
-              @update:model-value="(value) => onTermChange(key, value)"
-            >
-            </SelectbuttonFacet>
-
-            <Facet
-              v-else-if="checkboxFacets.split(',').includes(key)"
-              :label="filterLabels[key] ?? key"
-              :facets="sortedFacetValues(key, facets[key])"
-              :modelValue="filterVals[key]"
-              @update:model-value="(value) => onTermChange(key, value)"
-            >
-            </Facet>
-            <PriceSlider
-              v-else-if="rangeFacets.split(',').includes(key)"
+            <NumberFacet
               :show-chart="showPriceRangeChart"
               :currency="currencySymbol"
               :label="priceRangeLabel"
-              :min="0"
+              :min="facets.price_as_number?.min"
               :max="facets.price_as_number?.max"
               :range="priceRange"
               @update:range="onRangeChange"
               @range:inited="onRangeInit"
               :histogram="facets.price_as_number?.histogram"
             >
-            </PriceSlider>
+            </NumberFacet>
+
           </AccordionTab>
         </Accordion>
       </template>
     </Layout>
-  </SigmieSearch>
+  </SigmieSearch> -->
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch, reactive } from "vue";
 
 import { SigmieSearch } from "@sigmie/vue";
 
@@ -325,226 +286,136 @@ import AccordionTab from "primevue/accordiontab";
 import FilterLabel from "./FilterLabel.vue";
 import MobileSortAccordion from "./MobileSortAccordion.vue";
 import SortMenu from "./SortMenu.vue";
-import PriceSlider from "./PriceSlider.vue";
+import NumberFacet from "./NumberFacet.vue";
 import Pagination from "./Pagination.vue";
 import HorizontalProducts from "./HorizontalProducts.vue";
 import ProductHit from "./ProductHit.vue";
-import Facet from "./Facet.vue";
-import Layout from "./ProductListingLayout.vue";
-import MobileFacet from "./MobileFacet.vue";
+
+import CheckboxFacet from "./CheckboxFacet.vue";
+import MobileCheckbox from "./MobileCheckbox.vue";
 import SelectbuttonFacet from "./SelectbuttonFacet.vue";
 import ColorFacet from "./ColorFacet.vue";
 
+import Layout from "./ProductListingLayout.vue";
+
 const props = defineProps({
-  application: String,
-  apiKey: String,
-  index: String,
-  facets: String,
-  filters: String,
-  selectbuttonFacets: String,
-  rangeFacets: String,
-  checkboxFacets: String,
-  showPriceRangeChart: Boolean,
-  showCategoriesFilter: Boolean,
-  showOffersFilter: Boolean,
-  perPage: Number,
-  currencySymbol: String,
-  productsTitleText: String,
-  filtersTitleText: String,
-  resetFiltersText: String,
-  priceRangeLabel: String,
-  priceRangeFilterLabel: String,
-  offersFilterText: String,
-  noProductsText: String,
-  noProductsAdviceText: String,
-  sortByRelevanceLabel: String,
-  sortByPriceDescLabel: String,
-  sortByPriceAscLabel: String,
-  sortByMostRecentLabel: String,
-  sortByRatingLabel: String,
-  sortByProductSalesLabel: String,
-  productsSubtitleTemplate: String,
-  sortedAttributes: Object,
-  colorAttributesColors: Object,
+  sort: Object,
+  sigmie: Object,
+  options: Object,
+  texts: Object,
+  facets: Object,
 });
 
-const currentPage = ref(1);
-const sortBy = ref("_score");
-const sortByLabel = ref("");
-const sortOptions = ref([]);
-
-const filterLabels = {
-  categories: "Categories",
-  price_as_number: "Price",
-  pa_color: "Color",
-};
-
-const onlyOffers = ref(false);
-
-function onOffersClick() {
-  onlyOffers.value = !onlyOffers.value;
-
-  updateFitlerString();
-}
-
-const computedPriceRangeFilterLabel = computed(() => {
-  return props.priceRangeFilterLabel
-    .replace("%", priceRange.value[0])
-    .replace("%", priceRange.value[1]);
+const state = reactive({
+  initial_filter_string: null,
+  filters: {},
+  filterString: null,
+  expanded_filter_keys: [],
+  currentPage: 1,
+  onlyOffers: false,
+  sort: {
+    name: "",
+    value: "_score",
+  },
 });
+
+const initialPriceRange = ref([null, null]);
 
 const activeFilters = computed(() => {
-  let result = Object.entries(filterVals.value)
-    .filter(([key, values]) => key !== "price_as_number" && values.length > 0)
-    .flatMap(([key, values]) => values.map((value) => [key, value]));
-
-  if (onlyOffers.value) {
-    result.push(["offers", props.offersFilterText]);
-  }
-
-  if (priceRangeIsDirty.value) {
-    result.push(["price_range", computedPriceRangeFilterLabel.value]);
-  }
-
-  if (result.length > 0) {
-    result.push(["reset_filters", props.resetFiltersText]);
-  }
-
-  return result;
+  return Object.entries(state.filters)
+    .filter(([attribute, values]) => values.length > 0)
+    .map(([attribute, values]) => values.map((filter) => filter.label));
 });
 
 const filtersAreDirty = computed(() => {
-  return (
-    onlyOffers.value ||
-    Object.values(filterVals.value).some((values) => values.length > 0) ||
-    priceRangeIsDirty.value
-  );
+  return createFilterString() !== state.initial_filter_string;
 });
 
-const priceRangeIsDirty = computed(() => {
-  return (
-    priceRange.value[0] !== initialPriceRange.value[0] ||
-    priceRange.value[1] !== initialPriceRange.value[1]
-  );
-});
-
-const filterString = ref("");
-const filterVals = ref([]);
-const priceRange = ref([null, null]);
-const initialPriceRange = ref([null, null]);
+const onOffersClick = () => {
+  state.filters['on_sale'] = {
+         label: 'Only offers',
+         key: 'is',
+         operator: ':',
+         value: 'on_sale'
+  }
+};
 
 function onRemoveActiveFilter(key, value) {
-  if (filterVals.value[key]) {
-    const index = filterVals.value[key].indexOf(value);
-    if (index > -1) {
-      filterVals.value[key].splice(index, 1);
-    }
-  }
-
-  if (key === "offers") {
-    onlyOffers.value = !onlyOffers.value;
-  }
-
-  if (key === "price_range") {
-    priceRange.value = initialPriceRange.value;
-  }
-
-  if (key === "reset_filters") {
-    onResetFilters();
-    return;
-  }
-
-  updateFitlerString();
+  // if (filterVals.value[key]) {
+  //   const index = filterVals.value[key].indexOf(value);
+  //   if (index > -1) {
+  //     filterVals.value[key].splice(index, 1);
+  //   }
+  // }
+  // if (key === "offers") {
+  //   onlyOffers.value = !onlyOffers.value;
+  // }
+  // sigmie_price_range_label;
+  // if (key === "price_range") {
+  //   priceRange.value = initialPriceRange.value;
+  // }
+  // if (key === "reset_filters") {
+  //   onResetFilters();
+  //   return;
+  // }
+  // updateFilterString();
 }
 
-function onTermChange(key, values) {
-  filterVals.value[key] = values;
-
-  updateFitlerString();
-}
+watch(state.filters, updateFilterString, { deep: true });
 
 function onRangeInit(initialValue) {
-  initialPriceRange.value = initialValue;
-  priceRange.value = initialValue;
+  // initialPriceRange.value = initialValue;
+  // priceRange.value = initialValue;
 }
 
 function onRangeChange(values) {
-  priceRange.value = values;
-
-  updateFitlerString();
+  // priceRange.value = values;
+  // updateFilterString();
 }
 
 async function onResetFilters(values) {
-  filterVals.value = props.facets.split(" ").reduce((acc, key) => {
-    [key] = key.split(":");
-    acc[key] = [];
-    return acc;
-  }, {});
+  state.filters = createEmptyFilters();
+  state.onlyOffers = false;
 
-  onlyOffers.value = false;
-  priceRange.value = initialPriceRange.value;
-
-  updateFitlerString();
+  // priceRange.value = initialPriceRange.value;
+  // updateFilterString();
 }
 
-function onSortChange(value, label) {
-  sortBy.value = value;
-  sortByLabel.value = label;
-}
+const updateFilterString = () => {
+  state.currentPage = 1;
+  state.filterString = createFilterString();
+};
 
-const updateFitlerString = () => {
-  let priceFilter = "";
-
-  const [min, max] = priceRange.value;
-
-  if (min !== -1 && max !== -1) {
-    priceFilter = `price_as_number>=${min} AND price_as_number<=${max}`;
-  }
-
-  let valueFilter = Object.entries(filterVals.value)
-    .filter(([key, values]) => key !== "price_as_number" && values.length > 0)
+const createFilterString = () => {
+  // filterVals = {
+  // color: [
+  //     {
+  //        label: 'Red'
+  //        key: 'color',
+  //        operator: ':'
+  //        value: 'red'
+  //      }
+  // ]
+  // }
+  let pageFilters = Object.entries(state.filters)
+    .filter(([attribute, values]) => values.length > 0)
     .map(
-      ([key, values]) =>
-        `(${key}:[${values.map((value) => `'${value}'`).join(",")}])`
+      ([attribute, values]) =>
+        `(${values
+          .map((filter) => `${filter.key}${filter.operator}${filter.value}`)
+          .join(" OR ")})`
     )
     .join(" AND ");
 
-  let onlyOffersFilter = onlyOffers.value ? "is:on_sale" : "";
+  let preselectedFilters = props.sigmie.filters;
 
-  let result = [props.filters, onlyOffersFilter, priceFilter, valueFilter]
-    .filter((part) => part.trim() !== "")
+  return [pageFilters, preselectedFilters]
+    .filter((value) => value.trim() !== "")
     .join(" AND ");
-
-  currentPage.value = 1;
-  filterString.value = result;
 };
 
-const accordionActiveKeys = ref([]);
-
-const sortedFacetValues = (key, facets) => {
-  if (!props.sortedAttributes[key]) {
-    return Object.entries(facets);
-  }
-
-  let res = [];
-
-  for (let val of props.sortedAttributes[key]) {
-    if (facets[val]) {
-      res.push([val, facets[val]]);
-    }
-  }
-
-  return res;
-};
-
-onMounted(() => {
-  accordionActiveKeys.value = Object.keys(Object.keys(filterVals)).map((d) =>
-    parseInt(d)
-  );
-
-  filterString.value = props.filters;
-
-  filterVals.value = props.facets
+const createEmptyFilters = () => {
+  let result = props.sigmie.facets
     .split(" ")
     .filter((value) => value.trim() !== "")
     .reduce((acc, key) => {
@@ -553,35 +424,21 @@ onMounted(() => {
       return acc;
     }, {});
 
-  sortByLabel.value = props.sortByRelevanceLabel;
-  sortOptions.value = [
-    { name: props.sortByRelevanceLabel, value: "_score", current: false },
-    {
-      name: props.sortByPriceDescLabel,
-      value: "price_as_number:desc",
-      current: false,
-    },
-    {
-      name: props.sortByPriceAscLabel,
-      value: "price_as_number:asc",
-      current: false,
-    },
-    {
-      name: props.sortByMostRecentLabel,
-      value: "date_created:desc",
-      current: false,
-    },
-    {
-      name: props.sortByRatingLabel,
-      value: "average_rating:desc",
-      current: false,
-    },
-    {
-      name: props.sortByProductSalesLabel,
-      value: "total_sales:desc",
-      current: false,
-    },
-  ];
+  result["on_sale"] = [];
+
+  return result;
+};
+
+onMounted(() => {
+  // by default sort by relevance
+  state.sort = props.sort.default_option;
+
+  state.expanded_filter_keys = Object.entries(props.facets)
+    .filter(([key, values]) => values.expanded)
+    .map(([key, values]) => values.index);
+
+  state.filters = createEmptyFilters();
+  state.initial_filter_string = createFilterString();
 });
 </script>
 

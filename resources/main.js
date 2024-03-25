@@ -8,6 +8,8 @@ import PrimeVue from "primevue/config";
 
 document.addEventListener("DOMContentLoaded", function () {
 
+    //todo check if element exists
+
     const search = createApp({})
     search.use(PrimeVue);
     search.component('search', Search);

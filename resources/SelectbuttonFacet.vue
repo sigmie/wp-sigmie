@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import SelectButton from "primevue/selectbutton";
 import Button from "primevue/button";
 
@@ -52,7 +52,6 @@ const props = defineProps({
 
 const emit = defineEmits(["update:modelValue"]);
 
-const values = ref([]);
 const options = ref([]);
 
 onMounted(() => {
@@ -65,7 +64,6 @@ onMounted(() => {
 });
 
 const onChange = (facet) => {
-  values.value = facet;
 
   emit(
     "update:modelValue",
@@ -73,3 +71,4 @@ const onChange = (facet) => {
   );
 };
 </script>
+

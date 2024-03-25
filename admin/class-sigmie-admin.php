@@ -778,12 +778,23 @@ class Sigmie_Admin
 			'sigmie_color_attributes_color',
 		]);
 
-		$existingColors = (string) get_option('sigmie_color_attributes_color', '[]');
+		$predefinedFilters = '';
 
-		$existingColors = json_decode($existingColors, true);
+		if ($args['categories'] ?? false) {
+			$categories = explode(',', $args['categories'] ?? '');
+			$categories = array_map(fn ($category) => "'{$category}'", $categories);
+
+			$predefinedFilters = "categories:[" . implode(',', $categories) . "]";
+		}
+
+		$colorAttributes = (string) get_option('sigmie_color_attributes_color', '[]');
+		$colorAttributes = json_decode($colorAttributes, true);
 
 		$sortedAttributes = [];
+		$attributeLabels = [];
+
 		foreach (wc_get_attribute_taxonomies() as $attribute) {
+			$attributeLabels['pa_' . $attribute->attribute_name] = $attribute->attribute_label;
 			$sortedAttributes['pa_' . $attribute->attribute_name] = array_map(function (WP_Term $term) {
 				return $term->name;
 			}, get_terms([
@@ -800,52 +811,116 @@ class Sigmie_Admin
 
 		$facets = implode(' ', $attributes);
 
-		$predefinedFilters = '';
-
-		if ($args['categories'] ?? false) {
-			$categories = explode(',', $args['categories'] ?? '');
-			$categories = array_map(fn ($category) => "'{$category}'", $categories);
-
-			$predefinedFilters = "categories:[" . implode(',', $categories) . "]";
-		}
-
 		$rangeFacets = ['price_as_number', ...json_decode($options['sigmie_range_attributes'], true)];
 		$checkboxFacets = ['categories', 'brands', ...json_decode($options['sigmie_checkbox_attributes'], true)];
-		$selectButton  = [...json_decode($options['sigmie_selectbutton_attributes'], true)];
+		$selectButtonFacets  = [...json_decode($options['sigmie_selectbutton_attributes'], true)];
+		$colorFacets = [...array_keys($colorAttributes)];
+
+		$facetTypes = array_merge(
+			array_fill_keys($rangeFacets, 'NumberFacet'),
+			array_fill_keys($checkboxFacets, 'CheckboxFacet'),
+			array_fill_keys($selectButtonFacets, 'SelectbuttonFacet'),
+			array_fill_keys($colorFacets, 'ColorFacet')
+		);
+
+		$facetProps = [];
+
+		foreach ($attributes as $attribute) {
+			$facetProps[$attribute] = [];
+		}
+
+		foreach ($attributes as $index => $attribute) {
+			$facetProps[$attribute]['index'] = $index;
+			$facetProps[$attribute]['expanded'] = true;
+		}
+
+		foreach ($rangeFacets as $attribute) {
+			$facetProps[$attribute]['filter_from_label'] = 'from % $';
+			$facetProps[$attribute]['filter_to_label'] = 'to % $';
+		}
+
+		foreach ($attributeLabels as $attribute => $attributeLabel) {
+			$facetProps[$attribute]['label'] = $attributeLabel;
+		}
+
+		foreach ($facetTypes as $key => $type) {
+			$facetProps[$key]['component'] = $type;
+		}
+
+		foreach ($sortedAttributes as $key => $values) {
+			$facetProps[$key]['sorted_values'] = $values;
+		}
+
+		foreach ($colorAttributes as $key => $value) {
+			$facetProps[$key]['value_colors'] = $value;
+		}
+
+		$facetProps['price_as_number']['symbol'] = get_woocommerce_currency_symbol();
+		$facetProps['price_as_number']['label'] = $options['sigmie_price_range_label'];
+
+		$props = [
+			'facets' => $facetProps,
+			'sigmie' => [
+				'filters' => $predefinedFilters,
+				'facets' => $facets,
+				'application' => $options['sigmie_application_id'],
+				'api_key' => $options['sigmie_search_api_key'],
+				'index' => $this->index,
+				'per_page' => $options['sigmie_products_per_page']
+			],
+			'options' => [
+				'show_offers_filter' => $options['sigmie_show_offers_filter'] === '1',
+			],
+			'texts' => [
+				'products_title_text' => $options['sigmie_products_title_text'],
+				'products_subtitle_template' => $options['sigmie_products_subtitle_template'],
+				'filters_title_text' => $options['sigmie_filters_title_text'],
+				'offers_filter_text' => $options['sigmie_offers_filter_text'],
+				'reset_filters_text' => $options['sigmie_reset_filters_text'],
+				'price_range_filter_label' => $options['sigmie_price_range_filter_label'],
+				'offers_filter_text' => $options['sigmie_offers_filter_text'],
+				'no_products_text' => $options['sigmie_no_products_text'],
+				'no_products_advice_text' => $options['sigmie_no_products_advice_text'],
+			],
+			'sort' => [
+				'default_option' => [
+					[
+						'label' => $options['sigmie_sort_by_relevance_label'],
+						'value' => "_score",
+					],
+				],
+				'options' => [
+					[
+						'label' => $options['sigmie_sort_by_relevance_label'],
+						'value' => "_score",
+					],
+					[
+						'label' => $options['sigmie_sort_by_price_desc_label'],
+						'value' => "price_as_number:desc",
+					],
+					[
+						'label' => $options['sigmie_sort_by_price_asc_label'],
+						'value' => "price_as_number:asc",
+					],
+					[
+						'label' => $options['sigmie_sort_by_product_sales_label'],
+						'value' => "total_sales:desc",
+					],
+					[
+						'label' => $options['sigmie_sort_by_rating_label'],
+						'value' => "average_rating:desc",
+					],
+					[
+						'label' => $options['sigmie_sort_by_most_recent_label'],
+						'value' => "date_created:desc",
+					]
+				]
+			]
+		];
+
 
 		return '<div class="" id="sigmie-filters">
-					<product-listing
-							:color-attributes-colors="' . htmlspecialchars(json_encode($existingColors)) . '"
-							:sorted-attributes="' . htmlspecialchars(json_encode($sortedAttributes)) . '"
-							range-facets="' . implode(',', $rangeFacets) . '"
-							checkbox-facets="' . implode(',', $checkboxFacets) . '"
-							selectbutton-facets="' . implode(',', $selectButton) . '"
-							filters="' . $predefinedFilters . '"
-							facets="' . $facets . '"
-							application="' . $options['sigmie_application_id'] . '" 
-							api-key="' . $options['sigmie_search_api_key'] . '" 
-							index="' . $this->index . '"
-							:show-price-range-chart="' . (string) ($options['sigmie_show_price_range_chart'] === '1' ? 'true' : 'false') . '"
-							:show-categories-filter="' . (string) ($options['sigmie_show_categories_filter'] === '1' ? 'true' : 'false') . '"
-							:show-offers-filter="' . (string) ($options['sigmie_show_offers_filter'] === '1' ? 'true' : 'false') . '"
-							:per-page="' . $options['sigmie_products_per_page'] . '"
-							currency-symbol="' . get_woocommerce_currency_symbol() . '"
-							products-title-text="' . $options['sigmie_products_title_text'] . '"
-							products-subtitle-template="' . $options['sigmie_products_subtitle_template'] . '"
-							filters-title-text="' . $options['sigmie_filters_title_text'] . '"
-							offers-filter-text="' . $options['sigmie_offers_filter_text'] . '"
-							reset-filters-text="' . $options['sigmie_reset_filters_text'] . '"
-							price-range-label="' . $options['sigmie_price_range_label'] . '"
-							price-range-filter-label="' . $options['sigmie_price_range_filter_label'] . '"
-							offers-filter-text="' . $options['sigmie_offers_filter_text'] . '"
-							no-products-text="' . $options['sigmie_no_products_text'] . '"
-							no-products-advice-text="' . $options['sigmie_no_products_advice_text'] . '"
-							sort-by-relevance-label="' . $options['sigmie_sort_by_relevance_label'] . '"
-							sort-by-price-desc-label="' . $options['sigmie_sort_by_price_desc_label'] . '"
-							sort-by-price-asc-label="' . $options['sigmie_sort_by_price_asc_label'] . '"
-							sort-by-most-recent-label="' . $options['sigmie_sort_by_most_recent_label'] . '"
-							sort-by-product-sales-label="' . $options['sigmie_sort_by_product_sales_label'] . '"
-							sort-by-rating-label="' . $options['sigmie_sort_by_rating_label'] . '">
+					<product-listing v-bind="' . htmlspecialchars(json_encode($props)) . '">
 					</product-listing>
 				</div>';
 	}
