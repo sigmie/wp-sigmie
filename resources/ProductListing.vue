@@ -229,7 +229,7 @@
           </template>
 
           <AccordionTab
-            v-for="(item, name) in facets"
+            v-for="(item, name) in props.facets"
             :pt="{
               root: { class: '' },
               headeraction: {
