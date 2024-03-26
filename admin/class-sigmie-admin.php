@@ -866,10 +866,10 @@ class Sigmie_Admin
 				'application' => $options['sigmie_application_id'],
 				'api_key' => $options['sigmie_search_api_key'],
 				'index' => $this->index,
-				'per_page' => $options['sigmie_products_per_page']
 			],
 			'options' => [
 				'show_offers_filter' => $options['sigmie_show_offers_filter'] === '1',
+				'per_page' => (int) $options['sigmie_products_per_page']
 			],
 			'texts' => [
 				'products_title_text' => $options['sigmie_products_title_text'],
@@ -884,10 +884,8 @@ class Sigmie_Admin
 			],
 			'sort' => [
 				'default_option' => [
-					[
-						'label' => $options['sigmie_sort_by_relevance_label'],
-						'value' => "_score",
-					],
+					'label' => $options['sigmie_sort_by_relevance_label'],
+					'value' => "_score",
 				],
 				'options' => [
 					[

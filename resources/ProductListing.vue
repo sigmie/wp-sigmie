@@ -1,25 +1,27 @@
 <template>
-  <!-- <SigmieSearch
+  <SigmieSearch
     :debounce-ms="200"
-    :facets="props.facets"
-    :apiKey="props.apiKey"
-    :sort="sortBy"
+    :facets="props.sigmie.facets"
+    :api-key="props.sigmie.api_key"
+    :sort="state.sort.value"
     :query="''"
-    :page="currentPage"
-    :perPage="perPage"
-    :filters="filterString"
-    :search="props.index"
-    :applicationId="props.application"
+    :page="state.currentPage"
+    :per-page="props.options.per_page"
+    :filters="state.filter_string"
+    :search="props.sigmie.index"
+    :application-id="props.sigmie.application"
     v-slot="{ hits, facets, total, loading }"
   >
     <Layout
       :loading="loading"
       :hits="hits"
-      :title="filtersTitleText"
-      :hits-title="productsTitleText"
-      :hits-subtitle="productsSubtitleTemplate.replace('%', total)"
-      :no-hits-title="noProductsText"
-      :no-hits-subtitle="noProductsAdviceText"
+      :title="props.texts.products_title_text"
+      :hits-title="props.texts.filters_title_text"
+      :hits-subtitle="
+        props.texts.products_subtitle_template.replace('%', total)
+      "
+      :no-hits-title="props.texts.no_products_text"
+      :no-hits-subtitle="props.texts.no_products_advice_text"
       :active-filters="activeFilters"
       :total="total"
     >
@@ -45,15 +47,15 @@
 
       <template v-slot:pagination>
         <Pagination
-          :currentPage="currentPage"
-          @changePage="(page) => (currentPage = page)"
-          :per-page="perPage"
+          :currentPage="state.currentPage"
+          @changePage="(page) => (state.currentPage = page)"
+          :per-page="props.options.per_page"
           :total="total"
         ></Pagination>
       </template>
 
       <template v-slot:sort>
-        <SortMenu :label="state.sort.label" :options="sort.options">
+        <SortMenu :label="state.sort.label" :options="props.sort.options">
           <template v-slot:item="item">
             <div
               ole="button"
@@ -62,7 +64,7 @@
               @click.prevent="state.sort = item"
             >
               <span class="sgm-text-black">
-                {{ item.name }}
+                {{ item.label }}
               </span>
             </div>
           </template>
@@ -71,26 +73,28 @@
 
       <template v-slot:offers>
         <Button
-          v-if="showOffersFilter"
+          v-if="props.options.show_offers_filter"
           outlined
           severity="secondary"
           @click="onOffersClick"
         >
-          <span class="sgm-text-black"> {{ offersFilterText }}</span>
+          <span class="sgm-text-black">
+            {{ props.options.offers_filter_text }}</span
+          >
         </Button>
       </template>
 
       <template v-slot:horizontal-one>
         <SigmieSearch
           :debounce-ms="200"
-          :apiKey="props.apiKey"
+          :api-key="props.sigmie.api_key"
           :sort="'_score'"
           :query="''"
-          :perPage="20"
+          :per-page="10"
           :filters="'is:is_featured'"
-          :facets="props.facets"
-          :search="props.index"
-          :applicationId="props.application"
+          :facets="props.sigmie.facets"
+          :search="props.sigmie.index"
+          :application-id="props.sigmie.application"
           v-slot="{ hits }"
         >
           <HorizontalProducts
@@ -107,14 +111,14 @@
       <template v-slot:horizontal-two>
         <SigmieSearch
           :debounce-ms="200"
-          :apiKey="props.apiKey"
+          :api-key="props.sigmie.api_key"
           :sort="'_score'"
           :query="''"
-          :perPage="20"
+          :per-page="10"
           :filters="'is:is_featured'"
-          :facets="props.facets"
-          :search="props.index"
-          :applicationId="props.application"
+          :facets="props.sigmie.facets"
+          :search="props.sigmie.index"
+          :application-id="props.sigmie.application"
           v-slot="{ hits }"
         >
           <HorizontalProducts
@@ -125,7 +129,10 @@
       </template>
 
       <template v-slot:no-hits-action>
-        <Button :label="resetFiltersText" @click.prevent="onResetFilters" />
+        <Button
+          :label="props.texts.reset_filters_text"
+          @click.prevent="onResetFilters"
+        />
       </template>
 
       <template v-slot:mobile-sort>
@@ -139,13 +146,13 @@
             @click.prevent="state.sort = item"
           >
             <span class="sgm-text-black">
-              {{ item.name }}
+              {{ item.label }}
             </span>
 
             <RadioButton
               :name="item.value"
-              :value="item.value"
-              :modelValue="sortBy"
+              :value="item"
+              :modelValue="state.sort"
             />
           </div>
         </MobileSortAccordion>
@@ -173,7 +180,7 @@
             ></ChevronDownIcon>
           </template>
 
-          <template v-for="(item, key) in filterVals">
+          <template v-for="(item, name) in props.facets">
             <AccordionTab
               :pt="{
                 headeraction: {
@@ -183,13 +190,9 @@
               }"
             >
               <template v-slot:header>
-                <FilterLabel
-                  :title="facetProps[key].label"
-                  :subtitle="filterVals[key].join(', ') ?? null"
-                >
+                <FilterLabel :title="item.label" :subtitle="'Subtitle'">
                 </FilterLabel>
               </template>
-
             </AccordionTab>
           </template>
         </Accordion>
@@ -198,7 +201,7 @@
       <template v-slot:mobile-reset-action>
         <Button
           class="sgm-w-[48%] sgm-text-center"
-          :label="resetFiltersText"
+          :label="props.texts.reset_filters_text"
           @click.prevent="onResetFilters"
         />
       </template>
@@ -224,8 +227,9 @@
               class="sgm-h-4 sgm-w-4 sgm-text-black"
             ></ChevronDownIcon>
           </template>
+
           <AccordionTab
-            v-for="(item, key) in filterVals"
+            v-for="(item, name) in facets"
             :pt="{
               root: { class: '' },
               headeraction: {
@@ -235,20 +239,16 @@
             }"
           >
             <template v-slot:header>
-              <FilterLabel
-                :title="facetProps[key].label"
-                :subtitle="filterVals[key].join(', ') ?? null"
-              >
-              </FilterLabel>
+              <FilterLabel :title="item.label" :subtitle="''"> </FilterLabel>
             </template>
 
             <component
-              :v-bind="facetProps[key]"
-              :is="facetProps[key].component"
-              v-model="filterVals[key]"
+              :v-bind="item"
+              :is="item.component"
+              v-model="state.filters[name]"
             ></component>
 
-            <NumberFacet
+            <!-- <NumberFacet
               :show-chart="showPriceRangeChart"
               :currency="currencySymbol"
               :label="priceRangeLabel"
@@ -259,13 +259,12 @@
               @range:inited="onRangeInit"
               :histogram="facets.price_as_number?.histogram"
             >
-            </NumberFacet>
-
+            </NumberFacet> -->
           </AccordionTab>
         </Accordion>
       </template>
     </Layout>
-  </SigmieSearch> -->
+  </SigmieSearch>
 </template>
 
 <script setup>
@@ -309,7 +308,7 @@ const props = defineProps({
 const state = reactive({
   initial_filter_string: null,
   filters: {},
-  filterString: null,
+  filter_string: '',
   expanded_filter_keys: [],
   currentPage: 1,
   onlyOffers: false,
@@ -332,15 +331,16 @@ const filtersAreDirty = computed(() => {
 });
 
 const onOffersClick = () => {
-  state.filters['on_sale'] = {
-         label: 'Only offers',
-         key: 'is',
-         operator: ':',
-         value: 'on_sale'
-  }
+  state.filters["on_sale"] = {
+    label: "Only offers",
+    key: "is",
+    operator: ":",
+    value: "on_sale",
+  };
 };
 
 function onRemoveActiveFilter(key, value) {
+  console.log(key, value);
   // if (filterVals.value[key]) {
   //   const index = filterVals.value[key].indexOf(value);
   //   if (index > -1) {
@@ -361,7 +361,11 @@ function onRemoveActiveFilter(key, value) {
   // updateFilterString();
 }
 
-watch(state.filters, updateFilterString, { deep: true });
+watch(
+  () => state.filters,
+  () => updateFilterString(),
+  { deep: true }
+);
 
 function onRangeInit(initialValue) {
   // initialPriceRange.value = initialValue;
@@ -383,7 +387,7 @@ async function onResetFilters(values) {
 
 const updateFilterString = () => {
   state.currentPage = 1;
-  state.filterString = createFilterString();
+  state.filter_string = createFilterString();
 };
 
 const createFilterString = () => {
