@@ -1,8 +1,8 @@
 <template>
-  <div class="sgm-pt-4 sgm-hidden xl:sgm-block">
+  <div class="sgm-pt-4">
     <div class="sgm-space-y-2">
       <div
-        v-for="[facet, count] in options"
+        v-for="(count, facet) in sortedOptions"
         :key="facet"
         class="sgm-flex sgm-flex-row sgm-items-center"
       >
@@ -10,12 +10,12 @@
           :input-id="`filter-${facet}`"
           :name="facet"
           :binary="true"
-          :modelValue="values.includes(facet)"
-          @update:model-value="(newVal) => onChange(facet, newVal)"
+          :model-value="isSelected(facet)"
+          @update:model-value="(value) => updateSelection(value, facet)"
         ></Checkbox>
 
-        <label :for="`filter-${facet}`" class="sgm-ml-3 sgm-text-sm"
-          ><span class="sgm-text-black">{{ facet }}</span>
+        <label :for="`filter-${facet}`" class="sgm-ml-3 sgm-text-sm">
+          <span class="sgm-text-black">{{ facet }}</span>
           <span class="sgm-text-gray-500 sgm-ml-1 sgm-tracking-wide">
             ({{ count }})
           </span>
@@ -28,51 +28,79 @@
 <style scoped></style>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, computed } from "vue";
 import Checkbox from "primevue/checkbox";
 
 const emit = defineEmits(["update:modelValue"]);
 
 const props = defineProps({
+  name: {
+    type: String,
+  },
   facets: {
     type: Object,
     required: true,
   },
-  label: String,
-  modelValue: Array,
+  label: {
+    type: String,
+  },
+  modelValue: {
+    type: Array,
+  },
+  sortedAttributes: {
+    type: Array,
+  },
+  component: {
+    type: String,
+  },
+  expanded: {
+    type: Boolean,
+  },
+  index: {
+    type: Number,
+  },
 });
 
-const value = ref(false);
-const values = ref([]);
-const options = ref([]);
+const sortedOptions = computed(() => {
+  if (!props.sortedAttributes) {
+    return props.facets;
+  }
 
-onMounted(() => {});
+  return props.sortedAttributes.reduce((acc, val) => {
+    if (props.facets[val]) {
+      acc[val] = props.facets[val];
+    }
+    return acc;
+  }, {});
+});
+
+const selectedValues = ref([]);
+
+const isSelected = (facet) =>
+  selectedValues.value.some((item) => item.label === facet);
+
+const updateSelection = (isSelected, label) => {
+  if (isSelected) {
+    selectedValues.value.push({
+      id: `${props.name}-${label}`,
+      label,
+      key: props.name,
+      operator: ":",
+      value: `'${label}'`,
+    });
+  } else {
+    selectedValues.value = selectedValues.value.filter(
+      (item) => item.label !== label
+    );
+  }
+
+  emit("update:modelValue", selectedValues.value);
+};
 
 watch(
   () => props.modelValue,
-  (newVal) => {
-    values.value = newVal;
-  },
-  { immediate: true }
-);
-
-watch(
-  () => props.facets,
-  (newVal) => {
-    if (options.value.length === 0) {
-      options.value = newVal;
-    }
-  },
-  { immediate: true }
-);
-
-const onChange = (facet, value) => {
-  if (value) {
-    values.value.push(facet);
-  } else {
-    values.value = values.value.filter((item) => item !== facet);
+  (newValue) => {
+    selectedValues.value = newValue;
   }
-
-  emit("update:modelValue", values.value);
-};
+);
 </script>

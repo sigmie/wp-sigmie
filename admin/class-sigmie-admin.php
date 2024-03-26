@@ -817,20 +817,21 @@ class Sigmie_Admin
 		$colorFacets = [...array_keys($colorAttributes)];
 
 		$facetTypes = array_merge(
-			array_fill_keys($rangeFacets, 'NumberFacet'),
-			array_fill_keys($checkboxFacets, 'CheckboxFacet'),
-			array_fill_keys($selectButtonFacets, 'SelectbuttonFacet'),
-			array_fill_keys($colorFacets, 'ColorFacet')
+			array_fill_keys($rangeFacets, 'number-facet'),
+			array_fill_keys($checkboxFacets, 'checkbox-facet'),
+			array_fill_keys($selectButtonFacets, 'selectbutton-facet'),
+			array_fill_keys($colorFacets, 'color-facet')
 		);
 
 		$facetProps = [];
 
 		foreach ($attributes as $attribute) {
-			$facetProps[$attribute] = [];
+			$facetProps[$attribute] = [
+				'name' => $attribute
+			];
 		}
 
 		foreach ($attributes as $index => $attribute) {
-			$facetProps[$attribute]['index'] = $index;
 			$facetProps[$attribute]['expanded'] = true;
 		}
 
@@ -858,6 +859,24 @@ class Sigmie_Admin
 		$facetProps['price_as_number']['symbol'] = get_woocommerce_currency_symbol();
 		$facetProps['price_as_number']['label'] = $options['sigmie_price_range_label'];
 
+		$facetProps['categories']['label'] = 'Categories';
+		$facetProps['brands']['label'] = 'Brands';
+
+		// kepp only checkbox
+		$facetProps = array_filter($facetProps, function ($prop) {
+			return ($prop['component'] ?? '') === 'checkbox-facet';
+		});
+
+		$index = 0;
+		$facetProps = array_map(function ($prop) use (&$index) {
+			$prop['index'] = $index;
+
+			$index++;
+
+			return $prop;
+		}, $facetProps);
+
+		// dd($facetProps);
 		$props = [
 			'facets' => $facetProps,
 			'sigmie' => [
@@ -915,7 +934,6 @@ class Sigmie_Admin
 				]
 			]
 		];
-
 
 		return '<div class="" id="sigmie-filters">
 					<product-listing v-bind="' . htmlspecialchars(json_encode($props)) . '">

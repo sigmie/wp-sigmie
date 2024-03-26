@@ -69,10 +69,10 @@
                 >
                   <slot
                     name="active-filter"
-                    v-for="[activeFilterkey, activeFilter] in activeFilters"
+                    v-for="[id, label] in activeFilters"
                     v-bind="{
-                      filterKey: activeFilterkey,
-                      filterValue: activeFilter,
+                      id,
+                      label,
                     }"
                   ></slot>
                 </div>

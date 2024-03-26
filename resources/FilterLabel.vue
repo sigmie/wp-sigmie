@@ -7,7 +7,7 @@
     </div>
     <div
       v-if="subtitle"
-      class="sgm-text-sm sgm-font-medium sgm-text-gray-600 sgm-h-6 lg:sgm-hidden"
+      class="sgm-text-sm sgm-font-medium sgm-text-gray-600 sgm-h-6"
     >
       <span class="">
         {{ subtitle }}

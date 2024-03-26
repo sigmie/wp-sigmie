@@ -25,22 +25,19 @@
       :active-filters="activeFilters"
       :total="total"
     >
-      <template v-slot:active-filter="{ filterKey, filterValue }">
+      <template v-slot:active-filter="{ id, label }">
         <Button
           outlined
           severity="secondary"
           rounded
-          @click="onRemoveActiveFilter(filterKey, filterValue)"
+          @click="onRemoveActiveFilter(id)"
           class="sgm-mt-3"
         >
           <div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3">
             <span class="sgm-text-black">
-              {{ filterValue }}
+              {{ label }}
             </span>
-            <XIcon
-              v-if="filterKey !== 'reset_filters'"
-              class="sgm-h-4 sgm-w-4"
-            ></XIcon>
+            <XIcon class="sgm-h-4 sgm-w-4"></XIcon>
           </div>
         </Button>
       </template>
@@ -239,13 +236,20 @@
             }"
           >
             <template v-slot:header>
-              <FilterLabel :title="item.label" :subtitle="''"> </FilterLabel>
+              <FilterLabel
+                :title="item.label"
+                :subtitle="
+                  state.filters[name].map((item) => item.label).join(', ')
+                "
+              >
+              </FilterLabel>
             </template>
 
             <component
-              :v-bind="item"
+              v-bind="item"
               :is="item.component"
               v-model="state.filters[name]"
+              :facets="facets[name]"
             ></component>
 
             <!-- <NumberFacet
@@ -285,15 +289,9 @@ import AccordionTab from "primevue/accordiontab";
 import FilterLabel from "./FilterLabel.vue";
 import MobileSortAccordion from "./MobileSortAccordion.vue";
 import SortMenu from "./SortMenu.vue";
-import NumberFacet from "./NumberFacet.vue";
 import Pagination from "./Pagination.vue";
 import HorizontalProducts from "./HorizontalProducts.vue";
 import ProductHit from "./ProductHit.vue";
-
-import CheckboxFacet from "./CheckboxFacet.vue";
-import MobileCheckbox from "./MobileCheckbox.vue";
-import SelectbuttonFacet from "./SelectbuttonFacet.vue";
-import ColorFacet from "./ColorFacet.vue";
 
 import Layout from "./ProductListingLayout.vue";
 
@@ -308,7 +306,7 @@ const props = defineProps({
 const state = reactive({
   initial_filter_string: null,
   filters: {},
-  filter_string: '',
+  filter_string: "",
   expanded_filter_keys: [],
   currentPage: 1,
   onlyOffers: false,
@@ -323,7 +321,9 @@ const initialPriceRange = ref([null, null]);
 const activeFilters = computed(() => {
   return Object.entries(state.filters)
     .filter(([attribute, values]) => values.length > 0)
-    .map(([attribute, values]) => values.map((filter) => filter.label));
+    .flatMap(([attribute, values]) =>
+      values.map((filter) => [filter.id, filter.label])
+    );
 });
 
 const filtersAreDirty = computed(() => {
@@ -331,34 +331,25 @@ const filtersAreDirty = computed(() => {
 });
 
 const onOffersClick = () => {
-  state.filters["on_sale"] = {
-    label: "Only offers",
-    key: "is",
-    operator: ":",
-    value: "on_sale",
-  };
+  state.filters["on_sale"] = [
+    {
+      label: "Only offers",
+      key: "is",
+      operator: ":",
+      value: "on_sale",
+    },
+  ];
 };
 
-function onRemoveActiveFilter(key, value) {
-  console.log(key, value);
-  // if (filterVals.value[key]) {
-  //   const index = filterVals.value[key].indexOf(value);
-  //   if (index > -1) {
-  //     filterVals.value[key].splice(index, 1);
-  //   }
-  // }
-  // if (key === "offers") {
-  //   onlyOffers.value = !onlyOffers.value;
-  // }
-  // sigmie_price_range_label;
-  // if (key === "price_range") {
-  //   priceRange.value = initialPriceRange.value;
-  // }
-  // if (key === "reset_filters") {
-  //   onResetFilters();
-  //   return;
-  // }
-  // updateFilterString();
+function onRemoveActiveFilter(id) {
+  Object.keys(state.filters).forEach((filterKey) => {
+    const index = state.filters[filterKey].findIndex(
+      (filter) => filter.id === id
+    );
+    if (index > -1) {
+      state.filters[filterKey].splice(index, 1);
+    }
+  });
 }
 
 watch(
@@ -394,6 +385,7 @@ const createFilterString = () => {
   // filterVals = {
   // color: [
   //     {
+  // .      id: 'color-Red'
   //        label: 'Red'
   //        key: 'color',
   //        operator: ':'
@@ -413,9 +405,13 @@ const createFilterString = () => {
 
   let preselectedFilters = props.sigmie.filters;
 
-  return [pageFilters, preselectedFilters]
+  let result = [pageFilters, preselectedFilters]
     .filter((value) => value.trim() !== "")
     .join(" AND ");
+
+  console.log(result);
+
+  return result;
 };
 
 const createEmptyFilters = () => {
@@ -445,5 +441,3 @@ onMounted(() => {
   state.initial_filter_string = createFilterString();
 });
 </script>
-
-<style></style>
