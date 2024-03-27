@@ -836,8 +836,9 @@ class Sigmie_Admin
 		}
 
 		foreach ($rangeFacets as $attribute) {
-			$facetProps[$attribute]['filter_from_label'] = 'from % $';
-			$facetProps[$attribute]['filter_to_label'] = 'to % $';
+			$facetProps[$attribute]['step'] = 1;
+			$facetProps[$attribute]['from_label'] = 'from % $';
+			$facetProps[$attribute]['to_label'] = 'to % $';
 		}
 
 		foreach ($attributeLabels as $attribute => $attributeLabel) {
@@ -858,13 +859,16 @@ class Sigmie_Admin
 
 		$facetProps['price_as_number']['symbol'] = get_woocommerce_currency_symbol();
 		$facetProps['price_as_number']['label'] = $options['sigmie_price_range_label'];
+		$facetProps['price_as_number']['step'] = 1;
+		$facetProps['price_as_number']['from_label'] = 'from % $';
+		$facetProps['price_as_number']['to_label'] = 'to % $';
 
 		$facetProps['categories']['label'] = 'Categories';
 		$facetProps['brands']['label'] = 'Brands';
 
 		// kepp only checkbox
 		$facetProps = array_filter($facetProps, function ($prop) {
-			return ($prop['component'] ?? '') === 'checkbox-facet';
+			return ($prop['component'] ?? '') === 'checkbox-facet' || ($prop['component'] ?? '') === 'number-facet';
 		});
 
 		$index = 0;

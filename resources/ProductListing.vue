@@ -251,19 +251,6 @@
               v-model="state.filters[name]"
               :facets="facets[name]"
             ></component>
-
-            <!-- <NumberFacet
-              :show-chart="showPriceRangeChart"
-              :currency="currencySymbol"
-              :label="priceRangeLabel"
-              :min="facets.price_as_number?.min"
-              :max="facets.price_as_number?.max"
-              :range="priceRange"
-              @update:range="onRangeChange"
-              @range:inited="onRangeInit"
-              :histogram="facets.price_as_number?.histogram"
-            >
-            </NumberFacet> -->
           </AccordionTab>
         </Accordion>
       </template>
@@ -316,8 +303,6 @@ const state = reactive({
   },
 });
 
-const initialPriceRange = ref([null, null]);
-
 const activeFilters = computed(() => {
   return Object.entries(state.filters)
     .filter(([attribute, values]) => values.length > 0)
@@ -326,17 +311,13 @@ const activeFilters = computed(() => {
     );
 });
 
-const filtersAreDirty = computed(() => {
-  return createFilterString() !== state.initial_filter_string;
-});
-
 const onOffersClick = () => {
   state.filters["on_sale"] = [
     {
+      id: "on-sale",
       label: "Only offers",
-      key: "is",
-      operator: ":",
-      value: "on_sale",
+      key: "on_sale",
+      string: "is:'on_sale'",
     },
   ];
 };
@@ -358,22 +339,9 @@ watch(
   { deep: true }
 );
 
-function onRangeInit(initialValue) {
-  // initialPriceRange.value = initialValue;
-  // priceRange.value = initialValue;
-}
-
-function onRangeChange(values) {
-  // priceRange.value = values;
-  // updateFilterString();
-}
-
 async function onResetFilters(values) {
   state.filters = createEmptyFilters();
   state.onlyOffers = false;
-
-  // priceRange.value = initialPriceRange.value;
-  // updateFilterString();
 }
 
 const updateFilterString = () => {
@@ -387,9 +355,7 @@ const createFilterString = () => {
   //     {
   // .      id: 'color-Red'
   //        label: 'Red'
-  //        key: 'color',
-  //        operator: ':'
-  //        value: 'red'
+  //        string: 'color:"red"'
   //      }
   // ]
   // }
@@ -397,9 +363,7 @@ const createFilterString = () => {
     .filter(([attribute, values]) => values.length > 0)
     .map(
       ([attribute, values]) =>
-        `(${values
-          .map((filter) => `${filter.key}${filter.operator}${filter.value}`)
-          .join(" OR ")})`
+        `(${values.map((filter) => filter.string).join(" OR ")})`
     )
     .join(" AND ");
 

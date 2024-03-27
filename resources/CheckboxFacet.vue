@@ -77,24 +77,25 @@ const sortedOptions = computed(() => {
 const selectedValues = ref([]);
 
 const isSelected = (facet) =>
-  selectedValues.value.some((item) => item.label === facet);
+  selectedValues.value.some((item) => item.id === `${props.name}-${facet}`);
 
 const updateSelection = (isSelected, label) => {
-  if (isSelected) {
-    selectedValues.value.push({
-      id: `${props.name}-${label}`,
+  const id = `${props.name}-${label}`;
+  if (isselected) {
+    selectedvalues.value.push({
+      id,
       label,
       key: props.name,
-      operator: ":",
-      value: `'${label}'`,
+      string: `${props.name}:'${label}'`,
+      value: label,
     });
   } else {
-    selectedValues.value = selectedValues.value.filter(
-      (item) => item.label !== label
+    selectedvalues.value = selectedvalues.value.filter(
+      (item) => item.id !== id
     );
   }
 
-  emit("update:modelValue", selectedValues.value);
+  emit("update:modelvalue", selectedvalues.value);
 };
 
 watch(
