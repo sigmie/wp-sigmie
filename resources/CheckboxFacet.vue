@@ -47,7 +47,7 @@ const props = defineProps({
   modelValue: {
     type: Array,
   },
-  sortedAttributes: {
+  sorted_values: {
     type: Array,
   },
   component: {
@@ -66,7 +66,7 @@ const sortedOptions = computed(() => {
     return props.facets;
   }
 
-  return props.sortedAttributes.reduce((acc, val) => {
+  return props.sorted_values.reduce((acc, val) => {
     if (props.facets[val]) {
       acc[val] = props.facets[val];
     }

@@ -1,20 +1,16 @@
 <template>
-  <div class="">
+  <div>
     <SelectButton
       @update:model-value="onChange"
-      :modelValue="props.modelValue"
-      :options="options"
+      :modelValue="values"
+      :options="sortedOptions"
       optionLabel="name"
       multiple
-      class=""
       aria-labelledby="multiple"
       unstyled
       :pt="{
         root: {
           class: 'sgm-grid sgm-grid-cols-3 sgm-gap-1 sgm-mt-3',
-        },
-        button: {
-          class: '',
         },
         label: {
           class: 'sgm-text-gray-800 sgm-text-sm',
@@ -23,16 +19,12 @@
     >
       <template #option="slotProps">
         <Button
-          :outlined="!props.modelValue.some((v) => v.value === slotProps.option.value)"
-          :severity="
-            !props.modelValue.some((v) => v.value === slotProps.option.value)
-              ? 'secondary'
-              : 'primary'
-          "
+          :outlined="!values.some((val) => val.key === slotProps.option.key)"
+          severity="secondary"
           class="sgm-w-full"
         >
           <span class="sgm-w-full sgm-text-center sgm-normal-case">
-            {{ slotProps.option.name }}
+            {{ slotProps.option.key }}
           </span>
         </Button>
       </template>
@@ -41,34 +33,61 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, watch } from "vue";
 import SelectButton from "primevue/selectbutton";
 import Button from "primevue/button";
 
 const props = defineProps({
   facets: Object,
   modelValue: Array,
+  sorted_values: Array,
+  name: String,
 });
+
+const values = ref([]);
 
 const emit = defineEmits(["update:modelValue"]);
 
-const options = ref([]);
+const sortedOptions = computed(() => {
+  if (!props.sorted_values) {
+    return Object.entries(props.facets).map(([key, value]) => ({ key, value }));
+  }
 
-onMounted(() => {
-  options.value = props.facets.map(([facet, count]) => {
-    return {
-      name: `${facet} (${count})`,
-      value: facet,
-    };
-  });
+  return props.sorted_values.reduce((acc, val) => {
+    if (props.facets[val]) {
+      acc.push({ key: val, value: props.facets[val] });
+    }
+    return acc;
+  }, []);
 });
 
-const onChange = (facet) => {
+const onChange = (selectedFacets) => {
+  values.value = selectedFacets;
 
-  emit(
-    "update:modelValue",
-    facet.map((option) => option.value)
-  );
+  const updatedModelValue = selectedFacets.map((option) => {
+    const id = `${props.name}-${option.key}`;
+
+    return {
+      id,
+      label: option.key,
+      key: props.name,
+      string: `${props.name}:'${option.key}'`,
+      value: option.value,
+    };
+  });
+
+  emit("update:modelValue", updatedModelValue);
 };
-</script>
 
+watch(
+  () => props.modelValue,
+  (newModelValue) => {
+    const newValue = newModelValue.map((value) => {
+      return { key: value.label, value: value.value };
+    });
+
+    values.value = newValue;
+  },
+  { deep: true }
+);
+</script>

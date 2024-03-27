@@ -875,7 +875,11 @@ class Sigmie_Admin
 
 		// kepp only checkbox
 		$facetProps = array_filter($facetProps, function ($prop) {
-			return ($prop['component'] ?? '') === 'checkbox-facet' || ($prop['component'] ?? '') === 'number-facet';
+			return ($prop['component'] ?? '') === 'checkbox-facet' 
+			|| ($prop['component'] ?? '') === 'number-facet'
+			|| ($prop['component'] ?? '') === 'selectbutton-facet'
+			// || ($prop['component'] ?? '') === 'color-facet'
+			;
 		});
 
 		$index = 0;

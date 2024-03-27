@@ -365,7 +365,7 @@ const createFilterString = () => {
       ([attribute, values]) =>
         `(${values
           .map((filter) => filter.string)
-          .join(props.facets[attribute].operator)})`
+          .join(` ${props.facets[attribute].operator} `)})`
     )
     .join(" AND ");
 
