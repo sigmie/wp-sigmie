@@ -857,6 +857,7 @@ class Sigmie_Admin
 
 		foreach ($colorAttributes as $key => $value) {
 			$facetProps[$key]['value_colors'] = $value;
+			$facetProps[$key]['operator'] = ' OR ';
 		}
 
 		$facetProps['price_as_number']['symbol'] = get_woocommerce_currency_symbol();
@@ -873,13 +874,8 @@ class Sigmie_Admin
 		$facetProps['brands']['label'] = 'Brands';
 		$facetProps['brands']['operator'] = ' OR ';
 
-		// kepp only checkbox
 		$facetProps = array_filter($facetProps, function ($prop) {
-			return ($prop['component'] ?? '') === 'checkbox-facet' 
-			|| ($prop['component'] ?? '') === 'number-facet'
-			|| ($prop['component'] ?? '') === 'selectbutton-facet'
-			// || ($prop['component'] ?? '') === 'color-facet'
-			;
+			return !is_null($prop['component'] ?? null);
 		});
 
 		$index = 0;

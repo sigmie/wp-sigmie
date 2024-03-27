@@ -187,9 +187,21 @@
               }"
             >
               <template v-slot:header>
-                <FilterLabel :title="item.label" :subtitle="'Subtitle'">
+                <FilterLabel
+                  :title="item.label"
+                  :subtitle="
+                    state.filters[name].map((item) => item.label).join(', ')
+                  "
+                >
                 </FilterLabel>
               </template>
+
+              <component
+                v-bind="item"
+                :is="item.component"
+                v-model="state.filters[name]"
+                :facets="facets[name]"
+              ></component>
             </AccordionTab>
           </template>
         </Accordion>
@@ -226,7 +238,7 @@
           </template>
 
           <AccordionTab
-            v-for="(item, name) in props.facets"
+            v-for="(item, name) in existingFacets(facets)"
             :pt="{
               root: { class: '' },
               headeraction: {
@@ -302,6 +314,16 @@ const state = reactive({
     value: "_score",
   },
 });
+
+const existingFacets = (facets) => {
+  const result = Object.keys(props.facets).reduce((acc, facet) => {
+    if (facets.hasOwnProperty(facet)) {
+      acc[facet] = props.facets[facet];
+    }
+    return acc;
+  }, {});
+  return result;
+};
 
 const activeFilters = computed(() => {
   return Object.entries(state.filters)
