@@ -839,6 +839,7 @@ class Sigmie_Admin
 			$facetProps[$attribute]['step'] = 1;
 			$facetProps[$attribute]['from_label'] = 'from % $';
 			$facetProps[$attribute]['to_label'] = 'to % $';
+			$facetProps[$attribute]['operator'] = 'AND';
 		}
 
 		foreach ($attributeLabels as $attribute => $attributeLabel) {
@@ -851,6 +852,7 @@ class Sigmie_Admin
 
 		foreach ($sortedAttributes as $key => $values) {
 			$facetProps[$key]['sorted_values'] = $values;
+			$facetProps[$attribute]['operator'] = 'OR';
 		}
 
 		foreach ($colorAttributes as $key => $value) {
@@ -862,9 +864,14 @@ class Sigmie_Admin
 		$facetProps['price_as_number']['step'] = 1;
 		$facetProps['price_as_number']['from_label'] = 'from % $';
 		$facetProps['price_as_number']['to_label'] = 'to % $';
+		$facetProps['price_as_number']['operator'] = ' AND ';
+
 
 		$facetProps['categories']['label'] = 'Categories';
+		$facetProps['categories']['operator'] = ' OR ';
+
 		$facetProps['brands']['label'] = 'Brands';
+		$facetProps['brands']['operator'] = ' OR ';
 
 		// kepp only checkbox
 		$facetProps = array_filter($facetProps, function ($prop) {

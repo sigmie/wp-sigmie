@@ -81,8 +81,8 @@ const isSelected = (facet) =>
 
 const updateSelection = (isSelected, label) => {
   const id = `${props.name}-${label}`;
-  if (isselected) {
-    selectedvalues.value.push({
+  if (isSelected) {
+    selectedValues.value.push({
       id,
       label,
       key: props.name,
@@ -90,12 +90,12 @@ const updateSelection = (isSelected, label) => {
       value: label,
     });
   } else {
-    selectedvalues.value = selectedvalues.value.filter(
+    selectedValues.value = selectedValues.value.filter(
       (item) => item.id !== id
     );
   }
 
-  emit("update:modelvalue", selectedvalues.value);
+  emit("update:modelValue", selectedValues.value);
 };
 
 watch(

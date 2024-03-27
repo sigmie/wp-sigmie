@@ -363,7 +363,9 @@ const createFilterString = () => {
     .filter(([attribute, values]) => values.length > 0)
     .map(
       ([attribute, values]) =>
-        `(${values.map((filter) => filter.string).join(" OR ")})`
+        `(${values
+          .map((filter) => filter.string)
+          .join(props.facets[attribute].operator)})`
     )
     .join(" AND ");
 
