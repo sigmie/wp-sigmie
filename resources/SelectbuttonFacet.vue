@@ -23,7 +23,7 @@
           severity="secondary"
           class="sgm-w-full"
         >
-          <span class="sgm-w-full sgm-text-center sgm-normal-case">
+          <span class="sgm-w-full sgm-text-center sgm-normal-case sgm-text-black">
             {{ slotProps.option.key }}
           </span>
         </Button>

@@ -30,7 +30,7 @@
               :style="{ backgroundColor: value_colors[slotProps.option.key] }"
               class="sgm-rounded-full sgm-border sgm-h-4 sgm-w-4 "
             ></div>
-            <div class="sgm-normal-case">
+            <div class="sgm-normal-case sgm-text-black">
               {{ slotProps.option.key }}
             </div>
           </div>
