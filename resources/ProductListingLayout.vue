@@ -65,7 +65,7 @@
                   {{ hitsSubtitle }}
                 </div>
                 <div
-                  class="sgm-flex sgm-flex-row sgm-flex-wrap sgm-py-6 sgm-space-x-4 sgm-items-start sgm-w-full sgm-mt-1 sgm-min-h-[2rem]"
+                  class="sgm-flex sgm-flex-row sgm-flex-wrap sgm-py-6 sgm-space-x-4 sgm-items-start sgm-w-full sgm-mt-1 sgm-min-h-28"
                 >
                   <slot
                     name="active-filter"

@@ -1,6 +1,6 @@
 <template>
   <div class="sgm-pt-4">
-    <div class="sgm-space-y-2">
+    <div class="">
       <div
         v-for="(count, facet) in sortedOptions"
         :key="facet"
@@ -14,9 +14,9 @@
           @update:model-value="(value) => updateSelection(value, facet)"
         ></Checkbox>
 
-        <label :for="`filter-${facet}`" class="sgm-ml-3 sgm-text-sm">
-          <span class="sgm-text-black">{{ facet }}</span>
-          <span class="sgm-text-gray-500 sgm-ml-1 sgm-tracking-wide">
+        <label :for="`filter-${facet}`" class="sgm-ml-3">
+          <span class="sgm-text-black sgm-text-base">{{ facet }}</span>
+          <span class="sgm-text-gray-600 sgm-ml-1 sgm-tracking-wide sgm-text-base">
             ({{ count }})
           </span>
         </label>

@@ -180,6 +180,9 @@
           <template v-for="(item, name) in props.facets">
             <AccordionTab
               :pt="{
+                header: {
+                  class: 'sgm-mb-10',
+                },
                 headeraction: {
                   class:
                     'sgm-flex sgm-flex-row-reverse sgm-items-center sgm-justify-between',
@@ -241,6 +244,9 @@
             v-for="(item, name) in existingFacets(facets)"
             :pt="{
               root: { class: '' },
+              header: {
+                class: 'sgm-mb-3',
+              },
               headeraction: {
                 class:
                   'sgm-flex sgm-flex-row-reverse sgm-items-center sgm-justify-between',
