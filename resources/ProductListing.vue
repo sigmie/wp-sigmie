@@ -15,8 +15,8 @@
     <Layout
       :loading="loading"
       :hits="hits"
-      :title="props.texts.products_title_text"
-      :hits-title="props.texts.filters_title_text"
+      :title="props.texts.filters_title_text"
+      :hits-title="props.texts.products_title_text"
       :hits-subtitle="
         props.texts.products_subtitle_template.replace('%', total)
       "
@@ -34,9 +34,7 @@
           class="sgm-mt-3"
         >
           <div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-3">
-            <span class="sgm-text-black">
-              {{ label }}
-            </span>
+            <span v-html="label" class="sgm-text-black"> </span>
             <XIcon class="sgm-h-4 sgm-w-4"></XIcon>
           </div>
         </Button>
@@ -160,7 +158,8 @@
           :active-index="state.expanded_filter_keys"
           :pt="{
             root: {
-              class: 'sgm-flex sgm-flex-col sgm-space-y-4 sgm-px-4 lg:sgm-px-0 sgm-pb-20',
+              class:
+                'sgm-flex sgm-flex-col sgm-space-y-4 sgm-px-4 lg:sgm-px-0 sgm-pb-20',
             },
           }"
           :unstyled="true"
@@ -168,12 +167,12 @@
         >
           <template v-slot:collapseicon>
             <ChevronUpIcon
-              class="sgm-h-4 sgm-w-4 sgm-text-black"
+              class="sgm-h-6 sgm-w-6 lg:sgm-h-4 lg:sgm-w-4 sgm-text-black"
             ></ChevronUpIcon>
           </template>
           <template v-slot:expandicon>
             <ChevronDownIcon
-              class="sgm-h-4 sgm-w-4 sgm-text-black"
+              class="sgm-h-6 sgm-w-6 lg:sgm-h-4 lg:sgm-w-4 sgm-text-black"
             ></ChevronDownIcon>
           </template>
 
@@ -231,12 +230,12 @@
         >
           <template v-slot:collapseicon>
             <ChevronUpIcon
-              class="sgm-h-4 sgm-w-4 sgm-text-black"
+              class="sgm-h-5 sgm-w-5 lg:sgm-h-4 lg:sgm-w-4 sgm-text-black"
             ></ChevronUpIcon>
           </template>
           <template v-slot:expandicon>
             <ChevronDownIcon
-              class="sgm-h-4 sgm-w-4 sgm-text-black"
+              class="sgm-h-5 sgm-w-5 lg:sgm-h-4 lg:sgm-w-4 sgm-text-black"
             ></ChevronDownIcon>
           </template>
 

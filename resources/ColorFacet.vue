@@ -10,7 +10,8 @@
       unstyled
       :pt="{
         root: {
-          class: 'sgm-grid sgm-grid-cols-3 lg:sgm-grid-cols-2 sgm-gap-2 sgm-mt-3',
+          class:
+            'sgm-grid sgm-grid-cols-3 lg:sgm-grid-cols-2 sgm-gap-2 sgm-mt-3',
         },
         label: {
           class: 'sgm-text-gray-800 sgm-text-sm',
@@ -30,9 +31,10 @@
               :style="{ backgroundColor: value_colors[slotProps.option.key] }"
               class="sgm-rounded-full sgm-h-4 sgm-w-4"
             ></div>
-            <div class="sgm-normal-case sgm-text-black">
-              {{ slotProps.option.key }}
-            </div>
+            <div
+              v-html="slotProps.option.key"
+              class="sgm-normal-case sgm-text-black"
+            ></div>
           </div>
         </Button>
       </template>

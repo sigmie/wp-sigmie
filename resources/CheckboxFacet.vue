@@ -15,7 +15,7 @@
         ></Checkbox>
 
         <label :for="`filter-${facet}`" class="sgm-ml-3">
-          <span class="sgm-text-black sgm-text-lg lg:sgm-text-base">{{ facet }}</span>
+          <span v-html="facet" class="sgm-text-black sgm-text-lg lg:sgm-text-base"></span>
           <span class="sgm-text-gray-500 sgm-ml-1 sgm-tracking-wide sgm-text-lg lg:sgm-text-base">
             ({{ count }})
           </span>
