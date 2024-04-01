@@ -10,7 +10,7 @@
       unstyled
       :pt="{
         root: {
-          class: 'sgm-grid sgm-grid-cols-2 sgm-gap-2 sgm-mt-3',
+          class: 'sgm-grid sgm-grid-cols-3 lg:sgm-grid-cols-2 sgm-gap-2 sgm-mt-3',
         },
         label: {
           class: 'sgm-text-gray-800 sgm-text-sm',
@@ -19,16 +19,16 @@
     >
       <template #option="slotProps">
         <Button
-          :outlined="!values.some((val) => val.key === slotProps.option.key)"
+          :link="!values.some((val) => val.key === slotProps.option.key)"
           severity="secondary"
-          class="sgm-w-full sgm-h-16"
+          class="sgm-w-full sgm-h-16 sgm-outline-none"
         >
           <div
             class="sgm-flex sgm-flex-col sgm-items-center sgm-space-y-2 sgm-mx-auto"
           >
             <div
               :style="{ backgroundColor: value_colors[slotProps.option.key] }"
-              class="sgm-rounded-full sgm-border sgm-h-4 sgm-w-4 "
+              class="sgm-rounded-full sgm-h-4 sgm-w-4"
             ></div>
             <div class="sgm-normal-case sgm-text-black">
               {{ slotProps.option.key }}

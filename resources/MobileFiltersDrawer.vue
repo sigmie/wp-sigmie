@@ -44,14 +44,12 @@
                   <div
                     class="sgm-flex sgm-h-full sgm-flex-col sgm-justify-start sgm-rounded-md sgm-overflow-y-scroll sgm-bg-white sgm-shadow-xl"
                   >
-                    <div
-                      class="sgm-px-4 sgm-py-3 sm:sgm-px-6 sgm-border-b"
-                    >
+                    <div class="sgm-px-4 sgm-py-3 sm:sgm-px-6 sgm-border-b">
                       <div
                         class="sgm-flex sgm-flex-row sgm-items-center sgm-justify-center sgm-relative"
                       >
                         <span
-                          class="sgm-text-black text-base font-semibold leading-7 text-gray-900"
+                          class="sgm-text-black sgm-text-2xl lg:sgm-text-base sgm-font-bold sgm-leading-7"
                         >
                           {{ title }}
                         </span>
@@ -72,14 +70,16 @@
                     </div>
                     <!-- Main -->
                     <div
-                      class="sgm-w-[350px] sgm-h-full sgm-flex sgm-flex-col sgm-justify-between"
+                      class="sgm-w-[480px] sgm-h-full sgm-flex sgm-flex-col sgm-justify-between"
                     >
                       <div>
                         <slot></slot>
                       </div>
 
-                      <div class="sgm-py-4 sgm-px-4">
-                        <slot name="actions"></slot>
+                      <div class="sgm-absolute sgm-bottom-0 sgm-bg-white sgm-w-full sgm-h-20">
+                        <div class="sgm-py-4 sgm-px-4">
+                          <slot name="actions"></slot>
+                        </div>
                       </div>
                     </div>
                   </div>

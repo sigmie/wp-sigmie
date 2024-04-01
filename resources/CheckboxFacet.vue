@@ -1,6 +1,6 @@
 <template>
-  <div class="sgm-pt-4">
-    <div class="">
+  <div class="">
+    <div class="sgm-flex sgm-flex-col sgm-space-y-2 lg:sgm-space-y-1">
       <div
         v-for="(count, facet) in sortedOptions"
         :key="facet"
@@ -15,8 +15,8 @@
         ></Checkbox>
 
         <label :for="`filter-${facet}`" class="sgm-ml-3">
-          <span class="sgm-text-black sgm-text-base">{{ facet }}</span>
-          <span class="sgm-text-gray-600 sgm-ml-1 sgm-tracking-wide sgm-text-base">
+          <span class="sgm-text-black sgm-text-lg lg:sgm-text-base">{{ facet }}</span>
+          <span class="sgm-text-gray-500 sgm-ml-1 sgm-tracking-wide sgm-text-lg lg:sgm-text-base">
             ({{ count }})
           </span>
         </label>

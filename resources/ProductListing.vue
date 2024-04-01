@@ -160,7 +160,7 @@
           :active-index="state.expanded_filter_keys"
           :pt="{
             root: {
-              class: 'sgm-flex sgm-flex-col sgm-space-y-4 sgm-px-4 lg:sgm-px-0',
+              class: 'sgm-flex sgm-flex-col sgm-space-y-4 sgm-px-4 lg:sgm-px-0 sgm-pb-20',
             },
           }"
           :unstyled="true"
@@ -181,7 +181,7 @@
             <AccordionTab
               :pt="{
                 header: {
-                  class: 'sgm-mb-10',
+                  class: 'sgm-mb-4 lg:sgm-mb-10',
                 },
                 headeraction: {
                   class:
