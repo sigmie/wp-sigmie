@@ -13,7 +13,7 @@ const onHover = () => {
 
 const galleryImages = computed(() => {
   if (autoPlay.value) {
-    return [props.hit.image, ...(props.hit.gallery_images || [])].map(
+    return [...(props.hit.gallery_images || [])].map(
       (image) => ({
         itemImageSrc: image,
       })
@@ -97,7 +97,7 @@ let props = defineProps({
         <h3 class="sgm-text-base sgm-mt-1 sgm-mb-0">
           <a @mouseover="onHover" @mouseleave="onLeave" :href="hit.link">
             <span aria-hidden="true" class="sgm-absolute sgm-inset-0"></span>
-            <span class="sgm-text-black sgm-font-medium">{{ hit.name }}</span>
+            <span class="sgm-text-gray-800 sgm-text-base">{{ hit.name }}</span>
           </a>
         </h3>
         <div
@@ -115,11 +115,11 @@ let props = defineProps({
         <div
           v-if="true"
           v-html="hit.price_html"
-          class="sgm-text-base sgm-font-medium sgm-text-gray-900"
+          class="sgm-text-xl sgm-font-bold sgm-text-gray-900"
         ></div>
         <div
           v-else
-          class="sgm-text-base sgm-font-medium sgm-text-gray-900 sgm-mt-2 sgm-text-left"
+          class="sgm-text-xl sgm-font-bold sgm-text-gray-900 sgm-mt-2 sgm-text-left"
           v-html="hit.price"
         ></div>
       </div>
