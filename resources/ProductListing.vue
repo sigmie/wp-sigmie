@@ -125,6 +125,8 @@
 
       <template v-slot:no-hits-action>
         <Button
+          severity="secondary"
+          outlined
           :label="props.texts.reset_filters_text"
           @click.prevent="onResetFilters"
         />

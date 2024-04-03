@@ -740,6 +740,7 @@ class Sigmie_Admin
 	}
 	function render_sigmie_product_listing($args)
 	{
+
 		$options = get_options([
 			'sigmie_application_id',
 			'sigmie_search_api_key',
@@ -811,13 +812,13 @@ class Sigmie_Admin
 
 		$facets = implode(' ', $attributes);
 
-		$rangeFacets = ['price_as_number', ...json_decode($options['sigmie_range_attributes'], true)];
+		$numberFacets = ['price_as_number', ...json_decode($options['sigmie_range_attributes'], true)];
 		$checkboxFacets = ['categories', 'brands', ...json_decode($options['sigmie_checkbox_attributes'], true)];
 		$selectButtonFacets  = [...json_decode($options['sigmie_selectbutton_attributes'], true)];
 		$colorFacets = [...array_keys($colorAttributes)];
 
 		$facetTypes = array_merge(
-			array_fill_keys($rangeFacets, 'number-facet'),
+			array_fill_keys($numberFacets, 'number-facet'),
 			array_fill_keys($checkboxFacets, 'checkbox-facet'),
 			array_fill_keys($selectButtonFacets, 'selectbutton-facet'),
 			array_fill_keys($colorFacets, 'color-facet')
@@ -835,7 +836,7 @@ class Sigmie_Admin
 			$facetProps[$attribute]['expanded'] = true;
 		}
 
-		foreach ($rangeFacets as $attribute) {
+		foreach ($numberFacets as $attribute) {
 			$facetProps[$attribute]['step'] = 1;
 			$facetProps[$attribute]['from_label'] = 'from % $';
 			$facetProps[$attribute]['to_label'] = 'to % $';
@@ -887,7 +888,6 @@ class Sigmie_Admin
 			return $prop;
 		}, $facetProps);
 
-		// dd($facetProps);
 		$props = [
 			'facets' => $facetProps,
 			'sigmie' => [
