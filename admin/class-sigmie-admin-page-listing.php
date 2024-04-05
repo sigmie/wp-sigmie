@@ -335,7 +335,7 @@ class Sigmie_Admin_Page_Listing
 		echo '<ul id="sigmie_attributes_sortable">';
 		foreach ($attributes as $attribute) {
 			$selected = in_array($attribute->attribute_name, $existingAttributes) ? ' checked="checked"' : '';
-			echo '<li class="ui-state-default"><input type="checkbox" name="sigmie_filterable_attributes[]" value="' . esc_attr($attribute->attribute_name) . '"' . $selected . ' onchange="updateOrderedAttributes()">' . esc_html($attribute->attribute_label) . '</li>';
+			echo '<li class="ui-state-default" style="cursor: move;"><input type="checkbox" name="sigmie_filterable_attributes[]" value="' . esc_attr($attribute->attribute_name) . '"' . $selected . ' onchange="updateOrderedAttributes()">' . esc_html($attribute->attribute_label) . '</li>';
 		}
 		echo '</ul>';
 

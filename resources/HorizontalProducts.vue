@@ -57,7 +57,9 @@ const scrollToLeft = () => {
       v-if="canScrollRight"
       @click="scrollToRight"
     >
-      <ChevronRightIcon class="sgm-h-6 sgm-w-6"></ChevronRightIcon>
+      <div class="sgm-flex sgm-flex-col sgm-items-center sgm-justify-center">
+        <ChevronRightIcon class="sgm-h-6 sgm-w-6"></ChevronRightIcon>
+      </div>
     </button>
 
     <button
@@ -65,7 +67,9 @@ const scrollToLeft = () => {
       v-if="canScrollLeft"
       @click="scrollToLeft"
     >
-      <ChevronLeftIcon class="sgm-h-6 sgm-w-6"></ChevronLeftIcon>
+      <div class="sgm-flex sgm-flex-col sgm-items-center sgm-justify-center">
+        <ChevronLeftIcon class="sgm-h-6 sgm-w-6"></ChevronLeftIcon>
+      </div>
     </button>
     <div>
       <VirtualScroller

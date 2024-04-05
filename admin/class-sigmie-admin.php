@@ -146,13 +146,10 @@ class Sigmie_Admin
 		 * class.
 		 */
 
-		wp_enqueue_script(
-			$this->plugin_name,
-			plugin_dir_url(__FILE__) . 'js/sigmie-admin.js',
-			array('jquery'),
-			$this->version,
-			false
-		);
+		// if (get_query_var('page') === 'sigmie') {
+		// dd(get_query_var('page'));
+		//enqueue your scripts
+		// }
 
 		wp_enqueue_script(
 			'sigmie-admin-reindex-button',
@@ -162,7 +159,21 @@ class Sigmie_Admin
 			false
 		);
 
-		wp_enqueue_script('wp-color-picker');
+		// wp_enqueue_script('wp-color-picker');
+
+		if (is_admin() && isset($_GET['page']) && strpos($_GET['page'], 'sigmie') === 0) {
+
+			wp_enqueue_script(
+				$this->plugin_name,
+				plugin_dir_url(__FILE__) . 'js/sigmie-admin.js',
+				[],
+				$this->version,
+				[
+					'in_footer' => true,
+					'strategy'  => 'defer',
+				]
+			);
+		}
 	}
 
 	/**

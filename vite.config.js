@@ -53,7 +53,7 @@ export default defineConfig({
       config() {
         return {
           define: {
-            // __VUE_PROD_DEVTOOLS__: process.env.NODE_ENV === 'production'
+            __VUE_PROD_DEVTOOLS__: process.env.NODE_ENV === 'production'
           }
         }
       },
