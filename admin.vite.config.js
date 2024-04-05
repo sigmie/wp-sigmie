@@ -7,7 +7,7 @@ export default defineConfig({
   css: {
     postcss: {
       plugins: [
-        tailwindcss,
+        tailwindcss(),
       ],
     }
   },
@@ -17,19 +17,11 @@ export default defineConfig({
       vue: 'vue/dist/vue.esm-bundler.js'
     }
   },
-  plugins: [
-    vue(),
-  ],
+  plugins: [vue()],
   server: {
     host: '127.0.0.1'
   },
   build: {
-    // minify: 'terser',
-    // terserOptions: {
-    //   mangle: false, // Prevent changing variable names
-    // },
-    minify: false,
-    // minify: true,
     emptyOutDir: false,
     outDir: 'admin',
     rollupOptions: {

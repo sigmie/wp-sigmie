@@ -377,6 +377,13 @@ class Sigmie_Admin_Page_Listing
 	 */
 	public function display_page()
 	{
+		$attributesJson = (string) get_option('sigmie_filterable_attributes', '[]');
+
+		$existingAttributes = json_decode($attributesJson, true);
+
+		$attributes = wc_get_attribute_taxonomies();
+
+
 		require_once dirname(__FILE__) . '/partials/listing-settings.php';
 	}
 

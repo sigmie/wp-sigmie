@@ -122,7 +122,7 @@ class Sigmie_Admin
 		 * class.
 		 */
 
-		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/sigmie-admin.css', array(), $this->version, 'all');
+		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'js/sigmie-admin.css', array(), $this->version, 'all');
 		wp_enqueue_style('wp-color-picker');
 	}
 
@@ -159,7 +159,7 @@ class Sigmie_Admin
 			false
 		);
 
-		// wp_enqueue_script('wp-color-picker');
+		wp_enqueue_script('wp-color-picker');
 
 		if (is_admin() && isset($_GET['page']) && strpos($_GET['page'], 'sigmie') === 0) {
 

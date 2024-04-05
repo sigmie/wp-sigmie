@@ -4,6 +4,7 @@ export default {
   important: true,
   content: [
     'resources/**/*.vue',
+    'admin/**/*.vue',
   ],
   theme: {
     extend: {
@@ -14,7 +15,6 @@ export default {
     },
   },
   plugins: [
-    require('@vueform/slider/tailwind'),
   ],
 }
 

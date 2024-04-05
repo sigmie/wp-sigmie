@@ -176,15 +176,7 @@ class Sigmie_Plugin
 			$this->sigmie_index()
 		);
 
-		if (defined('ELEMENTOR_VERSION')) {
-			$this->loader->add_action('elementor/common/after_register_scripts', $plugin_admin, 'enqueue_scripts', 999);
-			// $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts',);
-			// $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts', 9999);
-			// $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
-		} else {
-			$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts',);
-		}
-
+		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts',);
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 
 		$this->loader->add_action('admin_menu', $plugin_admin, 'add_settings_menu_page', 10);
