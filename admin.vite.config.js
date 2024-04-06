@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from 'tailwindcss';
+import safeImportant from 'postcss-safe-important';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -8,6 +9,13 @@ export default defineConfig({
     postcss: {
       plugins: [
         tailwindcss(),
+        safeImportant(
+          {
+            excludeSelectors: (selector) => {
+              return false;
+            }
+          },
+        ),
       ],
     }
   },

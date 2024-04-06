@@ -13,8 +13,6 @@ import ColorFacet from "./ColorFacet.vue";
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    //todo check if element exists
-
     const search = createApp({})
     search.use(PrimeVue);
     search.component('search', Search);

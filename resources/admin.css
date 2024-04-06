@@ -1,5 +1,5 @@
 @config "../tailwind-admin.config.js";
 
-@tailwind base;
+/* @tailwind base; */
 @tailwind components;
 @tailwind utilities;

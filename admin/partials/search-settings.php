@@ -14,6 +14,12 @@
     </h1>
     <?php if (!has_action('wpswa_pro_override_settings_output')) : ?>
         <form method="post" action="options.php">
+            <div id="sigmie-backend">
+                <search-settings>
+
+                </search-settings>
+            </div>
+            <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
             <?php
             settings_fields($this->option_group);
             do_settings_sections($this->slug);
