@@ -125,6 +125,7 @@ class Sigmie_Plugin
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-search-widget.php';
 
 
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page.php';
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-search.php';
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-results.php';
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-listing.php';
@@ -197,6 +198,9 @@ class Sigmie_Plugin
 		$this->loader->add_filter('product_attributes_type_selector', $plugin_admin, 'register_attribute_types');
 		$this->loader->add_action('woocommerce_after_add_attribute_fields', $plugin_admin, 'attribute_orderby_field');
 		$this->loader->add_action('woocommerce_after_edit_attribute_fields', $plugin_admin, 'attribute_orderby_field');
+
+		$this->loader->add_action('rest_api_init', $plugin_admin, 'register_rest_route');
+
 
 		add_shortcode('sigmie_search_bar', [$plugin_admin, 'render_sigmie_search_bar']);
 

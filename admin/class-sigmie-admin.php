@@ -123,7 +123,6 @@ class Sigmie_Admin
 		 */
 
 		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'js/sigmie-admin.css', array(), $this->version, 'all');
-		wp_enqueue_style('wp-color-picker');
 	}
 
 	/**
@@ -1070,5 +1069,40 @@ class Sigmie_Admin
 			<p class="description"><?php esc_html_e('Determines the sort order of the facets on the frontend shop product pages.', 'sigmie'); ?></p>
 		</div>
 <?php
+	}
+
+	public function rest_save_settings(WP_REST_Request $value)
+	{
+		$body = $value->get_body();
+
+		$data = json_decode($body, true);
+
+		$data = array_filter($data, function ($key) {
+			return in_array($key, [
+				"language",
+				"field_text",
+				"show_loader",
+				"max_height",
+				"max_width",
+				"corner_radius",
+			]);
+		}, ARRAY_FILTER_USE_KEY);
+
+		foreach ($data as $key => $value) {
+			update_option('sigmie_' . $key, $value);
+		}
+
+		return new WP_REST_Response(array('success' => true), 200);
+	}
+
+	public function register_rest_route($value)
+	{
+		register_rest_route('/v1/sigmie', '/save-settings', array(
+			'methods' => 'POST',
+			'callback' => [$this, 'rest_save_settings'],
+			'permission_callback' => function () {
+				return current_user_can($this->capability);
+			}
+		));
 	}
 }

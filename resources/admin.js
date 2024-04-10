@@ -1,7 +1,5 @@
-import 'primevue/resources/themes/aura-light-blue/theme.css'
 import './admin.css'
 
-import PrimeVue from "primevue/config";
 import Indexing from "@/Indexing.vue";
 import SearchSettings from "@/SearchSettings.vue";
 
@@ -11,7 +9,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const backend = createApp({});
 
-    backend.use(PrimeVue);
+    backend.use(primevue.config.default);
+
     backend.component('indexing', Indexing)
     backend.component('search-settings', SearchSettings)
     backend.mount('#sigmie-backend')
