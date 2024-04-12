@@ -2,9 +2,9 @@
 
 abstract class Sigmie_Admin_Page
 {
-	private $slug;
+	public $slug;
 
-	private $capability = 'manage_options';
+	public $capability = 'manage_options';
 
 	public function __construct()
 	{
@@ -17,12 +17,14 @@ abstract class Sigmie_Admin_Page
 
 	abstract public function slug();
 
+	abstract public function name();
+
 	public function add_page()
 	{
 		add_submenu_page(
 			'sigmie',
-			esc_html__('Search bar', 'sigmie'),
-			esc_html__('Search bar', 'sigmie'),
+			esc_html__($this->name(), 'sigmie'),
+			esc_html__($this->name(), 'sigmie'),
 			$this->capability,
 			$this->slug,
 			array($this, 'display_page'),

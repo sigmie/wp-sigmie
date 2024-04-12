@@ -1,13 +1,14 @@
 <template>
-  <InlineMessage class="sgm-w-full sgm-mb-10" severity="info"
-    >You can use it as widget, you will find inside the widgets areas or you can
-    use the shortcode [sigmie_search_bar].
-  </InlineMessage>
-  <form class="sgm-max-w-5xl">
-    <div class="sgm-space-y-12">
-      <div
-        class="sgm-grid sgm-grid-cols-1 sgm-gap-x-8 sgm-gap-y-10 sgm-border-b sgm-border-gray-900 sgm-pb-6 md:sgm-grid-cols-3"
-      >
+
+  <form class="sgm-max-w-2xl">
+    <InlineMessage
+      class="sgm-w-full sgm-mb-10"
+      severity="contrast"
+      >You can use it as widget, you will find inside the widgets areas or you
+      can use the shortcode [sigmie_search_bar].
+    </InlineMessage>
+    <div class="sgm-space-y-20 sgm-divide-y">
+      <div class="sgm-flex sgm-flex-row sgm-justify-between">
         <div>
           <h2
             class="sgm-text-base sgm-font-semibold sgm-leading-7 sgm-text-gray-900"
@@ -19,10 +20,8 @@
           </p>
         </div>
 
-        <div
-          class="sgm-grid sgm-max-w-2xl sgm-grid-cols-1 sgm-gap-x-6 sgm-gap-y-8 sm:sgm-grid-cols-6 md:sgm-col-span-2"
-        >
-          <div class="sm:sgm-col-span-4">
+        <div class="sgm-grid sgm-grid-cols-1 sgm-gap-x-6 sgm-gap-y-8">
+          <div class="sgm-max-w-xs">
             <div class="sgm-mt-2">
               <div class="sgm-flex sgm-flex-col sgm-gap-2">
                 <label
@@ -48,7 +47,7 @@
             </div>
           </div>
 
-          <div class="sm:sgm-col-span-4">
+          <div class="sgm-max-w-xs">
             <div class="sgm-mt-2">
               <div class="sgm-flex sgm-flex-col sgm-gap-2">
                 <label
@@ -66,9 +65,7 @@
         </div>
       </div>
 
-      <div
-        class="sgm-grid sgm-grid-cols-1 sgm-gap-x-8 sgm-gap-y-10 sgm-border-b sgm-border-gray-900/10 sgm-pb-12 md:sgm-grid-cols-3"
-      >
+      <div class="sgm-flex sgm-flex-row sgm-justify-between">
         <div>
           <h2
             class="sgm-text-base sgm-font-semibold sgm-leading-7 sgm-text-gray-900"
@@ -81,7 +78,7 @@
         </div>
 
         <div
-          class="sgm-grid sgm-max-w-2xl sgm-grid-cols-1 sgm-gap-x-6 sgm-gap-y-8 sm:sgm-grid-cols-6 md:sgm-col-span-2"
+          class="sgm-grid sgm-max-w-2xl sgm-grid-cols-1 sgm-gap-x-6 sgm-gap-y-8"
         >
           <div class="sm:sgm-col-span-6">
             <div class="sgm-mt-2">
@@ -92,16 +89,18 @@
             </div>
           </div>
 
-          <div class="sm:sgm-col-span-6">
-            <div class="sgm-mt-2 sgm-max-w-xs">
+          <div
+            class="sm:sgm-col-span-6 sgm-flex sgm-flex-col sgm-space-y-5 sgm-max-w-xs"
+          >
+            <div class="sgm-mt-2">
               <label
                 class="sgm-block sgm-text-sm sgm-font-medium sgm-leading-6 sgm-text-gray-900 sgm-mb-2"
                 for="sigmie_search_field_text"
                 >Max Height</label
               >
 
-              <div class="sgm-relative">
-                <span class="sgm-absolute sgm-right-20 sgm-top-3">px</span>
+              <div class="sgm-relative sgm-w-full">
+                <span class="sgm-absolute sgm-right-10 sgm-top-3">px</span>
                 <InputNumber v-model="state.max_height" />
               </div>
             </div>
@@ -112,7 +111,7 @@
                 >Max Width</label
               >
               <div class="sgm-relative">
-                <span class="sgm-absolute sgm-right-20 sgm-top-3">px</span>
+                <span class="sgm-absolute sgm-right-10 sgm-top-3">px</span>
                 <InputNumber v-model="state.max_width" />
               </div>
             </div>
@@ -123,7 +122,7 @@
                 >Corner radius</label
               >
               <div class="sgm-relative">
-                <span class="sgm-absolute sgm-right-20 sgm-top-3">px</span>
+                <span class="sgm-absolute sgm-right-10 sgm-top-3">px</span>
                 <InputNumber v-model="state.corner_radius" />
               </div>
             </div>
@@ -134,7 +133,12 @@
       <div
         class="sgm-flex sgm-flex-row sgm-items-center sgm-justify-end sgm-w-full"
       >
-        <Button size="small" :loading="loading" label="Save Settings" @click="saveSettings">
+        <Button
+          size="small"
+          :loading="loading"
+          label="Save Settings"
+          @click="saveSettings(state)"
+        >
         </Button>
       </div>
     </div>
@@ -142,7 +146,9 @@
 </template>
 
 <script setup>
-const { reactive, onMounted, ref } = Vue;
+import { saveSettings, loading } from "./saveSettings.js";
+
+const { reactive, onMounted, toRefs } = Vue;
 const Dropdown = primevue.dropdown;
 
 const InputNumber = primevue.inputnumber;
@@ -178,40 +184,4 @@ const state = reactive({
   max_width: "",
   corner_radius: "",
 });
-
-const loading = ref(false);
-
-const saveSettings = async () => {
-  try {
-    loading.value = true;
-    const response = await fetch("/wp-json/v1/sigmie/save-settings", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-WP-Nonce": wpApiSettings.nonce,
-      },
-      body: JSON.stringify(state),
-    });
-
-    loading.value = false;
-
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const data = await response.json();
-
-    Toastify({
-      text: "Settings saved successfully",
-      gravity: "bottom",
-      position: "center",
-    }).showToast();
-  } catch (error) {
-    Toastify({
-      text: "Something went wrong",
-      gravity: "bottom",
-      position: "center",
-    }).showToast();
-  }
-};
 </script>

@@ -126,7 +126,9 @@ class Sigmie_Plugin
 
 
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page.php';
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-search.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-search-page.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-credentials-page.php';
+
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-results.php';
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-listing.php';
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-filters.php';
@@ -180,9 +182,9 @@ class Sigmie_Plugin
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts',);
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 
-		$this->loader->add_action('admin_menu', $plugin_admin, 'add_settings_menu_page', 10);
-		$this->loader->add_action('admin_init', $plugin_admin, 'add_settings', 15);
-		$this->loader->add_action('admin_notices', $plugin_admin, 'display_settings_errors', 15);
+		$this->loader->add_action('admin_menu', $plugin_admin, 'add_pages', 10);
+		// $this->loader->add_action('admin_init', $plugin_admin, 'add_settings', 15);
+		// $this->loader->add_action('admin_notices', $plugin_admin, 'display_settings_errors', 15);
 
 		$this->loader->add_filter('woocommerce_product_data_tabs', $plugin_admin, 'product_tab', 10, 3);
 		$this->loader->add_action('woocommerce_product_data_panels', $plugin_admin, 'product_tab_content', 10, 3);
@@ -210,18 +212,6 @@ class Sigmie_Plugin
 		$this->loader->add_filter('template_include', $plugin_admin, 'sigmie_template_include');
 
 		$this->loader->add_action('widgets_init', $plugin_admin, 'register_sigmie_widget');
-
-		if (get_option('sigmie_api_is_reachable') === 'yes') {
-
-			new Sigmie_Admin_Page_Search();
-			new Sigmie_Admin_Page_Results();
-			new Sigmie_Admin_Page_Filters();
-			new Sigmie_Admin_Page_Listing();
-			new Sigmie_Admin_Page_Products();
-
-
-			add_action('wp_ajax_sigmie_re_index', array($plugin_admin, 're_index'), 10, 2);
-		}
 	}
 
 

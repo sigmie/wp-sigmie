@@ -1,10 +1,15 @@
 <?php
 
-class Sigmie_Admin_Page_Search extends Sigmie_Admin_Page
+class Sigmie_Admin_Search_Page extends Sigmie_Admin_Page
 {
 	public function slug()
 	{
 		return 'sigmie-search-page';
+	}
+
+	public function name()
+	{
+		return 'Search';
 	}
 
 	public function render_component()
@@ -26,8 +31,8 @@ class Sigmie_Admin_Page_Search extends Sigmie_Admin_Page
 			$props[$key] = $value;
 		}
 
-		return '<search-settings
+		return '<search-page
 					 v-bind="' . htmlspecialchars(json_encode($props)) . '">
-		</search-settings>';
+		</search-page>';
 	}
 }

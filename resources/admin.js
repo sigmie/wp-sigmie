@@ -1,7 +1,7 @@
 import './admin.css'
 
-import Indexing from "@/Indexing.vue";
-import SearchSettings from "@/SearchSettings.vue";
+import SearchPage from "@/SearchPage.vue";
+import CredentialsPage from "@/CredentialsPage.vue";
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -11,9 +11,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     backend.use(primevue.config.default);
 
-    backend.component('indexing', Indexing)
-    backend.component('search-settings', SearchSettings)
-    backend.mount('#sigmie-backend')
+    backend.component('search-page', SearchPage);
+    backend.component('credentials-page', CredentialsPage);
+
+    backend.mount('#sigmie-admin')
 });
 
 
