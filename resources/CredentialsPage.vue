@@ -51,10 +51,7 @@
                     for="sigmie_search_field_text"
                     >Admin API key</label
                   >
-                  <Password
-                    toggleMask
-                    v-model="state.admin_api_key"
-                  />
+                  <Password toggleMask v-model="state.admin_api_key" />
                   <span class="sgm-text-sm"
                     >Your Sigmie Admin API key (kept private).
                   </span>
@@ -102,8 +99,9 @@
       >
         <Button
           size="small"
+          class="sgm-w-40"
           :loading="loading"
-          label="Save Settings"
+          :label="recentlySuccessful ? 'Settings Saved' : 'Save Settings'"
           @click="saveSettings(state)"
         >
         </Button>
@@ -113,7 +111,7 @@
 </template>
 
 <script setup>
-import { saveSettings, loading } from "./saveSettings.js";
+import { saveSettings, loading, recentlySuccessful } from "./saveSettings.js";
 
 const { reactive, onMounted, ref } = Vue;
 const Dropdown = primevue.dropdown;
@@ -147,3 +145,9 @@ const state = reactive({
   index_prefix: null,
 });
 </script>
+
+<style>
+.p-password-input {
+  @apply sgm-w-full;
+}
+</style>

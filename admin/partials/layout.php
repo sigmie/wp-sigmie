@@ -22,9 +22,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/primevue/3.51.0/inlinemessage/inlinemessage.min.js" integrity="sha512-WJMJ7mcImbMReTxum35Vga7ad6GfBD31FhuZPSXxYtpB7ZHq+KSFpN7A9Kcfp18SuoH988s7LW8PrW9b+/VICQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/primevue/3.51.0/password/password.min.js" integrity="sha512-Qckm6ATq7+vssrRpm0c/tAt5JYbJI8p9khkYdBiPe8A7SVfZ5+t9mVxlhxS8Fuj2fm+kZi5Ap2KycBBBkdehsw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-
     <form method="post" action="options.php">
         <div id="sigmie-admin">
             <?php

@@ -129,10 +129,10 @@ class Sigmie_Plugin
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-search-page.php';
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-credentials-page.php';
 
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-results.php';
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-listing.php';
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-filters.php';
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page-products.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-results-page.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-listing-page.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-filters-page.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-products-page.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing

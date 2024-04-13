@@ -177,16 +177,14 @@ class Sigmie_Admin
 
 	public function add_pages()
 	{
-		new Sigmie_Admin_Credentials_Page;
-		new Sigmie_Admin_Search_Page;
-
 		// if (get_option('sigmie_api_is_reachable') === 'yes') {
 
-		// 	// new Sigmie_Admin_Page_Results();
-		// 	// new Sigmie_Admin_Page_Filters();
-		// 	// new Sigmie_Admin_Page_Listing();
-		// 	// new Sigmie_Admin_Page_Products();
-
+		new Sigmie_Admin_Credentials_Page;
+		new Sigmie_Admin_Search_Page;
+		new Sigmie_Admin_Results_Page;
+		new Sigmie_Admin_Products_Page;
+		new Sigmie_Admin_Listing_Page;
+		new Sigmie_Admin_Filters_Page;
 
 		// 	add_action('wp_ajax_sigmie_re_index', array($plugin_admin, 're_index'), 10, 2);
 		// }

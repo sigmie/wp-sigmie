@@ -1,10 +1,7 @@
 <template>
-
   <form class="sgm-max-w-2xl">
-    <InlineMessage
-      class="sgm-w-full sgm-mb-10"
-      severity="contrast"
-      >You can use it as widget, you will find inside the widgets areas or you
+    <InlineMessage class="sgm-w-full sgm-mb-10" severity="contrast">
+      You can use it as widget, you will find inside the widgets areas or you
       can use the shortcode [sigmie_search_bar].
     </InlineMessage>
     <div class="sgm-space-y-20 sgm-divide-y">
