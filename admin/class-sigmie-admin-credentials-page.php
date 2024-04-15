@@ -25,6 +25,21 @@ class Sigmie_Admin_Credentials_Page extends Sigmie_Admin_Page
 		);
 	}
 
+	public function component()
+	{
+		return 'credentials-page';
+	}
+
+	public function options()
+	{
+		return [
+			'application_id',
+			'admin_api_key',
+			'search_api_key',
+			'index_prefix',
+		];
+	}
+
 	public function slug()
 	{
 		return 'sigmie';
@@ -33,27 +48,5 @@ class Sigmie_Admin_Credentials_Page extends Sigmie_Admin_Page
 	public function name()
 	{
 		return 'Credentials';
-	}
-
-	public function render_component()
-	{
-		$options = get_options([
-			'sigmie_application_id',
-			'sigmie_admin_api_key',
-			'sigmie_search_api_key',
-			'sigmie_index_prefix',
-		]);
-
-		$props = [];
-
-		foreach ($options as $key => $value) {
-			$key = str_replace('sigmie_', '', $key);
-
-			$props[$key] = $value;
-		}
-
-		return '<credentials-page
-					 v-bind="' . htmlspecialchars(json_encode($props)) . '">
-		</credentials-page>';
 	}
 }

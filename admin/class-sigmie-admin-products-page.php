@@ -2,9 +2,14 @@
 
 class Sigmie_Admin_Products_Page extends Sigmie_Admin_Page
 {
-	public function render_component()
+	public function component()
 	{
-		return '<products-page></products-page>';
+		return 'products-page';
+	}
+
+	public function options()
+	{
+		return [];
 	}
 
 	public function slug()

@@ -2,9 +2,14 @@
 
 class Sigmie_Admin_Results_Page extends Sigmie_Admin_Page
 {
-	public function render_component()
+	public function component()
 	{
-		return '<results-page></results-page>';
+		return 'results-page';
+	}
+
+	public function options()
+	{
+		return [];
 	}
 
 	public function slug()
