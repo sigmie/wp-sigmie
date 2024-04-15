@@ -2,7 +2,10 @@
   <form class="sgm-max-w-2xl">
     <InlineMessage class="sgm-w-full sgm-mb-10" severity="contrast">
       No Sigmie account yet?
-      <a href="https://app.sigmie.com/sign-up" class="sgm-text-red-300"
+      <a
+        target="_blank"
+        href="https://app.sigmie.com/sign-up"
+        class="sgm-text-red-300"
         >Follow this link</a
       >
       to create one for free in a couple of minutes!

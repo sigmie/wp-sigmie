@@ -217,6 +217,24 @@ const settings = [
         label: "Reset filters text",
         info: "Reset filters info text",
       },
+      {
+        type: InputText,
+        name: "filters_title_text",
+        label: "Filters title text",
+        info: "Filters title info text",
+      },
+      {
+        type: InputText,
+        name: "products_title_text",
+        label: "Products title text",
+        info: "Products title info text",
+      },
+      {
+        type: InputText,
+        name: "products_subtitle_template",
+        label: "Products subtitle template",
+        info: "Products subtitle info text",
+      },
     ],
   },
   {
@@ -278,31 +296,6 @@ const settings = [
         name: "no_products_advice_text",
         label: "No products advice text",
         info: "No products advice info text",
-      },
-    ],
-  },
-  {
-    key: "rest-options",
-    title: "Rest Options",
-    subtitle: "Rest settings",
-    fields: [
-      {
-        type: InputText,
-        name: "filters_title_text",
-        label: "Filters title text",
-        info: "Filters title info text",
-      },
-      {
-        type: InputText,
-        name: "products_title_text",
-        label: "Products title text",
-        info: "Products title info text",
-      },
-      {
-        type: InputText,
-        name: "products_subtitle_template",
-        label: "Products subtitle template",
-        info: "Products subtitle info text",
       },
     ],
   },

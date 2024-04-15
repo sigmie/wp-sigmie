@@ -7,8 +7,8 @@ class Sigmie_Admin_Credentials_Page extends Sigmie_Admin_Page
 		$this->slug = $this->slug();
 
 		add_menu_page(
-			esc_html__('Sigmie Search'),
-			'Sigmie Search',
+			esc_html__('Sigmie'),
+			'Sigmie',
 			$this->capability,
 			$this->slug,
 			array($this, 'display_page'),
@@ -17,8 +17,8 @@ class Sigmie_Admin_Credentials_Page extends Sigmie_Admin_Page
 
 		add_submenu_page(
 			'sigmie',
-			esc_html__('Settings', 'sigmie'),
-			esc_html__('Settings', 'sigmie'),
+			esc_html__($this->name(), 'sigmie'),
+			esc_html__($this->name(), 'sigmie'),
 			$this->capability,
 			$this->slug,
 			array($this, 'display_page'),
@@ -33,10 +33,10 @@ class Sigmie_Admin_Credentials_Page extends Sigmie_Admin_Page
 	public function options()
 	{
 		return [
-			'application_id',
-			'admin_api_key',
-			'search_api_key',
-			'index_prefix',
+			'application_id' => 'string',
+			'admin_api_key' => 'string',
+			'search_api_key' => 'string',
+			'index_prefix' => 'string',
 		];
 	}
 

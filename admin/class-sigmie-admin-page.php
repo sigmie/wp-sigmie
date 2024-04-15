@@ -17,7 +17,7 @@ abstract class Sigmie_Admin_Page
 	{
 		$props = [];
 
-		foreach ($this->options() as $value) {
+		foreach (array_keys($this->options()) as $value) {
 			$props[] = 'sigmie_' . $value;
 		}
 
@@ -26,11 +26,27 @@ abstract class Sigmie_Admin_Page
 		$props = [];
 
 		foreach ($options as $key => $value) {
+
 			$key = str_replace('sigmie_', '', $key);
+
+			if ($this->options()[$key] === 'array') {
+				$value = json_decode($value, true);
+			}
+
+			if ($this->options()[$key] === 'number') {
+				$value = (float) $value;
+			}
+
+			if ($this->options()[$key] === 'boolean') {
+				$value = $value === 'yes';
+			}
+
+			if ($this->options()[$key] === 'string') {
+				$value = (string) $value;
+			}
 
 			$props[$key] = $value;
 		}
-
 
 		return '<' . $this->component() . '
 					 v-bind="' . htmlspecialchars(json_encode($props)) . '">

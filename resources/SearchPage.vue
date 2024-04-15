@@ -2,7 +2,8 @@
   <form class="sgm-max-w-2xl">
     <InlineMessage class="sgm-w-full sgm-mb-10" severity="contrast">
       You can use it as widget, you will find inside the widgets areas or you
-      can use the shortcode [sigmie_search_bar].
+      can use the shortcode
+      <span class="sgm-text-red-300">[sigmie_search_bar]</span>.
     </InlineMessage>
     <div class="sgm-space-y-20 sgm-divide-y">
       <div class="sgm-flex sgm-flex-row sgm-justify-between">
@@ -30,6 +31,7 @@
                   name="sigmie_language"
                   v-model="state.language"
                   optionLabel="name"
+                  optionValue="code"
                   :options="[
                     { name: 'English', code: 'en' },
                     { name: 'German', code: 'de' },
@@ -155,30 +157,39 @@ const SelectButton = primevue.selectbutton;
 const InlineMessage = primevue.inlinemessage;
 const Button = primevue.button;
 
-const props = defineProps([
-  "language",
-  "field_text",
-  "show_loader",
-  "max_height",
-  "max_width",
-  "corner_radius",
-]);
-
-onMounted(() => {
-  state.language = props.language;
-  state.field_text = props.field_text;
-  state.show_loader = props.show_loader;
-  state.max_height = props.max_height;
-  state.max_width = props.max_width;
-  state.corner_radius = props.corner_radius;
+const props = defineProps({
+  language: {
+    type: String,
+    default: "en",
+  },
+  field_text: {
+    type: String,
+    default: "Search",
+  },
+  show_loader: {
+    type: Boolean,
+    default: true,
+  },
+  max_height: {
+    type: Number,
+    default: 100,
+  },
+  max_width: {
+    type: Number,
+    default: 100,
+  },
+  corner_radius: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const state = reactive({
-  language: {},
-  field_text: "",
-  show_loader: "",
-  max_height: "",
-  max_width: "",
-  corner_radius: "",
+  language: props.language,
+  field_text: props.field_text,
+  show_loader: props.show_loader,
+  max_height: props.max_height,
+  max_width: props.max_width,
+  corner_radius: props.corner_radius,
 });
 </script>

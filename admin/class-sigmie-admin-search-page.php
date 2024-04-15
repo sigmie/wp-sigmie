@@ -2,7 +2,6 @@
 
 class Sigmie_Admin_Search_Page extends Sigmie_Admin_Page
 {
-
 	public function component()
 	{
 		return 'search-page';
@@ -11,12 +10,12 @@ class Sigmie_Admin_Search_Page extends Sigmie_Admin_Page
 	public function options()
 	{
 		return [
-			'language',
-			'field_text',
-			'show_loader',
-			'max_height',
-			'max_width',
-			'corner_radius',
+			'language' => 'string',
+			'field_text' => 'string',
+			'show_loader' => 'string',
+			'max_height' => 'number',
+			'max_width' => 'number',
+			'corner_radius' => 'number',
 		];
 	}
 
@@ -27,6 +26,6 @@ class Sigmie_Admin_Search_Page extends Sigmie_Admin_Page
 
 	public function name()
 	{
-		return 'Search';
+		return 'Search Widget';
 	}
 }

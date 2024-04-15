@@ -10,30 +10,30 @@ class Sigmie_Admin_Filters_Page extends Sigmie_Admin_Page
 	public function options()
 	{
 		return	[
-			'theme',
-			'products_per_page',
-			'filters_title_text',
-			'products_title_text',
-			'products_subtitle_template',
+			'theme' => 'string',
+			'products_per_page' => 'string',
+			'filters_title_text' => 'string',
+			'products_title_text' => 'string',
+			'products_subtitle_template' => 'string',
 
-			'sort_by_product_sales_label',
-			'sort_by_relevance_label',
-			'sort_by_price_desc_label',
-			'sort_by_price_asc_label',
-			'sort_by_most_recent_label',
-			'sort_by_rating_label',
+			'sort_by_product_sales_label' => 'string',
+			'sort_by_relevance_label' => 'string',
+			'sort_by_price_desc_label' => 'string',
+			'sort_by_price_asc_label' => 'string',
+			'sort_by_most_recent_label' => 'string',
+			'sort_by_rating_label' => 'string',
 
-			'show_offers_filter',
-			'offers_filter_text',
+			'show_offers_filter' => 'string',
+			'offers_filter_text' => 'string',
 
-			'price_range_label',
-			'price_range_filter_label',
-			'show_price_range_chart',
+			'price_range_label' => 'string',
+			'price_range_filter_label' => 'string',
+			'show_price_range_chart' => 'string',
 
-			'no_products_text',
-			'no_products_advice_text',
-			'show_categories_filter',
-			'reset_filters_text',
+			'no_products_text' => 'string',
+			'no_products_advice_text' => 'string',
+			'show_categories_filter' => 'string',
+			'reset_filters_text' => 'string',
 		];
 	}
 

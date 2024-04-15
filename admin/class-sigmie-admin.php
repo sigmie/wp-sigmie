@@ -913,10 +913,24 @@ class Sigmie_Admin
 				"no_products_advice_text",
 				"show_categories_filter",
 				"reset_filters_text",
+
+				"nothing_found_text",
+				"sort_by",
+				"number_of_results",
+				"show_categories",
+				"number_of_categories",
+				"max_description_length",
+				"show_category",
+				"show_description",
+				"show_price",
+				"show_rating",
+				"show_sku",
+				"show_on_sale",
 			]);
 		}, ARRAY_FILTER_USE_KEY);
 
 		foreach ($data as $key => $value) {
+
 			update_option('sigmie_' . $key, $value);
 		}
 
