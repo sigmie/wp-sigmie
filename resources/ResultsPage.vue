@@ -1,8 +1,5 @@
 <template>
   <form class="sgm-max-w-2xl">
-    <InlineMessage class="sgm-w-full sgm-mb-10" severity="contrast">
-      Search results are the output of a search query.
-    </InlineMessage>
     <div v-if="tabs.length > 1">
       <Tabs v-model="selectedTab" :tabs="tabs"></Tabs>
     </div>
@@ -18,7 +15,9 @@
             >
               {{ tab.title }}
             </h2>
-            <p class="sgm-mt-1 sgm-text-sm sgm-leading-6 sgm-text-gray-600">
+            <p
+              class="sgm-mt-1 sgm-max-w-xs sgm-text-sm sgm-leading-6 sgm-text-gray-600"
+            >
               {{ tab.subtitle }}
             </p>
           </div>
@@ -46,8 +45,15 @@
       </template>
 
       <div
-        class="sgm-flex sgm-flex-row sgm-items-center sgm-justify-end sgm-w-full"
+        class="sgm-flex sgm-space-x-3 sgm-flex-row sgm-items-center sgm-justify-end sgm-w-full"
       >
+        <InlineMessage severity="success" v-if="recentlySuccessful"
+          >Your changes have been saved!</InlineMessage
+        >
+        <InlineMessage severity="error" v-if="recentlyError">
+          Oops! Something went wrong.
+        </InlineMessage>
+
         <Button
           size="small"
           :loading="loading"
@@ -61,10 +67,16 @@
 </template>
 
 <script setup>
-import { saveSettings, loading } from "./saveSettings.js";
+import {
+  saveSettings,
+  loading,
+  recentlySuccessful,
+  recentlyError,
+  errorMessage,
+} from "./saveSettings.js";
 import Tabs from "./Tabs.vue";
 
-const { reactive, onMounted, toRefs, onBeforeMount } = Vue;
+const { reactive, onMounted, onBeforeMount } = Vue;
 const Dropdown = primevue.dropdown;
 
 const { ref } = Vue;
@@ -122,19 +134,13 @@ const state = reactive({
 const settings = [
   {
     key: "general-settings",
-    title: "General Texts",
-    subtitle: "General settings",
+    title: "General",
+    subtitle: "General settings for the search results.",
     fields: [
-      {
-        type: InputText,
-        name: "nothing_found_text",
-        label: "Nothing found text",
-        info: "",
-      },
       {
         type: Dropdown,
         name: "sort_by",
-        label: "Sort by",
+        label: "Sort results by",
         info: "",
         props: {
           optionLabel: "name",
@@ -151,14 +157,14 @@ const settings = [
       {
         type: InputNumber,
         name: "number_of_results",
-        label: "Number of results",
-        info: "Number of results info text",
+        label: "Number of search results",
+        info: "How many search results should be displayed.",
       },
       {
         type: SelectButton,
         name: "show_categories",
         label: "Show categories",
-        info: "Show categories info text",
+        info: "Display the matching categories list.",
         props: {
           options: ["Show", "Hide"],
         },
@@ -167,19 +173,28 @@ const settings = [
         type: InputNumber,
         name: "number_of_categories",
         label: "Number of categories",
-        info: "Number of categories info text",
+        info: "How many categories should be shown next to the results list.",
       },
+    ],
+  },
+
+  {
+    key: "product-attributes",
+    title: "Product Attributes",
+    subtitle:
+      "Define the product attributes to be displayed on the product card here.",
+    fields: [
       {
         type: InputNumber,
         name: "max_description_length",
         label: "Max description length",
-        info: "Max description length info text",
+        info: "Maximum length of the description.",
       },
       {
         type: SelectButton,
         name: "show_category",
-        label: "Show category",
-        info: "Show category info text",
+        label: "Categories",
+        info: "",
         props: {
           options: ["Show", "Hide"],
         },
@@ -187,8 +202,8 @@ const settings = [
       {
         type: SelectButton,
         name: "show_description",
-        label: "Show description",
-        info: "Show description info text",
+        label: "Description",
+        info: "",
         props: {
           options: ["Show", "Hide"],
         },
@@ -197,7 +212,7 @@ const settings = [
         type: SelectButton,
         name: "show_price",
         label: "Show price",
-        info: "Show price info text",
+        info: "",
         props: {
           options: ["Show", "Hide"],
         },
@@ -205,8 +220,8 @@ const settings = [
       {
         type: SelectButton,
         name: "show_rating",
-        label: "Show rating",
-        info: "Show rating info text",
+        label: "Rating",
+        info: "",
         props: {
           options: ["Show", "Hide"],
         },
@@ -214,8 +229,8 @@ const settings = [
       {
         type: SelectButton,
         name: "show_sku",
-        label: "Show SKU",
-        info: "Show SKU info text",
+        label: "SKU",
+        info: "",
         props: {
           options: ["Show", "Hide"],
         },
@@ -223,11 +238,25 @@ const settings = [
       {
         type: SelectButton,
         name: "show_on_sale",
-        label: "Show on sale",
-        info: "Show on sale info text",
+        label: "On sale",
+        info: "",
         props: {
           options: ["Show", "Hide"],
         },
+      },
+    ],
+  },
+
+  {
+    key: "empty-results-options",
+    title: "Empty Results",
+    subtitle: "Configuration for scenarios with no search results.",
+    fields: [
+      {
+        type: InputText,
+        name: "nothing_found_text",
+        label: "Nothing found text",
+        info: "",
       },
     ],
   },

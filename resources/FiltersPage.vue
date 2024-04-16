@@ -43,8 +43,17 @@
       </template>
 
       <div
-        class="sgm-flex sgm-flex-row sgm-items-center sgm-justify-end sgm-w-full"
+        class="sgm-flex sgm-space-y-3 sm:sgm-space-y-0 sm:sgm-space-x-3 sgm-flex-col sm:sgm-flex-row sgm-justify-end sgm-w-full"
       >
+        <div class="sgm-h-12 sm:sgm-h-auto">
+          <InlineMessage severity="success" v-if="recentlySuccessful"
+            >Your changes have been saved!</InlineMessage
+          >
+          <InlineMessage severity="error" v-if="recentlyError">
+            Oops! Something went wrong.
+          </InlineMessage>
+        </div>
+
         <Button
           size="small"
           :loading="loading"
@@ -58,7 +67,13 @@
 </template>
 
 <script setup>
-import { saveSettings, loading } from "./saveSettings.js";
+import {
+  saveSettings,
+  loading,
+  recentlySuccessful,
+  recentlyError,
+  errorMessage,
+} from "./saveSettings.js";
 import Tabs from "./Tabs.vue";
 
 const { reactive, onMounted, toRefs, onBeforeMount } = Vue;

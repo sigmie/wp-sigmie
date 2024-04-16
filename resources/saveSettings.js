@@ -4,6 +4,10 @@ export const loading = ref(false);
 
 export const recentlySuccessful = ref(false);
 
+export const recentlyError = ref(false);
+
+export const errorMessage = ref('');
+
 export const saveSettings = async (state) => {
 
   loading.value = true;
@@ -19,15 +23,25 @@ export const saveSettings = async (state) => {
 
   loading.value = false;
 
-  recentlySuccessful.value = true;
-
-  setTimeout(() => {
-    recentlySuccessful.value = false;
-  }, 1300);
+  const data = await response.json();
 
   if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
 
-  const data = await response.json();
+    errorMessage.value = data.message;
+
+    recentlyError.value = true;
+
+    setTimeout(() => {
+      recentlyError.value = false;
+    }, 1300);
+
+  } else {
+
+    recentlySuccessful.value = true;
+
+    setTimeout(() => {
+      recentlySuccessful.value = false;
+    }, 1300);
+
+  }
 };

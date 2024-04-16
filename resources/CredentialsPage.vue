@@ -1,6 +1,6 @@
 <template>
   <form class="sgm-max-w-2xl">
-    <InlineMessage class="sgm-w-full sgm-mb-10" severity="contrast">
+    <div class="sgm-hidden sgm-text-base sgm-p-2 sm:sgm-block sgm-bg-black sgm-text-white sgm-rounded-md sgm-my-4" severity="contrast">
       No Sigmie account yet?
       <a
         target="_blank"
@@ -9,9 +9,11 @@
         >Follow this link</a
       >
       to create one for free in a couple of minutes!
-    </InlineMessage>
+    </div>
     <div class="sgm-space-y-20 sgm-divide-y">
-      <div class="sgm-flex sgm-flex-row sgm-justify-between">
+      <div
+        class="sgm-flex sgm-flex-col sgm-space-x-10 sm:sgm-flex-row sgm-justify-between"
+      >
         <div class="sgm-max-w-xs">
           <h2
             class="sgm-text-base sgm-font-semibold sgm-leading-7 sgm-text-gray-900"
@@ -54,7 +56,11 @@
                     for="sigmie_search_field_text"
                     >Admin API key</label
                   >
-                  <Password toggleMask v-model="state.admin_api_key" />
+                  <Password
+                    toggleMask
+                    v-model="state.admin_api_key"
+                    :feedback="false"
+                  />
                   <span class="sgm-text-sm"
                     >Your Sigmie Admin API key (kept private).
                   </span>
@@ -88,7 +94,7 @@
                   >
                   <InputText v-model="state.index_prefix" />
                   <span class="sgm-text-sm"
-                    >This prefix will be prepended to your index names.
+                    >This prefix will be prepended to your Sigmie index names.
                   </span>
                 </div>
               </div>
@@ -98,11 +104,18 @@
       </div>
 
       <div
-        class="sgm-flex sgm-flex-row sgm-items-center sgm-justify-end sgm-w-full"
+        class="sgm-flex sgm-space-y-3 sm:sgm-space-y-0 sm:sgm-space-x-3 sgm-flex-col sm:sgm-flex-row sgm-justify-end sgm-w-full"
       >
+        <div class="sgm-h-12 sm:sgm-h-auto">
+          <InlineMessage severity="success" v-if="recentlySuccessful"
+            >Your changes have been saved!</InlineMessage
+          >
+          <InlineMessage severity="error" v-if="recentlyError">
+            Oops! Something went wrong.
+          </InlineMessage>
+        </div>
         <Button
           size="small"
-          class="sgm-w-40"
           :loading="loading"
           :label="recentlySuccessful ? 'Settings Saved' : 'Save Settings'"
           @click="saveSettings(state)"
@@ -114,7 +127,13 @@
 </template>
 
 <script setup>
-import { saveSettings, loading, recentlySuccessful } from "./saveSettings.js";
+import {
+  saveSettings,
+  loading,
+  recentlySuccessful,
+  recentlyError,
+  errorMessage,
+} from "./saveSettings.js";
 
 const { reactive, onMounted, ref } = Vue;
 const Dropdown = primevue.dropdown;

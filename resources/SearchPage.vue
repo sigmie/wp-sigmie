@@ -1,12 +1,14 @@
 <template>
-  <form class="sgm-max-w-2xl">
+  <form class="">
     <InlineMessage class="sgm-w-full sgm-mb-10" severity="contrast">
-      You can use it as widget, you will find inside the widgets areas or you
-      can use the shortcode
+      You can use the Search as widget, that you will find inside the widgets
+      areas or you can use the shortcode
       <span class="sgm-text-red-300">[sigmie_search_bar]</span>.
     </InlineMessage>
-    <div class="sgm-space-y-20 sgm-divide-y">
-      <div class="sgm-flex sgm-flex-row sgm-justify-between">
+    <div class="sgm-space-y-5 sm:sgm-space-y-20 sgm-divide-y">
+      <div
+        class="sgm-flex sgm-flex-col sgm-space-x-10 sm:sgm-flex-row sgm-justify-between"
+      >
         <div>
           <h2
             class="sgm-text-base sgm-font-semibold sgm-leading-7 sgm-text-gray-900"
@@ -25,38 +27,11 @@
                 <label
                   class="sgm-block sgm-text-sm sgm-font-medium sgm-leading-6 sgm-text-gray-900"
                   for="sigmie_search_field_text"
-                  >Language</label
-                >
-                <Dropdown
-                  name="sigmie_language"
-                  v-model="state.language"
-                  optionLabel="name"
-                  optionValue="code"
-                  :options="[
-                    { name: 'English', code: 'en' },
-                    { name: 'German', code: 'de' },
-                    { name: 'Greek', code: 'gr' },
-                  ]"
-                >
-                </Dropdown>
-                <span class="sgm-text-sm">
-                  Text for search field placeholder.
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div class="sgm-max-w-xs">
-            <div class="sgm-mt-2">
-              <div class="sgm-flex sgm-flex-col sgm-gap-2">
-                <label
-                  class="sgm-block sgm-text-sm sgm-font-medium sgm-leading-6 sgm-text-gray-900"
-                  for="sigmie_search_field_text"
                   >Search field text</label
                 >
                 <InputText v-model="state.field_text" />
                 <span class="sgm-text-sm">
-                  Text for search field placeholder.
+                  Placeholder for the Search field.
                 </span>
               </div>
             </div>
@@ -64,15 +39,17 @@
         </div>
       </div>
 
-      <div class="sgm-flex sgm-flex-row sgm-justify-between">
+      <div
+        class="sgm-flex sgm-flex-col sgm-space-x-10 sm:sgm-flex-row sgm-justify-between"
+      >
         <div>
           <h2
             class="sgm-text-base sgm-font-semibold sgm-leading-7 sgm-text-gray-900"
           >
-            Visual
+            Appearance
           </h2>
           <p class="sgm-mt-1 sgm-text-sm sgm-leading-6 sgm-text-gray-600">
-            Visual search settings
+            Visual settings for the Search input.
           </p>
         </div>
 
@@ -130,8 +107,17 @@
       </div>
 
       <div
-        class="sgm-flex sgm-flex-row sgm-items-center sgm-justify-end sgm-w-full"
+        class="sgm-flex sgm-space-y-3 sm:sgm-space-y-0 sm:sgm-space-x-3 sgm-flex-col sm:sgm-flex-row sgm-justify-end sgm-w-full"
       >
+        <div class="sgm-h-12 sm:sgm-h-auto">
+          <InlineMessage severity="success" v-if="recentlySuccessful"
+            >Your changes have been saved!</InlineMessage
+          >
+          <InlineMessage severity="error" v-if="recentlyError">
+            Oops! Something went wrong.
+          </InlineMessage>
+        </div>
+
         <Button
           size="small"
           :loading="loading"
@@ -145,7 +131,13 @@
 </template>
 
 <script setup>
-import { saveSettings, loading } from "./saveSettings.js";
+import {
+  saveSettings,
+  loading,
+  recentlySuccessful,
+  recentlyError,
+  errorMessage,
+} from "./saveSettings.js";
 
 const { reactive, onMounted, toRefs } = Vue;
 const Dropdown = primevue.dropdown;
@@ -158,10 +150,6 @@ const InlineMessage = primevue.inlinemessage;
 const Button = primevue.button;
 
 const props = defineProps({
-  language: {
-    type: String,
-    default: "en",
-  },
   field_text: {
     type: String,
     default: "Search",
@@ -185,7 +173,6 @@ const props = defineProps({
 });
 
 const state = reactive({
-  language: props.language,
   field_text: props.field_text,
   show_loader: props.show_loader,
   max_height: props.max_height,

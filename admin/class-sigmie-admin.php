@@ -871,70 +871,77 @@ class Sigmie_Admin
 
 	public function rest_save_settings(WP_REST_Request $value)
 	{
-		$body = $value->get_body();
+		try {
 
-		$data = json_decode($body, true);
+			$body = $value->get_body();
 
-		$data = array_filter($data, function ($key) {
-			return in_array($key, [
-				"language",
-				"field_text",
-				"show_loader",
-				"max_height",
-				"max_width",
-				"corner_radius",
+			$data = json_decode($body, true);
 
-				"application_id",
-				"admin_api_key",
-				"search_api_key",
-				"index_prefix",
+			$data = array_filter($data, function ($key) {
+				return in_array($key, [
+					"language",
+					"field_text",
+					"show_loader",
+					"max_height",
+					"max_width",
+					"corner_radius",
 
-				"theme",
-				"products_per_page",
-				"filters_title_text",
-				"products_title_text",
-				"products_subtitle_template",
+					"application_id",
+					"admin_api_key",
+					"search_api_key",
+					"index_prefix",
 
-				"sort_by_product_sales_label",
-				"sort_by_relevance_label",
-				"sort_by_price_desc_label",
-				"sort_by_price_asc_label",
-				"sort_by_most_recent_label",
-				"sort_by_rating_label",
+					"theme",
+					"products_per_page",
+					"filters_title_text",
+					"products_title_text",
+					"products_subtitle_template",
 
-				"show_offers_filter",
-				"offers_filter_text",
+					"sort_by_product_sales_label",
+					"sort_by_relevance_label",
+					"sort_by_price_desc_label",
+					"sort_by_price_asc_label",
+					"sort_by_most_recent_label",
+					"sort_by_rating_label",
 
-				"price_range_label",
-				"price_range_filter_label",
-				"show_price_range_chart",
+					"show_offers_filter",
+					"offers_filter_text",
 
-				"no_products_text",
-				"no_products_advice_text",
-				"show_categories_filter",
-				"reset_filters_text",
+					"price_range_label",
+					"price_range_filter_label",
+					"show_price_range_chart",
 
-				"nothing_found_text",
-				"sort_by",
-				"number_of_results",
-				"show_categories",
-				"number_of_categories",
-				"max_description_length",
-				"show_category",
-				"show_description",
-				"show_price",
-				"show_rating",
-				"show_sku",
-				"show_on_sale",
-			]);
-		}, ARRAY_FILTER_USE_KEY);
+					"no_products_text",
+					"no_products_advice_text",
+					"show_categories_filter",
+					"reset_filters_text",
 
-		foreach ($data as $key => $value) {
+					"nothing_found_text",
+					"sort_by",
+					"number_of_results",
+					"show_categories",
+					"number_of_categories",
+					"max_description_length",
+					"show_category",
+					"show_description",
+					"show_price",
+					"show_rating",
+					"show_sku",
+					"show_on_sale",
+				]);
+			}, ARRAY_FILTER_USE_KEY);
 
-			update_option('sigmie_' . $key, $value);
+			foreach ($data as $key => $value) {
+
+				update_option('sigmie_' . $key, $value);
+			}
+
+			return new WP_REST_Response(array('success' => true, 'message' => 'Your changes have been saved!'), 200);
+
+		} catch (Throwable $e) {
+
+			return new WP_REST_Response(array('success' => false, 'message' => $e->getMessage()), 500);
 		}
-
-		return new WP_REST_Response(array('success' => true), 200);
 	}
 
 	public function register_rest_route($value)
