@@ -8,8 +8,8 @@
           Filterable Attributes
         </h2>
         <p class="sgm-mt-2 sgm-text-sm sgm-text-gray-700">
-          This section allows you to customize the attributes that can be used for filtering
-          and their display order.
+          This section allows you to customize the attributes that can be used
+          for filtering and their display order.
         </p>
       </div>
     </div>
@@ -42,10 +42,11 @@
         <h2
           class="sgm-text-lg sgm-font-semibold sgm-leading-6 sgm-text-gray-900"
         >
-        Attribute Types
+          Attribute Types
         </h2>
         <p class="sgm-mt-2 sgm-text-sm sgm-text-gray-700">
-          This is where you can define the type of each attribute and configure its settings.
+          This is where you can define the type of each attribute and configure
+          its settings.
         </p>
       </div>
 
@@ -112,7 +113,10 @@
 
             <DataTableEditable
               removableSort
-              v-if="index.attributes[1][slotProps.index].type === 'number'"
+              v-if="
+                index.attributes[1][slotProps.index].type === 'number' ||
+                index.attributes[1][slotProps.index].type === 'text'
+              "
               :value="index.attributes[1][slotProps.index].values"
             >
               <Column sortable field="label" header="Value"> </Column>

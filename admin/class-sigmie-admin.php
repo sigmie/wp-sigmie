@@ -598,12 +598,11 @@ class Sigmie_Admin
 
 		$filterableAttributes = get_option('sigmie_filterable_attributes');
 
+		// --------- Colors
 		$colorFilterableAttributes = array_filter($filterableAttributes, function ($attribute) {
 			return $attribute['type'] === 'color';
 		});
-
 		$colorAttributes = [];
-
 		foreach ($colorFilterableAttributes as $attribute) {
 			$name = 'pa_' . $attribute['slug'];
 			$colorAttributes[$name] = [];
@@ -615,6 +614,7 @@ class Sigmie_Admin
 					'#' . $value['color_hex_3'];
 			}
 		}
+		// --------- End Colors
 
 		$sortedAttributes = [];
 		$attributeLabels = [];
@@ -629,11 +629,24 @@ class Sigmie_Admin
 			]));
 		}
 
-		$attributes = [];
+		// $attributes = [];
 
-		if ($options['sigmie_filters_order']) {
-			$attributes = json_decode($options['sigmie_filters_order']);
-		}
+		// if ($options['sigmie_filters_order']) {
+		// 	$attributes = json_decode($options['sigmie_filters_order']);
+		// }
+		// dd($attributes);
+
+		$attributes = array_map(function ($attribute) {
+
+			if ($attribute['slug'] === 'categories') {
+				return $attribute['slug'];
+			}
+
+			return 'pa_' . $attribute['slug'];
+		}, $filterableAttributes);
+
+		// dd($attributes);
+
 
 		$facets = implode(' ', $attributes);
 

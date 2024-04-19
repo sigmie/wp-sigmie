@@ -56,6 +56,19 @@ class Sigmie_Admin_Filterable_Page extends Sigmie_Admin_Page
 			];
 		}
 
+		$attributes[] = [
+			'id' => -1,
+			'name' => 'Categories',
+			'slug' => 'categories',
+			'type' => 'text',
+			'values' => array_map(function ($term) {
+				return [
+					'id' => $term->term_id,
+					'label' => $term->name,
+				];
+			}, get_terms('product_cat', array('hide_empty' => false))),
+		];
+
 		$attributes = array_filter($attributes, function ($attribute) use ($filterableAttributes) {
 			return !in_array($attribute['name'], array_column($filterableAttributes, 'name'));
 		});
@@ -64,6 +77,7 @@ class Sigmie_Admin_Filterable_Page extends Sigmie_Admin_Page
 			'attributes' => array_values($attributes),
 			'filterableAttributes' => $filterableAttributes,
 		];
+
 
 		return '<' . $this->component() . '
 					 v-bind="' . htmlspecialchars(json_encode($props)) . '">
