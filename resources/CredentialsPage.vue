@@ -1,15 +1,15 @@
 <template>
-  <form class="sgm-max-w-2xl">
-    <div class="sgm-hidden sgm-text-base sgm-p-2 sm:sgm-block sgm-bg-black sgm-text-white sgm-rounded-md sgm-my-4" severity="contrast">
+  <form class="">
+    <InlineMessage class="sgm-w-full sgm-my-3" severity="info">
       No Sigmie account yet?
       <a
         target="_blank"
         href="https://app.sigmie.com/sign-up"
-        class="sgm-text-red-300"
+        class="sgm-text-blue-800"
         >Follow this link</a
       >
       to create one for free in a couple of minutes!
-    </div>
+    </InlineMessage>
     <div class="sgm-space-y-20 sgm-divide-y">
       <div
         class="sgm-flex sgm-flex-col sgm-space-x-10 sm:sgm-flex-row sgm-justify-between"
@@ -153,18 +153,13 @@ const props = defineProps([
   "index_prefix",
 ]);
 
-onMounted(() => {
-  state.application_id = props.application_id;
-  state.admin_api_key = props.admin_api_key;
-  state.search_api_key = props.search_api_key;
-  state.index_prefix = props.index_prefix;
-});
+onMounted(() => {});
 
 const state = reactive({
-  application_id: null,
-  admin_api_key: null,
-  search_api_key: null,
-  index_prefix: null,
+  application_id: props.application_id,
+  admin_api_key: props.admin_api_key,
+  search_api_key: props.search_api_key,
+  index_prefix: props.index_prefix,
 });
 </script>
 

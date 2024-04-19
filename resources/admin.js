@@ -1,6 +1,6 @@
 import './admin.css'
 
-import ProductsPage from "@/ProductsPage.vue";
+import FilterablePage from "@/FilterablePage.vue";
 import ResultsPage from "@/ResultsPage.vue";
 import ListingPage from "@/ListingPage.vue";
 import FiltersPage from "@/FiltersPage.vue";
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     backend.component('search-page', SearchPage);
     backend.component('credentials-page', CredentialsPage);
-    backend.component('products-page', ProductsPage);
+    backend.component('filterable-page', FilterablePage);
     backend.component('results-page', ResultsPage);
     backend.component('listing-page', ListingPage);
     backend.component('filters-page', FiltersPage);

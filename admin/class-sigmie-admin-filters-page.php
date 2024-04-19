@@ -44,6 +44,6 @@ class Sigmie_Admin_Filters_Page extends Sigmie_Admin_Page
 
 	public function name()
 	{
-		return 'Filters';
+		return 'Filter Settings';
 	}
 }

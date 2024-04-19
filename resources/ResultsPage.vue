@@ -1,8 +1,6 @@
 <template>
-  <form class="sgm-max-w-2xl">
-    <div v-if="tabs.length > 1">
-      <Tabs v-model="selectedTab" :tabs="tabs"></Tabs>
-    </div>
+  <form class="">
+    <Tabs v-model="selectedTab" :tabs="tabs"></Tabs>
     <div class="sgm-space-y-20 sgm-divide-y">
       <template v-for="tab in settings">
         <div
@@ -87,6 +85,7 @@ const RadioButton = primevue.radiobutton;
 const SelectButton = primevue.selectbutton;
 const InlineMessage = primevue.inlinemessage;
 const Button = primevue.button;
+const TabMenu = primevue.tabmenu;
 
 const tabs = ref([]);
 

@@ -182,7 +182,7 @@ class Sigmie_Admin
 		new Sigmie_Admin_Credentials_Page;
 		new Sigmie_Admin_Search_Page;
 		new Sigmie_Admin_Results_Page;
-		new Sigmie_Admin_Products_Page;
+		new Sigmie_Admin_Filterable_Page;
 		new Sigmie_Admin_Listing_Page;
 		new Sigmie_Admin_Filters_Page;
 
@@ -928,6 +928,15 @@ class Sigmie_Admin
 					"show_rating",
 					"show_sku",
 					"show_on_sale",
+
+					"filterable_attributes",
+
+					'language',
+					'field_text',
+					'show_loader',
+					'max_height',
+					'max_width',
+					'corner_radius'
 				]);
 			}, ARRAY_FILTER_USE_KEY);
 
@@ -937,7 +946,6 @@ class Sigmie_Admin
 			}
 
 			return new WP_REST_Response(array('success' => true, 'message' => 'Your changes have been saved!'), 200);
-
 		} catch (Throwable $e) {
 
 			return new WP_REST_Response(array('success' => false, 'message' => $e->getMessage()), 500);

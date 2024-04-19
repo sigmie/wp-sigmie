@@ -4,6 +4,7 @@ export default {
   important: true,
   content: [
     'resources/**/*.vue',
+    'admin/partials/*.php'
   ],
   plugins: [],
 }

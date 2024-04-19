@@ -1,5 +1,5 @@
 <template>
-  <form class="sgm-max-w-2xl">
+  <form class="">
     <div>
       <Tabs v-model="selectedTab" :tabs="tabs"></Tabs>
     </div>
@@ -15,7 +15,9 @@
             >
               {{ tab.title }}
             </h2>
-            <p class="sgm-mt-1 sgm-text-sm sgm-leading-6 sgm-text-gray-600">
+            <p
+              class="sgm-mt-1 sgm-max-w-xs sgm-text-sm sgm-leading-6 sgm-text-gray-600"
+            >
               {{ tab.subtitle }}
             </p>
           </div>
@@ -254,63 +256,63 @@ const settings = [
   },
   {
     key: "sorting-options",
-    title: "Sorting Options",
-    subtitle: "Sorting settings",
+    title: "Sorting",
+    subtitle: "Customize the text for sorting option labels in this section.",
     fields: [
-      {
-        type: InputText,
-        name: "sort_by_product_sales_label",
-        label: "Sort by product sales label",
-        info: "Sort by product sales info text",
-      },
       {
         type: InputText,
         name: "sort_by_relevance_label",
         label: "Sort by relevance label",
-        info: "Sort by relevance info text",
+        info: "",
+      },
+      {
+        type: InputText,
+        name: "sort_by_product_sales_label",
+        label: "Sort by product sales label",
+        info: "",
       },
       {
         type: InputText,
         name: "sort_by_price_desc_label",
         label: "Sort by price descending label",
-        info: "Sort by price descending info text",
+        info: "",
       },
       {
         type: InputText,
         name: "sort_by_price_asc_label",
         label: "Sort by price ascending label",
-        info: "Sort by price ascending info text",
+        info: "",
       },
       {
         type: InputText,
         name: "sort_by_most_recent_label",
         label: "Sort by most recent label",
-        info: "Sort by most recent info text",
+        info: "",
       },
       {
         type: InputText,
         name: "sort_by_rating_label",
         label: "Sort by rating label",
-        info: "Sort by rating info text",
+        info: "",
       },
     ],
   },
   {
-    key: "empty-results-options",
-    title: "Empty Results Options",
-    subtitle: "Empty results settings",
+    key: "empty-results",
+    title: "Empty Results",
+    subtitle: "Configuration for scenarios with no search results.",
     fields: [
       {
         type: InputText,
         name: "no_products_text",
-        label: "No products text",
-        info: "No products info text",
+        label: "No products title",
+        info: "",
       },
       {
         type: InputText,
         name: "no_products_advice_text",
-        label: "No products advice text",
-        info: "No products advice info text",
+        label: "No products subtitle",
+        info: "",
       },
     ],
   },

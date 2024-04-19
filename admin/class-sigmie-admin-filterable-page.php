@@ -4,7 +4,7 @@ class Sigmie_Admin_Filterable_Page extends Sigmie_Admin_Page
 {
 	public function component()
 	{
-		return 'products-page';
+		return 'filterable-page';
 	}
 
 	public function options()
@@ -14,7 +14,7 @@ class Sigmie_Admin_Filterable_Page extends Sigmie_Admin_Page
 
 	public function slug()
 	{
-		return 'sigmie-products-page';
+		return 'sigmie-filterable-page';
 	}
 
 	public function render_component()
@@ -72,6 +72,6 @@ class Sigmie_Admin_Filterable_Page extends Sigmie_Admin_Page
 
 	public function name()
 	{
-		return 'Product Index';
+		return 'Filterable Attributes';
 	}
 }

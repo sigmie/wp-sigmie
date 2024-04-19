@@ -1,9 +1,9 @@
 <template>
   <form class="">
-    <InlineMessage class="sgm-w-full sgm-mb-10" severity="contrast">
+    <InlineMessage class="sgm-w-full sgm-my-3" severity="info">
       You can use the Search as widget, that you will find inside the widgets
       areas or you can use the shortcode
-      <span class="sgm-text-red-300">[sigmie_search_bar]</span>.
+      <span class="sgm-text-blue-800">[sigmie_search_bar]</span>.
     </InlineMessage>
     <div class="sgm-space-y-5 sm:sgm-space-y-20 sgm-divide-y">
       <div
@@ -15,7 +15,9 @@
           >
             General
           </h2>
-          <p class="sgm-mt-1 sgm-text-sm sgm-leading-6 sgm-text-gray-600">
+          <p
+            class="sgm-mt-1 sgm-max-w-xs sgm-text-sm sgm-leading-6 sgm-text-gray-600"
+          >
             General search settings
           </p>
         </div>
@@ -149,30 +151,17 @@ const SelectButton = primevue.selectbutton;
 const InlineMessage = primevue.inlinemessage;
 const Button = primevue.button;
 
-const props = defineProps({
-  field_text: {
-    type: String,
-    default: "Search",
-  },
-  show_loader: {
-    type: Boolean,
-    default: true,
-  },
-  max_height: {
-    type: Number,
-    default: 100,
-  },
-  max_width: {
-    type: Number,
-    default: 100,
-  },
-  corner_radius: {
-    type: Number,
-    default: 0,
-  },
-});
+const props = defineProps([
+  "language",
+  "field_text",
+  "show_loader",
+  "max_height",
+  "max_width",
+  "corner_radius",
+]);
 
 const state = reactive({
+  language: props.language,
   field_text: props.field_text,
   show_loader: props.show_loader,
   max_height: props.max_height,
