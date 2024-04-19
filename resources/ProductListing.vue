@@ -404,8 +404,6 @@ const createFilterString = () => {
     .filter((value) => value.trim() !== "")
     .join(" AND ");
 
-  console.log(result);
-
   return result;
 };
 

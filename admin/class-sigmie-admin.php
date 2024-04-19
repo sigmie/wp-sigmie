@@ -596,8 +596,25 @@ class Sigmie_Admin
 			$predefinedFilters = "categories:[" . implode(',', $categories) . "]";
 		}
 
-		$colorAttributes = (string) get_option('sigmie_color_attributes_color', '[]');
-		$colorAttributes = json_decode($colorAttributes, true);
+		$filterableAttributes = get_option('sigmie_filterable_attributes');
+
+		$colorFilterableAttributes = array_filter($filterableAttributes, function ($attribute) {
+			return $attribute['type'] === 'color';
+		});
+
+		$colorAttributes = [];
+
+		foreach ($colorFilterableAttributes as $attribute) {
+			$name = 'pa_' . $attribute['slug'];
+			$colorAttributes[$name] = [];
+
+			foreach ($attribute['values'] as $value) {
+				$colorAttributes[$name][$value['label']] =
+					'#' . $value['color_hex_1'] . '|' .
+					'#' . $value['color_hex_2'] . '|' .
+					'#' . $value['color_hex_3'];
+			}
+		}
 
 		$sortedAttributes = [];
 		$attributeLabels = [];

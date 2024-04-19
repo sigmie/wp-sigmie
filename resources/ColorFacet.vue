@@ -28,9 +28,14 @@
             class="sgm-flex sgm-flex-col sgm-items-center sgm-space-y-2 sgm-mx-auto"
           >
             <div
-              :style="{ backgroundColor: value_colors[slotProps.option.key] }"
-              class="sgm-rounded-full sgm-h-4 sgm-w-4"
-            ></div>
+              class="sgm-flex sgm-items-center sgm-w-8 sgm-rounded-full sgm-overflow-hidden"
+            >
+              <div
+                v-for="(color, index) in value_colors[slotProps.option.key].split('|')"
+                :style="{ backgroundColor: color, width: `${100 / 3}%` }"
+                class="sgm-h-8 sgm-w-full"
+              ></div>
+            </div>
             <div
               v-html="slotProps.option.key"
               class="sgm-normal-case sgm-text-black"
