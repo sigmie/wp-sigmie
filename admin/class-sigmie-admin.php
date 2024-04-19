@@ -598,6 +598,16 @@ class Sigmie_Admin
 
 		$filterableAttributes = get_option('sigmie_filterable_attributes');
 
+		// --------- 
+		$selectButtonFilterableAttributes = array_filter($filterableAttributes, function ($attribute) {
+			return $attribute['type'] === 'selectbutton';
+		});
+
+		$selectButtonAttributes = [];
+		foreach ($selectButtonFilterableAttributes as $attribute) {
+			$selectButtonAttributes[] = $attribute['slug'];
+		}
+
 		// --------- Colors
 		$colorFilterableAttributes = array_filter($filterableAttributes, function ($attribute) {
 			return $attribute['type'] === 'color';
@@ -630,15 +640,14 @@ class Sigmie_Admin
 		}
 
 		// $attributes = [];
-
 		// if ($options['sigmie_filters_order']) {
 		// 	$attributes = json_decode($options['sigmie_filters_order']);
 		// }
-		// dd($attributes);
 
+		// dd($attributes);
 		$attributes = array_map(function ($attribute) {
 
-			if ($attribute['slug'] === 'categories') {
+			if (in_array($attribute['slug'], ['categories', 'brands', 'tags', 'price_as_number'])) {
 				return $attribute['slug'];
 			}
 
@@ -648,11 +657,12 @@ class Sigmie_Admin
 		// dd($attributes);
 
 
+
 		$facets = implode(' ', $attributes);
 
 		$numberFacets = ['price_as_number', ...json_decode($options['sigmie_range_attributes'], true)];
 		$checkboxFacets = ['categories', 'brands', ...json_decode($options['sigmie_checkbox_attributes'], true)];
-		$selectButtonFacets  = [...json_decode($options['sigmie_selectbutton_attributes'], true)];
+		$selectButtonFacets  = [...$selectButtonAttributes];
 		$colorFacets = [...array_keys($colorAttributes)];
 
 		$facetTypes = array_merge(

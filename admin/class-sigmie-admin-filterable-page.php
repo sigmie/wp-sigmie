@@ -48,7 +48,6 @@ class Sigmie_Admin_Filterable_Page extends Sigmie_Admin_Page
 			}
 
 			$attributes[] = [
-				'id' => $taxonomy->attribute_id,
 				'name' => $taxonomy->attribute_label,
 				'slug' => $taxonomy->attribute_name,
 				'type' => $types[$taxonomy->attribute_name],
@@ -57,7 +56,6 @@ class Sigmie_Admin_Filterable_Page extends Sigmie_Admin_Page
 		}
 
 		$attributes[] = [
-			'id' => -1,
 			'name' => 'Categories',
 			'slug' => 'categories',
 			'type' => 'text',
@@ -67,6 +65,30 @@ class Sigmie_Admin_Filterable_Page extends Sigmie_Admin_Page
 					'label' => $term->name,
 				];
 			}, get_terms('product_cat', array('hide_empty' => false))),
+		];
+
+		$attributes[] = [
+			'name' => 'Brands',
+			'slug' => 'brands',
+			'type' => 'text',
+			'values' => array_map(function ($term) {
+				return [
+					'id' => $term->term_id,
+					'label' => $term->name,
+				];
+			}, get_terms('brand', array('hide_empty' => false))),
+		];
+
+		$attributes[] = [
+			'name' => 'Price',
+			'slug' => 'price_as_number',
+			'type' => 'text',
+			'values' => array_map(function ($product) {
+				return [
+					'id' => $product->get_id(),
+					'label' => $product->get_name(),
+				];
+			}, wc_get_products(array('status' => 'publish'))),
 		];
 
 		$attributes = array_filter($attributes, function ($attribute) use ($filterableAttributes) {
