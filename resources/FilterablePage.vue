@@ -98,6 +98,18 @@
                 ></InputText>
               </div>
 
+              <div>
+                <SelectButton
+                  optionLabel="label"
+                  optionValue="value"
+                  :options="[
+                    { label: 'expanded', value: true },
+                    { label: 'collapsed', value: false },
+                  ]"
+                  v-model="index.attributes[1][slotProps.index].expanded"
+                ></SelectButton>
+              </div>
+
               <div
                 v-if="index.attributes[1][slotProps.index].type === 'number'"
               >
@@ -290,6 +302,7 @@ const ColorPickerOne = primevue.colorpicker;
 const ColorPickerTwo = primevue.colorpicker;
 const ColorPickerThree = primevue.colorpicker;
 const InlineMessage = primevue.inlinemessage;
+const SelectButton = primevue.selectbutton;
 
 const onSaveSettings = () => {
   const state = { filterable_attributes: index.attributes[1] };

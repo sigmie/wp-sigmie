@@ -626,13 +626,7 @@ class Sigmie_Admin
 		}
 		// --------- End Colors
 
-		$sortedAttributes = [];
 		$attributeLabels = [];
-
-		foreach (wc_get_attribute_taxonomies() as $attribute) {
-			$attributeLabels['pa_' . $attribute->attribute_name] = $attribute->attribute_label;
-		}
-
 		foreach ($filterableAttributes as $attribute) {
 
 			$name = $attribute['slug'];
@@ -663,9 +657,6 @@ class Sigmie_Admin
 			return 'pa_' . $attribute['slug'];
 		}, $filterableAttributes);
 
-
-
-
 		$facets = implode(' ', $attributes);
 
 		$numberFacets = ['price_as_number', ...json_decode($options['sigmie_range_attributes'], true)];
@@ -682,15 +673,24 @@ class Sigmie_Admin
 
 		$facetProps = [];
 
-		foreach ($attributes as $attribute) {
-			$facetProps[$attribute] = [
-				'name' => $attribute
-			];
+		foreach ($filterableAttributes as $attribute) {
+
+			$name = $attribute['slug'];
+			if (!in_array($attribute['slug'], ['categories', 'brands', 'tags', 'price_as_number'])) {
+				$name = 'pa_' . $attribute['slug'];
+			}
+
+			$facetProps[$name]['expanded'] = $attribute['expanded'] ?? false;
 		}
 
-		foreach ($attributes as $index => $attribute) {
-			$facetProps[$attribute]['expanded'] = true;
+		foreach ($filterableAttributes as $value) {
+			$facetProps[$value['slug']] = $value;
 		}
+
+		// dd($facetProps);
+		// foreach ($attributes as $index => $attribute) {
+		// 	$facetProps[$attribute]['expanded'] = true;
+		// }
 
 		foreach ($numberFacets as $attribute) {
 			$facetProps[$attribute]['step'] = 1;
