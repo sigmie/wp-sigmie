@@ -598,7 +598,7 @@ class Sigmie_Admin
 
 		$filterableAttributes = get_option('sigmie_filterable_attributes');
 
-		// --------- 
+		// --------- Select button
 		$selectButtonFilterableAttributes = array_filter($filterableAttributes, function ($attribute) {
 			return $attribute['type'] === 'selectbutton';
 		});
@@ -631,22 +631,31 @@ class Sigmie_Admin
 
 		foreach (wc_get_attribute_taxonomies() as $attribute) {
 			$attributeLabels['pa_' . $attribute->attribute_name] = $attribute->attribute_label;
-			$sortedAttributes['pa_' . $attribute->attribute_name] = array_map(function (WP_Term $term) {
-				return $term->name;
-			}, get_terms([
-				'taxonomy' => 'pa_' . $attribute->attribute_name,
-				'hide_empty' => false,
-			]));
 		}
 
-		// $attributes = [];
-		// if ($options['sigmie_filters_order']) {
-		// 	$attributes = json_decode($options['sigmie_filters_order']);
-		// }
+		foreach ($filterableAttributes as $attribute) {
 
-		// dd($attributes);
+			$name = $attribute['slug'];
+			if (!in_array($attribute['slug'], ['categories', 'brands', 'tags', 'price_as_number'])) {
+				$name = 'pa_' . $attribute['slug'];
+			}
+
+			$attributeLabels[$name] = $attribute['label'];
+		}
+
+		$sortedAttributes = [];
+		foreach ($filterableAttributes as $attribute) {
+
+			$name = $attribute['slug'];
+			if (!in_array($attribute['slug'], ['categories', 'brands', 'tags', 'price_as_number'])) {
+				$name = 'pa_' . $attribute['slug'];
+			}
+			$sortedAttributes[$name] = array_map(function ($value) {
+				return $value['label'];
+			}, $attribute['values']);
+		}
+
 		$attributes = array_map(function ($attribute) {
-
 			if (in_array($attribute['slug'], ['categories', 'brands', 'tags', 'price_as_number'])) {
 				return $attribute['slug'];
 			}
@@ -654,7 +663,6 @@ class Sigmie_Admin
 			return 'pa_' . $attribute['slug'];
 		}, $filterableAttributes);
 
-		// dd($attributes);
 
 
 

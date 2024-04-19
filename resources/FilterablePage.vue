@@ -87,6 +87,17 @@
                 ></Dropdown>
               </div>
 
+              <div>
+                <label
+                  class="sgm-block sgm-text-sm sgm-font-medium sgm-leading-6 sgm-text-gray-900 sgm-mb-2"
+                  for="sigmie_search_field_text"
+                  >Label</label
+                >
+                <InputText
+                  v-model="index.attributes[1][slotProps.index].label"
+                ></InputText>
+              </div>
+
               <div
                 v-if="index.attributes[1][slotProps.index].type === 'number'"
               >
@@ -102,39 +113,49 @@
             </div>
 
             <DataTableEditable
-              removableSort
               v-if="
                 index.attributes[1][slotProps.index].type === 'selectbutton'
               "
               :value="index.attributes[1][slotProps.index].values"
             >
-              <Column sortable field="label" header="Value"> </Column>
+              <Column field="label" header="Value"> </Column>
             </DataTableEditable>
 
             <DataTableEditable
-              removableSort
-              v-if="
-                index.attributes[1][slotProps.index].type === 'number' ||
-                index.attributes[1][slotProps.index].type === 'text'
+              @rowReorder="
+                (e) => (index.attributes[1][slotProps.index].values = e.value)
               "
-              :value="index.attributes[1][slotProps.index].values"
-            >
-              <Column sortable field="label" header="Value"> </Column>
-            </DataTableEditable>
-
-            <DataTableEditable
-              removableSort
               v-if="index.attributes[1][slotProps.index].type === 'text'"
               :value="index.attributes[1][slotProps.index].values"
             >
+              <Column
+                rowReorder
+                headerStyle="width: 3rem"
+                :reorderableColumn="false"
+              />
+              <Column field="label" header="Value"> </Column>
             </DataTableEditable>
 
             <DataTableEditable
-              removableSort
-              v-if="index.attributes[1][slotProps.index].type === 'color'"
+              v-if="index.attributes[1][slotProps.index].type === 'number'"
               :value="index.attributes[1][slotProps.index].values"
             >
-              <Column sortable field="label" header="Value"> </Column>
+              <Column field="label" header="Value"> </Column>
+            </DataTableEditable>
+
+            <DataTableEditable
+              v-if="index.attributes[1][slotProps.index].type === 'color'"
+              :value="index.attributes[1][slotProps.index].values"
+              @rowReorder="
+                (e) => (index.attributes[1][slotProps.index].values = e.value)
+              "
+            >
+              <Column
+                rowReorder
+                headerStyle="width: 3rem"
+                :reorderableColumn="false"
+              />
+              <Column field="label" header="Value"> </Column>
               <Column field="image" header="Color 1">
                 <template #body="slotPropsBlah">
                   <div

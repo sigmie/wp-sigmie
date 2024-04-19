@@ -26,14 +26,6 @@ class Sigmie_Admin_Filterable_Page extends Sigmie_Admin_Page
 
 		$taxonomies = wc_get_attribute_taxonomies();
 
-		$types = [
-			'color' => 'color',
-			'height' => 'number',
-			'material' => 'text',
-			'sgm-color' => 'color',
-			'width' => 'number',
-		];
-
 		$attributes = [];
 
 		foreach ($taxonomies as $key => $taxonomy) {
@@ -48,14 +40,16 @@ class Sigmie_Admin_Filterable_Page extends Sigmie_Admin_Page
 			}
 
 			$attributes[] = [
+				'label'=> $taxonomy->attribute_label,
 				'name' => $taxonomy->attribute_label,
 				'slug' => $taxonomy->attribute_name,
-				'type' => $types[$taxonomy->attribute_name],
+				'type' => 'text',
 				'values' => $values
 			];
 		}
 
 		$attributes[] = [
+			'label' => 'Categories',
 			'name' => 'Categories',
 			'slug' => 'categories',
 			'type' => 'text',
@@ -68,6 +62,7 @@ class Sigmie_Admin_Filterable_Page extends Sigmie_Admin_Page
 		];
 
 		$attributes[] = [
+			'label' => 'Brands',
 			'name' => 'Brands',
 			'slug' => 'brands',
 			'type' => 'text',
@@ -80,6 +75,7 @@ class Sigmie_Admin_Filterable_Page extends Sigmie_Admin_Page
 		];
 
 		$attributes[] = [
+			'label' => 'Price',
 			'name' => 'Price',
 			'slug' => 'price_as_number',
 			'type' => 'text',

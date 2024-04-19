@@ -2,7 +2,7 @@
   <div class="">
     <div class="sgm-flex sgm-flex-col sgm-space-y-2 lg:sgm-space-y-1">
       <div
-        v-for="(count, facet) in sortedOptions"
+        v-for="[count, facet] in sortedOptions"
         :key="facet"
         class="sgm-flex sgm-flex-row sgm-items-center"
       >
@@ -15,8 +15,13 @@
         ></Checkbox>
 
         <label :for="`filter-${facet}`" class="sgm-ml-3">
-          <span v-html="facet" class="sgm-text-black sgm-text-lg lg:sgm-text-base"></span>
-          <span class="sgm-text-gray-500 sgm-ml-1 sgm-tracking-wide sgm-text-lg lg:sgm-text-base">
+          <span
+            v-html="facet"
+            class="sgm-text-black sgm-text-lg lg:sgm-text-base"
+          ></span>
+          <span
+            class="sgm-text-gray-500 sgm-ml-1 sgm-tracking-wide sgm-text-lg lg:sgm-text-base"
+          >
             ({{ count }})
           </span>
         </label>
@@ -62,16 +67,15 @@ const props = defineProps({
 });
 
 const sortedOptions = computed(() => {
-  if (!props.sortedAttributes) {
-    return props.facets;
-  }
+  let res = [];
 
-  return props.sorted_values.reduce((acc, val) => {
-    if (props.facets[val]) {
-      acc[val] = props.facets[val];
+  props.sorted_values.forEach((item) => {
+    if (props.facets[item]) {
+      res.push([props.facets[item], item]);
     }
-    return acc;
-  }, {});
+  });
+
+  return res;
 });
 
 const selectedValues = ref([]);
