@@ -32,7 +32,7 @@
             >
               <div
                 v-for="(color, index) in value_colors[slotProps.option.key].split('|')"
-                :style="{ backgroundColor: color, width: `${100 / 3}%` }"
+                :style="{ backgroundColor: color, width: `${100 / value_colors[slotProps.option.key].split('|').length}%` }"
                 class="sgm-h-8 sgm-w-full"
               ></div>
             </div>

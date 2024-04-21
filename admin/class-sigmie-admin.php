@@ -618,10 +618,14 @@ class Sigmie_Admin
 			$colorAttributes[$name] = [];
 
 			foreach ($attribute['values'] as $value) {
-				$colorAttributes[$name][$value['label']] =
-					'#' . $value['color_hex_1'] . '|' .
-					'#' . $value['color_hex_2'] . '|' .
-					'#' . $value['color_hex_3'];
+
+				$res = [];
+
+				for ($i = 1; $i <= $value['number_of_colors']; $i++) {
+					$res[] = '#' . $value['color_hex_' . $i];
+				}
+
+				$colorAttributes[$name][$value['label']] = implode('|', $res);
 			}
 		}
 		// --------- End Colors

@@ -49,8 +49,15 @@
           its settings.
         </p>
       </div>
+      <div
+        class=" sgm-h-24 sgm-border  sgm-rounded-lg sgm-bg-gray-100 sgm-outline sgm-outline-gray-300 sgm-flex sgm-flex-row sgm-items-center sgm-justify-center sgm-w-full"
+        v-if="index.attributes[1]?.length === 0"
+      >
+        <div class="sgm-text-base sgm-text-gray-500">No filterable attributes selcted.</div>
+      </div>
 
       <DataTable
+        v-else
         :expandedRows="[]"
         :value="index.attributes[1]"
         dataKey="id"
@@ -168,6 +175,29 @@
                 :reorderableColumn="false"
               />
               <Column field="label" header="Value"> </Column>
+              <Column header="Num. of Colors">
+                <template #body="slotPropsBlah">
+                  <div
+                    class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-2"
+                  >
+                    <Dropdown
+                      class="sgm-max-w-[120px] sgm-w-full"
+                      v-model="
+                        index.attributes[1][slotProps.index].values[
+                          slotPropsBlah.index
+                        ].number_of_colors
+                      "
+                      optionLabel="label"
+                      optionValue="value"
+                      :options="[
+                        { label: 'One', value: 1 },
+                        { label: 'Two', value: 2 },
+                        { label: 'Three', value: 3 },
+                      ]"
+                    ></Dropdown>
+                  </div>
+                </template>
+              </Column>
               <Column field="image" header="Color 1">
                 <template #body="slotPropsBlah">
                   <div
@@ -198,6 +228,11 @@
               <Column field="image" header="Color 2">
                 <template #body="slotPropsBlah">
                   <div
+                    v-if="
+                      index.attributes[1][slotProps.index].values[
+                        slotPropsBlah.index
+                      ].number_of_colors > 1
+                    "
                     class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-2"
                   >
                     <ColorPickerTwo
@@ -225,6 +260,11 @@
               <Column field="image" header="Color 3">
                 <template #body="slotPropsBlah">
                   <div
+                    v-if="
+                      index.attributes[1][slotProps.index].values[
+                        slotPropsBlah.index
+                      ].number_of_colors > 2
+                    "
                     class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-2"
                   >
                     <ColorPickerThree
