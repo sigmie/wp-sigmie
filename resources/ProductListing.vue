@@ -205,6 +205,7 @@
                 :is="item.component"
                 v-model="state.filters[name]"
                 :facets="facets[name]"
+                :name="name"
               ></component>
             </AccordionTab>
           </template>
@@ -269,6 +270,7 @@
               :is="item.component"
               v-model="state.filters[name]"
               :facets="facets[name]"
+              :name="name"
             ></component>
           </AccordionTab>
         </Accordion>

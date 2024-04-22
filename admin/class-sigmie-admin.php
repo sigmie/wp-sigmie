@@ -652,6 +652,7 @@ class Sigmie_Admin
 				return $value['label'];
 			}, $attribute['values']);
 		}
+		// dd($sortedAttributes);
 
 		$attributes = array_map(function ($attribute) {
 			if (in_array($attribute['slug'], ['categories', 'brands', 'tags', 'price_as_number'])) {

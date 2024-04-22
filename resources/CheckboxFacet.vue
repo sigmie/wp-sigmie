@@ -84,6 +84,7 @@ const isSelected = (facet) =>
   selectedValues.value.some((item) => item.id === `${props.name}-${facet}`);
 
 const updateSelection = (isSelected, label) => {
+
   const id = `${props.name}-${label}`;
   if (isSelected) {
     selectedValues.value.push({
