@@ -24,16 +24,11 @@
         <template #targetheader> Filterable </template>
         <template #item="slotProps">
           <div
-            class="sgm-flex sgm-flex-wrap sgm-p-2 sgm-align-items-center sgm-gap-3"
+            class="sgm-flex sgm-flex-wrap sgm-p-2 sgm-align-items-center sgm-gap-2"
           >
-            <div class="sgm-flex-1 sgm-flex sgm-flex-col sgm-gap-2">
-              <span class="sgm-font-bold">{{ slotProps.item.name }}</span>
-              <div class="sgm-flex sgm-align-items-center sgm-gap-2">
-                <i class="pi pi-tag sgm-text-sm"></i>
-                <span>{{ slotProps.item.slug }}</span>
-              </div>
-            </div>
-            <span class="font-bold">{{ slotProps.item.id }}</span>
+            <span class="sgm-font-bold">{{ slotProps.item.name }}</span>
+            <span>({{ slotProps.item.slug }})</span>
+            <!-- <span class="font-bold">{{ slotProps.item.id }}</span> -->
           </div>
         </template>
       </PickList>
@@ -50,10 +45,12 @@
         </p>
       </div>
       <div
-        class=" sgm-h-24 sgm-border  sgm-rounded-lg sgm-bg-gray-100 sgm-outline sgm-outline-gray-300 sgm-flex sgm-flex-row sgm-items-center sgm-justify-center sgm-w-full"
+        class="sgm-h-24 sgm-border sgm-rounded-lg sgm-bg-gray-100 sgm-outline sgm-outline-gray-300 sgm-flex sgm-flex-row sgm-items-center sgm-justify-center sgm-w-full"
         v-if="index.attributes[1]?.length === 0"
       >
-        <div class="sgm-text-base sgm-text-gray-500">No filterable attributes selcted.</div>
+        <div class="sgm-text-base sgm-text-gray-500">
+          No filterable attributes selcted.
+        </div>
       </div>
 
       <DataTable
@@ -71,7 +68,9 @@
           <div class="sgm-px-3 sgm-flex sgm-flex-col sgm-space-y-4">
             <h4>Settings for {{ slotProps.data.name }} attribute.</h4>
 
-            <div class="sgm-flex sgm-flex-row sgm-items-center sgm-space-x-10">
+            <div
+              class="sgm-flex sgm-flex-row sgm-items-end sgm-space-x-10 sgm-flex-wrap"
+            >
               <div>
                 <label
                   class="sgm-block sgm-text-sm sgm-font-medium sgm-leading-6 sgm-text-gray-900 sgm-mb-2"
@@ -298,7 +297,7 @@
     <div
       class="sgm-flex sgm-space-y-3 sm:sgm-space-y-0 sm:sgm-space-x-3 sgm-flex-col sm:sgm-flex-row sgm-justify-end sgm-w-full"
     >
-      <div class="sgm-h-12 sm:sgm-h-auto">
+      <div class="sgm-h-[30px]">
         <InlineMessage severity="success" v-if="recentlySuccessful"
           >Your changes have been saved!</InlineMessage
         >

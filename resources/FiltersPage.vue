@@ -35,7 +35,22 @@
                     :is="field.type"
                     v-bind="field.props"
                     v-model="state[field.name]"
-                  />
+                  >
+                    <template #option="slotProps">
+                      <div
+                        class="sgm-flex-row sgm-flex sgm-space-x-2 sgm-items-center"
+                        v-if="slotProps.option.color"
+                      >
+                        <div
+                          class="sgm-rounded-full sgm-w-4 sgm-h-4"
+                          :style="{ backgroundColor: slotProps.option.color }"
+                        ></div>
+                        <div>
+                          {{ slotProps.option.name }}
+                        </div>
+                      </div>
+                    </template>
+                  </component>
                   <span class="sgm-text-sm">{{ field.info }}</span>
                 </div>
               </div>
@@ -47,7 +62,7 @@
       <div
         class="sgm-flex sgm-space-y-3 sm:sgm-space-y-0 sm:sgm-space-x-3 sgm-flex-col sm:sgm-flex-row sgm-justify-end sgm-w-full"
       >
-        <div class="sgm-h-12 sm:sgm-h-auto">
+        <div class="sgm-h-[20px]">
           <InlineMessage severity="success" v-if="recentlySuccessful"
             >Your changes have been saved!</InlineMessage
           >
@@ -185,8 +200,8 @@ const state = reactive({
 const settings = [
   {
     key: "general-settings",
-    title: "General Texts",
-    subtitle: "General settings",
+    title: "General",
+    subtitle: "General settings for filters section.",
     fields: [
       {
         type: Dropdown,
@@ -194,19 +209,60 @@ const settings = [
         label: "Theme",
         info: "",
         props: {
+          slot: true,
           optionLabel: "name",
           optionValue: "code",
           options: [
-            { name: "aura-light-amber", code: "aura-light-amber" },
-            { name: "aura-light-green", code: "aura-light-green" },
-            { name: "aura-light-noir", code: "aura-light-noir" },
-            { name: "aura-light-teal", code: "aura-light-teal" },
-            { name: "aura-light-blue", code: "aura-light-blue" },
-            { name: "aura-light-indigo", code: "aura-light-indigo" },
-            { name: "aura-light-pink", code: "aura-light-pink" },
-            { name: "aura-light-cyan", code: "aura-light-cyan" },
-            { name: "aura-light-lime", code: "aura-light-lime" },
-            { name: "aura-light-purple", code: "aura-light-purple" },
+            {
+              name: "aura-light-amber",
+              code: "aura-light-amber",
+              color: "#eab308",
+            },
+            {
+              name: "aura-light-green",
+              code: "aura-light-green",
+              color: "#10b981",
+            },
+            {
+              name: "aura-light-noir",
+              code: "aura-light-noir",
+              color: "#020617",
+            },
+            {
+              name: "aura-light-teal",
+              code: "aura-light-teal",
+              color: "#14b8a6",
+            },
+            {
+              name: "aura-light-blue",
+              code: "aura-light-blue",
+              color: "#3b82f6",
+            },
+            {
+              name: "aura-light-indigo",
+              code: "aura-light-indigo",
+              color: "#8b5cf6",
+            },
+            {
+              name: "aura-light-pink",
+              code: "aura-light-pink",
+              color: "#ec4899",
+            },
+            {
+              name: "aura-light-cyan",
+              code: "aura-light-cyan",
+              color: "#06b6d4",
+            },
+            {
+              name: "aura-light-lime",
+              code: "aura-light-lime",
+              color: "#84cc16",
+            },
+            {
+              name: "aura-light-purple",
+              code: "aura-light-purple",
+              color: "#6366f1",
+            },
           ],
         },
       },
@@ -256,8 +312,8 @@ const settings = [
   },
   {
     key: "sorting-options",
-    title: "Sorting",
-    subtitle: "Customize the text for sorting option labels in this section.",
+    title: "Sorting labels",
+    subtitle: "Customize the texts for the sorting options.",
     fields: [
       {
         type: InputText,

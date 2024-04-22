@@ -45,12 +45,14 @@
       <div
         class="sgm-flex sgm-space-x-3 sgm-flex-row sgm-items-center sgm-justify-end sgm-w-full"
       >
-        <InlineMessage severity="success" v-if="recentlySuccessful"
-          >Your changes have been saved!</InlineMessage
-        >
-        <InlineMessage severity="error" v-if="recentlyError">
-          Oops! Something went wrong.
-        </InlineMessage>
+        <div class="sgm-h-[30px]">
+          <InlineMessage severity="success" v-if="recentlySuccessful"
+            >Your changes have been saved!</InlineMessage
+          >
+          <InlineMessage severity="error" v-if="recentlyError">
+            Oops! Something went wrong.
+          </InlineMessage>
+        </div>
 
         <Button
           size="small"

@@ -106,7 +106,7 @@
       <div
         class="sgm-flex sgm-space-y-3 sm:sgm-space-y-0 sm:sgm-space-x-3 sgm-flex-col sm:sgm-flex-row sgm-justify-end sgm-w-full"
       >
-        <div class="sgm-h-12 sm:sgm-h-auto">
+        <div class="sgm-h-[30px]">
           <InlineMessage severity="success" v-if="recentlySuccessful"
             >Your changes have been saved!</InlineMessage
           >
