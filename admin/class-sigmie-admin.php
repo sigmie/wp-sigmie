@@ -1067,8 +1067,6 @@ class Sigmie_Admin
 	{
 		$res = $this->sigmie->createIndex($this->index, $this->indexProps());
 
-		ray($res->json());
-
 		return new WP_REST_Response(array('success' => true, 'message' => 'Your changes have been saved!'), 200);
 	}
 

@@ -10,6 +10,14 @@
       >
       to create one for free in a couple of minutes!
     </InlineMessage>
+    <InlineMessage icon="false" class="sgm-w-full sgm-my-3" severity="info">
+      <a
+        target="_blank"
+        href="https://store.sigmie.com/subscriptions"
+        class="sgm-text-blue-800"
+        >Manage your subscription</a
+      >
+    </InlineMessage>
     <div class="sgm-space-y-20 sgm-divide-y">
       <div
         class="sgm-flex sgm-flex-col sgm-space-x-10 sm:sgm-flex-row sgm-justify-between"
