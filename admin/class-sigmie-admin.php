@@ -10,6 +10,8 @@
  * @subpackage Sigmie/admin
  */
 
+use Sigmie\Application\Client;
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -81,6 +83,11 @@ class Sigmie_Admin
 	 */
 	private $option_group = 'sigmie_settings';
 
+	/**
+	 * Sigmie client
+	 * 
+	 * @var Client
+	 */
 	private $sigmie;
 
 	private $index;
@@ -185,6 +192,7 @@ class Sigmie_Admin
 		new Sigmie_Admin_Filterable_Page;
 		new Sigmie_Admin_Listing_Page;
 		new Sigmie_Admin_Filters_Page;
+		new Sigmie_Admin_Actions_Page;
 
 		// 	add_action('wp_ajax_sigmie_re_index', array($plugin_admin, 're_index'), 10, 2);
 		// }
@@ -476,7 +484,7 @@ class Sigmie_Admin
 		$brandTerms = get_the_terms($product->get_id(), 'brand');
 
 		if ($brandTerms) {
-			$brands = array_map(fn ($brand) => $brand->name, $brandTerms);
+			$brands = array_map(fn($brand) => $brand->name, $brandTerms);
 		}
 
 		$tags = [];
@@ -484,7 +492,7 @@ class Sigmie_Admin
 		$tagTerms = get_the_terms($product->get_id(), 'product_tag');
 
 		if ($tags) {
-			$tags = array_map(fn ($tag) => $tag->name, $tagTerms);
+			$tags = array_map(fn($tag) => $tag->name, $tagTerms);
 		}
 
 		$res = [
@@ -591,7 +599,7 @@ class Sigmie_Admin
 
 		if ($args['categories'] ?? false) {
 			$categories = explode(',', $args['categories'] ?? '');
-			$categories = array_map(fn ($category) => "'{$category}'", $categories);
+			$categories = array_map(fn($category) => "'{$category}'", $categories);
 
 			$predefinedFilters = "categories:[" . implode(',', $categories) . "]";
 		}
@@ -652,7 +660,6 @@ class Sigmie_Admin
 				return $value['label'];
 			}, $attribute['values']);
 		}
-		// dd($sortedAttributes);
 
 		$attributes = array_map(function ($attribute) {
 			if (in_array($attribute['slug'], ['categories', 'brands', 'tags', 'price_as_number'])) {
@@ -691,11 +698,6 @@ class Sigmie_Admin
 		foreach ($filterableAttributes as $value) {
 			$facetProps[$value['slug']] = $value;
 		}
-
-		// dd($facetProps);
-		// foreach ($attributes as $index => $attribute) {
-		// 	$facetProps[$attribute]['expanded'] = true;
-		// }
 
 		foreach ($numberFacets as $attribute) {
 			$facetProps[$attribute]['step'] = 1;
@@ -806,6 +808,8 @@ class Sigmie_Admin
 				]
 			]
 		];
+
+		// dd(json_encode($props));
 
 		return '<div class="" id="sigmie-filters">
 					<product-listing v-bind="' . htmlspecialchars(json_encode($props)) . '">
@@ -922,6 +926,162 @@ class Sigmie_Admin
 <?php
 	}
 
+	public function rest_clear_index(WP_REST_Request $request)
+	{
+		$this->sigmie->clearIndex($this->index);
+
+		return new WP_REST_Response(array('success' => true, 'message' => 'Your changes have been saved!'), 200);
+	}
+
+	public function rest_populate_index(WP_REST_Request $request)
+	{
+		$perPage = 100;
+
+		$args = array(
+			'post_type'      => 'product',
+			'posts_per_page' => $perPage
+		);
+
+		$loop = new WP_Query($args);
+
+		$docs = [];
+
+		while ($loop->have_posts()) : $loop->the_post();
+
+			/** @var  WC_Product_Variable $product */
+			global $product;
+
+			if (!$product->is_type('variable')) {
+
+				$docs[] = [
+					'_id' => $product->get_id(),
+					'action' => 'upsert',
+					'body' => $this->map_product($product)
+				];
+
+				continue;
+			}
+
+			/** @var WC_Product_Variation $variation  */
+			foreach ($product->get_available_variations('objects') as $variation) {
+
+				$body[] = [
+					'_id' => $variation->get_id(),
+					'action' => 'upsert',
+					'body' => $this->map_product($variation)
+				];
+			}
+
+		endwhile;
+
+		$res = $this->sigmie->batchWrite($this->index, $docs);
+
+		return new WP_REST_Response(array('success' => true, 'data' => $res->json()), 200);
+	}
+
+	private function indexProps()
+	{
+		$wcLanguage = get_locale();
+
+		if ($wcLanguage === 'el_GR') {
+			$language = [
+				'name' => 'greek',
+				'filters' => [
+					"stopwords",
+					"stemmer",
+					"lowercase",
+					"greeklish",
+				]
+			];
+		} elseif ($wcLanguage === 'en_US') {
+			$language = [
+				'name' => 'english',
+				'filters' => [
+					"stopwords",
+					"possessive_stemmer",
+					"stemmer",
+					"lowercase"
+				]
+			];
+		} elseif ($wcLanguage === 'de_DE') {
+			$language = [
+				'name' => 'german',
+				'filters' => [
+					'normalization',
+					"stopwords",
+					"stemmer",
+					"lowercase",
+				]
+			];
+		} else {
+			$language = null;
+		}
+
+		$res = [
+			'mappings' => [
+				['name' => 'name', 'type' => 'name'],
+				['name' => 'on_sale', 'type' => 'bool'],
+				['name' => 'price', 'type' => 'text'],
+				['name' => 'price_html', 'type' => 'html'],
+				['name' => 'review_count', 'type' => 'int'],
+				['name' => 'short_description', 'type' => 'text'],
+
+				['name' => 'sku', 'type' => 'text'],
+				['name' => 'slug', 'type' => 'text'],
+				['name' => 'stock_status', 'type' => 'text'],
+				['name' => 'thumbnail_html', 'type' => 'html'],
+				['name' => 'times_sold', 'type' => 'int'],
+
+				['name' => 'pa_material', 'type' => 'category'],
+				['name' => 'pa_color', 'type' => 'category'],
+				['name' => 'price_as_number', 'type' => 'price'],
+				['name' => 'brands', 'type' => 'category'],
+				['name' => 'categories', 'type' => 'category'],
+
+				['name' => 'tags', 'type' => 'category'],
+				['name' => 'total_sales', 'type' => 'int'],
+				['name' => 'gallery_image_html', 'type' => 'html'],
+				['name' => 'average_rating', 'type' => 'float'],
+
+				['name' => 'pa_height', 'type' => 'category'],
+				['name' => 'pa_width', 'type' => 'category'],
+				['name' => 'image_id', 'type' => 'path'],
+			]
+		];
+
+		if ($language) {
+			$res['language'] = $language;
+		}
+
+		return $res;
+	}
+
+	public function rest_delete_index(WP_REST_Request $request)
+	{
+		$this->sigmie->deleteIndex($this->index);
+
+		return new WP_REST_Response(array('success' => true, 'message' => 'Your changes have been saved!'), 200);
+	}
+
+	public function rest_create_index(WP_REST_Request $request)
+	{
+		$res = $this->sigmie->createIndex($this->index, $this->indexProps());
+
+		ray($res->json());
+
+		return new WP_REST_Response(array('success' => true, 'message' => 'Your changes have been saved!'), 200);
+	}
+
+	public function rest_list_indices()
+	{
+		$index = $this->sigmie->listIndices()->json();
+
+		return new WP_REST_Response(array(
+			'success' => true,
+			'data' => $index
+		), 200);
+	}
+
 	public function rest_save_settings(WP_REST_Request $value)
 	{
 		try {
@@ -1010,6 +1170,54 @@ class Sigmie_Admin
 		register_rest_route('/v1/sigmie', '/save-settings', array(
 			'methods' => 'POST',
 			'callback' => [$this, 'rest_save_settings'],
+			'permission_callback' => function () {
+				return current_user_can($this->capability);
+			}
+		));
+
+		register_rest_route('/v1/sigmie', '/refresh-index', array(
+			'methods' => 'POST',
+			'callback' => [$this, 'rest_refresh_index'],
+			'permission_callback' => function () {
+				return current_user_can($this->capability);
+			}
+		));
+
+		register_rest_route('/v1/sigmie', '/delete-index', array(
+			'methods' => 'POST',
+			'callback' => [$this, 'rest_delete_index'],
+			'permission_callback' => function () {
+				return current_user_can($this->capability);
+			}
+		));
+
+		register_rest_route('/v1/sigmie', '/create-index', array(
+			'methods' => 'POST',
+			'callback' => [$this, 'rest_create_index'],
+			'permission_callback' => function () {
+				return current_user_can($this->capability);
+			}
+		));
+
+		register_rest_route('/v1/sigmie', '/populate-index', array(
+			'methods' => 'POST',
+			'callback' => [$this, 'rest_populate_index'],
+			'permission_callback' => function () {
+				return current_user_can($this->capability);
+			}
+		));
+
+		register_rest_route('/v1/sigmie', '/clear-index', array(
+			'methods' => 'POST',
+			'callback' => [$this, 'rest_clear_index'],
+			'permission_callback' => function () {
+				return current_user_can($this->capability);
+			}
+		));
+
+		register_rest_route('/v1/sigmie', '/list-indices', array(
+			'methods' => 'POST',
+			'callback' => [$this, 'rest_list_indices'],
 			'permission_callback' => function () {
 				return current_user_can($this->capability);
 			}

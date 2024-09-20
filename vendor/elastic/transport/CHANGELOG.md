@@ -1,5 +1,12 @@
 # Changelog
 
+## 8.10.0 (2024-08-14)
+
+- Added the OpenTelemetry support
+  [#27](https://github.com/elastic/elastic-transport-php/pull/27)
+- Refactored the OpenTelemetry using PSR-7 attributes
+  [2be33cd](https://github.com/elastic/elastic-transport-php/commit/2be33cdc8be161fc7dc9a1989da5d550ffc4a230)
+
 ## 8.8.0 (2023-11-08)
 
 - Support path in host connection URI

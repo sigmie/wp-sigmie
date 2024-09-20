@@ -1,7 +1,7 @@
 <template>
   <form class="">
     <InlineMessage class="sgm-w-full sgm-my-3" severity="info">
-      No Sigmie account yet?
+      No Sigmie credentials yet?
       <a
         target="_blank"
         href="https://app.sigmie.com/sign-up"
@@ -21,7 +21,7 @@
             General
           </h2>
           <p class="sgm-mt-1 sgm-text-sm sgm-leading-6 sgm-text-gray-600">
-            Configure your Sigmie account credentials. You can find them in the
+            Configure your Sigmie credentials. You can find them in the
             <a href="https://app.sigmie.com/api-keys" target="_blank"
               >API Keys</a
             >
@@ -40,10 +40,29 @@
                 <div class="sgm-flex sgm-flex-col sgm-gap-2">
                   <label
                     class="sgm-block sgm-text-sm sgm-font-medium sgm-leading-6 sgm-text-gray-900"
-                    for="sigmie_search_field_text"
+                    for="sigmie_application_id"
                     >Application Id</label
                   >
-                  <InputText v-model="state.application_id" />
+                  <InputText
+                    id="sigmie_application_id"
+                    v-model="state.application_id"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="sgm-max-w-xs">
+              <div class="sgm-mt-2">
+                <div class="sgm-flex sgm-flex-col sgm-gap-2">
+                  <label
+                    class="sgm-block sgm-text-sm sgm-font-medium sgm-leading-6 sgm-text-gray-900"
+                    for="sigmie_index_prefix"
+                    >Index</label
+                  >
+                  <InputText
+                    id="sigmie_index_prefix"
+                    v-model="state.index_prefix"
+                  />
                 </div>
               </div>
             </div>
@@ -58,6 +77,7 @@
                   >
                   <Password
                     toggleMask
+                    id="sigmie_admin_api_key"
                     v-model="state.admin_api_key"
                     :feedback="false"
                   />
@@ -73,28 +93,15 @@
                 <div class="sgm-flex sgm-flex-col sgm-gap-2">
                   <label
                     class="sgm-block sgm-text-sm sgm-font-medium sgm-leading-6 sgm-text-gray-900"
-                    for="sigmie_search_field_text"
+                    for="sigmie_search_api_key"
                     >Search-only API key</label
                   >
-                  <InputText v-model="state.search_api_key" />
+                  <InputText
+                    id="sigmie_search_api_key"
+                    v-model="state.search_api_key"
+                  />
                   <span class="sgm-text-sm"
                     >Your Sigmie Search-only API key (public).
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div class="sgm-max-w-xs">
-              <div class="sgm-mt-2">
-                <div class="sgm-flex sgm-flex-col sgm-gap-2">
-                  <label
-                    class="sgm-block sgm-text-sm sgm-font-medium sgm-leading-6 sgm-text-gray-900"
-                    for="sigmie_search_field_text"
-                    >Index Prefix</label
-                  >
-                  <InputText v-model="state.index_prefix" />
-                  <span class="sgm-text-sm"
-                    >This prefix will be prepended to your Sigmie index names.
                   </span>
                 </div>
               </div>

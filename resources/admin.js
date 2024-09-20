@@ -6,6 +6,7 @@ import ListingPage from "@/ListingPage.vue";
 import FiltersPage from "@/FiltersPage.vue";
 import SearchPage from "@/SearchPage.vue";
 import CredentialsPage from "@/CredentialsPage.vue";
+import ActionsPage from "@/ActionsPage.vue";
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -17,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     backend.component('search-page', SearchPage);
     backend.component('credentials-page', CredentialsPage);
+    backend.component('actions-page', ActionsPage);
     backend.component('filterable-page', FilterablePage);
     backend.component('results-page', ResultsPage);
     backend.component('listing-page', ListingPage);

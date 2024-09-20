@@ -113,6 +113,7 @@ onUnmounted(() => {
 </script>
 
 <template>
+
   <div
     class="sgm-container sgm-flex sgm-flex-wrap sgm-items-center sgm-justify-between sgm-mx-auto"
   >

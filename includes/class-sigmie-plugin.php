@@ -128,6 +128,7 @@ class Sigmie_Plugin
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-page.php';
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-search-page.php';
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-credentials-page.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-actions-page.php';
 
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-results-page.php';
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-sigmie-admin-listing-page.php';
@@ -250,9 +251,9 @@ class Sigmie_Plugin
 
 	public function sigmie_index()
 	{
-		$prefix = (string) get_option('sigmie_index_prefix', '');
+		$index = get_option('sigmie_index_prefix');
 
-		return $prefix . 'products';
+		return 'wc-' . strtolower($index);
 	}
 
 	/**
